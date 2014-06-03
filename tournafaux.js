@@ -149,18 +149,21 @@ $(function() {
 		},
 		
 		initialize: function() {
+			Players.fetch();
+			Rounds.fetch();
+
 			this.listenTo(Players, 'add', this.render);
 			this.listenTo(Players, 'remove', this.render);
 			this.listenTo(Players, 'reset', this.render);
 			// this.listenTo(router, 'route:settings', this.render);
 		
-			Players.fetch();
-			Rounds.fetch();
 
 		},
 		
 		render: function(options) {
-			var template = _.template($('#tournament-settings-template').html(), {players: Players.models});
+			console.log("render settings");
+			console.log(Players.models);
+			var template = _.template($('#tournament-settings-template').html(), {players: Players});
 	      	this.$el.html(template);
 	      	this.newPlayer = this.$("#new-player");
 		},
@@ -168,7 +171,9 @@ $(function() {
 		createOnEnter: function(e) {
 			if (e.keyCode != 13) return;
 			if (!this.newPlayer.val()) return;
+
 			Players.create({name: this.newPlayer.val()});
+			
 			this.newPlayer.val('');
 			this.newPlayer.focus();
 		},
@@ -177,7 +182,16 @@ $(function() {
 			if (Rounds.models.length > 0) {
 				if (confirm("This will destroy all generated rounds!")) {
 					Players.get(e.currentTarget.id).destroy();
-					_.each(Rounds.models, function(round) { round.destroy(); });
+					Rounds.each(function(round) { round.destroy(); });
+					Players.each(function(player){
+						var i = 1;
+						while(player.get('vp'+i)) {
+							player.unset('vp'+i);
+							player.unset('vpdiff'+i);
+							player.unset('tp'+i);
+							++i;
+						}
+					});
 				}
 			} else 
 				Players.get(e.currentTarget.id).destroy();
@@ -195,6 +209,29 @@ $(function() {
 
 	var tournamentSettingsView = new TournamentSettingsView();
 
+	var TournamentStandingsView = Backbone.View.extend({
+
+		el: '.standings',
+
+		initialize: function() {
+			// this.listenTo(Players, 'change', this.render);
+
+		},
+
+		render: function() {
+			Players.fetch();
+			var players = Players.models;
+			players = _.sortBy(players, function(p) {return p.getTotalVp()});
+			players = _.sortBy(players, function(p) {return p.getVpDiff()});
+			players = _.sortBy(players, function(p) {return p.getTotalTp()});
+			players = players.reverse();
+			var template = _.template($('#tournament-standings-template').html(), {players: players});
+		    this.$el.html(template);
+		},
+	});
+
+	var tournamentStandingsView = new TournamentStandingsView();
+
 	var TournamentRoundView = Backbone.View.extend({
 
 		el: '.page',
@@ -203,7 +240,7 @@ $(function() {
 		},
 
 		events: {
-			"click #generate-round": "generateRound"
+			"click #generate-rounds": "generateRounds"
 		},
 
 		render: function(number) {
@@ -235,23 +272,56 @@ $(function() {
 				var template = _.template($('#tournament-no-round-template').html(), {number: number});
 		      	this.$el.html(template);
 			}
+			
+			tournamentStandingsView.remove();
+			tournamentStandingsView = new TournamentStandingsView();
+			tournamentStandingsView.render();
+			
 		},
 
 		registerListeners: function(number) {
 			this.round = _.find(Rounds.models, function(round){ return round.get("number") == "" + number});
+			var that = this;
 
 			if (this.round) {
 				_.each(Players.models, function(player) {
 					this.$("#" + player.id).change(function(event) {
 						player.set("vp"+number, event.currentTarget.value);
 						player.save();
+						console.log(that.round);
+						that.calculateTpAndVpDiff(that.round, player);
+						tournamentStandingsView.render();
 					});
 				});
-				
 			}
 		},
 
-		generateRound: function() {
+		calculateTpAndVpDiff: function(round, player) {
+			var i = 1;
+			while(round.get('table'+i+'player1')) {
+				var player1 = Players.get(round.get('table'+i+'player1'));
+				var player2 = Players.get(round.get('table'+i+'player2'));
+				if (player1.id === player.id || player2.id === player.id) {
+					var player1vp = parseInt(player1.get('vp'+round.get('number')));
+					var player2vp = parseInt(player2.get('vp'+round.get('number')));
+					if (player1vp >= 0 && player1vp <=10 && player2vp >= 0 && player2vp <=10) {
+						var diff = player1vp - player2vp;
+						player1.set('vpdiff'+round.get('number'), "" + diff);
+						player2.set('vpdiff'+round.get('number'), "" + -diff);
+						player1.set('tp'+round.get('number'), diff > 0 ? "3" : diff < 0 ? "0": "1");
+						player2.set('tp'+round.get('number'), diff < 0 ? "3" : diff > 0 ? "0": "1");
+						player1.save();
+						player2.save();
+						console.log(player1);
+						console.log(player2);
+					}
+				}
+				
+				++i;
+			}
+		},
+
+		generateRounds: function() {
 			//TODO validation
 			var number = parseInt(this.round.get('number')) + 1;
 			Rounds.newRound(number, this.$("#rounds").val());
@@ -277,6 +347,7 @@ $(function() {
 	router.on('route:round', function(number) {
 		tournamentRoundView.render(number);
 		tournamentRoundView.registerListeners(number);
+		// tournamentStandingsView.render();
 	});
 
     Backbone.history.start();
