@@ -504,6 +504,19 @@ $(function() {
 
 	var tournamentRoundView = new TournamentRoundView();
 
+	var TournamentNavView = Backbone.View.extend({
+		el: '#tournament-nav',
+
+		render: function(active) {
+			Rounds.fetch();
+			
+			var template = _.template($('#tournament-nav-template').html(), {rounds: Rounds, active: active});
+		    this.$el.html(template);
+		},
+	});
+
+	var tournamentNavView = new TournamentNavView();
+
 	var Router = Backbone.Router.extend({
 	    routes: {
 	      "": "settings",
@@ -515,11 +528,13 @@ $(function() {
 	router.on('route:settings', function() {
 		tournamentSettingsView.registerListeners();
 		tournamentSettingsView.render({});
+		tournamentNavView.render("settings");
 	});
 	router.on('route:round', function(number) {
 		tournamentSettingsView.unregisterListeners();
 		tournamentRoundView.render(number);
 		tournamentRoundView.registerListeners(number);
+		tournamentNavView.render(number);
 		// tournamentStandingsView.render();
 	});
 
