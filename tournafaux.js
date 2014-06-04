@@ -6,6 +6,28 @@ $(function() {
 
  	document.title="Tournafaux";
 
+ 	window.applicationCache.addEventListener('updateready', function(e) {
+    	if (window.applicationCache.status == window.applicationCache.UPDATEREADY) {
+      		// Browser downloaded a new app cache.
+      		if (confirm('A new version of this site is available. Load it?')) {
+        		window.location.reload();
+      		}
+    	} 
+  	}, false);
+
+  	var showHelpBye = function () {
+		$("#help").html("<h4>Bye</h4>If the tournament has an uneven amount of players, "+
+		 "a Bye (-) is created. The player that was matched against the bye will score an average of " + 
+		 "all games. This will be recalculated after every round. If the player has played no games, she "+
+		 "will have 1 TP and 1 VP temporarily. The bye will always score 0 TP and 0 VP. It is therefore " + 
+		 "more likely for players in the bottom of the table to get a bye.<hr/>");
+  	};
+
+  	var showHelpCityFaction = function() {
+  		$("#help").html("<h4>City/Club and Faction</h4>If you fill these fields, players from the same city, "+
+		"or playing the same faction, will not face each other in the first game. If possible. (Feature not yet complete!)<hr/>");
+  	};
+
 	var Player = Backbone.Model.extend({
 
 		initialize: function() {
@@ -211,7 +233,9 @@ $(function() {
 			"click button.removePlayer": "removePlayer",
 			"click #generate-round": "generateRound",
 			"change #rounds": "changeRounds",
-
+			"change input.city": "updateCity",
+			"change input.faction": "updateFaction",
+			"click #helpCityFaction": "showHelpCityFaction",
 		},
 
 		model: Settings,
@@ -222,33 +246,42 @@ $(function() {
 
 			this.settings = new Settings({id: SETTINGS_ID, rounds: "3"});
 			this.settings.fetch();
+			
+			this.registerListeners();
+		},
 
-			this.listenTo(Players, 'add', this.render);
+		registerListeners: function() {
+			this.listenTo(Players, 'change', this.render);
 			this.listenTo(Players, 'remove', this.render);
 			this.listenTo(Players, 'reset', this.render);
 			this.listenTo(this.settings, 'change', this.render);
-			// this.listenTo(router, 'route:settings', this.render);
-		
+		},
 
+		unregisterListeners: function() {
+			this.stopListening(Players);
+			this.stopListening(this.settings);
 		},
 		
 		render: function(options) {
+			
 			var template = _.template($('#tournament-settings-template').html(), {players: Players, settings: this.settings});
 	      	this.$el.html(template);
 	      	this.newPlayer = this.$("#new-player");
 		},
 
 		createOnEnter: function(e) {
-			if (e.keyCode != 13) return;
+			if (e.keyCode != 13 && e.keyCode != 9) return;
 			if (!this.newPlayer.val()) return;
 
-			Players.create({name: this.newPlayer.val()});
-			
+			var player = Players.create({name: this.newPlayer.val(), city: '', faction: ''});
+
 			this.newPlayer.val('');
-			this.newPlayer.focus();
+			this.$("#"+player.id+".city").focus();
 		},
 
 		removePlayer: function(e) {
+			// console.log(Players.get(e.currentTarget.id.replace("remove-", "")));
+			// console.log(e.currentTarget.id);
 			if (Rounds.models.length > 0) {
 				if (confirm("This will destroy all generated rounds!")) {
 					Players.get(e.currentTarget.id).destroy();
@@ -263,6 +296,22 @@ $(function() {
 			return false;
 		},
 
+		updateCity: function(e) {
+			var player = Players.get(e.currentTarget.id);
+			player.set('city', e.currentTarget.value);
+			player.save();
+			this.$("#"+player.id +".faction").focus();
+			return false;
+		},
+
+		updateFaction: function(e) {
+			var player = Players.get(e.currentTarget.id);
+			player.set('faction', e.currentTarget.value);
+			player.save();
+			this.$("#"+player.id +".removePlayer").focus();
+			return false;
+		},
+
 		changeRounds: function() {
 			this.settings.set('rounds', this.$("#rounds").val());
 			this.settings.save();
@@ -273,7 +322,11 @@ $(function() {
 			Rounds.newRound(1);
 			router.navigate("#/round/1");
 			return false;
-		}
+		},
+
+		showHelpCityFaction: function(e) {
+			showHelpCityFaction();
+		},
 	});
 
 	var tournamentSettingsView = new TournamentSettingsView();
@@ -287,6 +340,10 @@ $(function() {
 
 		},
 
+		events: {
+			"click #helpBye": "showHelpBye",
+		},
+
 		render: function() {
 			Players.fetch();
 			var players = Players.models;
@@ -296,6 +353,10 @@ $(function() {
 			players = players.reverse();
 			var template = _.template($('#tournament-standings-template').html(), {players: players});
 		    this.$el.html(template);
+		},
+
+		showHelpBye: function(e) {
+			showHelpBye();
 		},
 	});
 
@@ -310,11 +371,12 @@ $(function() {
 		},
 
 		events: {
-			"click #generate-rounds": "generateRounds"
+			"click #generate-rounds": "generateRounds",
+			"click #helpBye": "showHelpBye",
 		},
 
 		render: function(number) {
-
+			console.log("render");
 			Players.fetch();
 			Rounds.fetch();
 			this.settings.fetch();
@@ -359,7 +421,12 @@ $(function() {
 			if (this.round) {
 				_.each(Players.models, function(player) {
 					this.$("#" + player.id).change(function(event) {
-						player.setVpForRound(number, event.currentTarget.value);
+						if (parseInt(event.currentTarget.value) >= 0) {
+							player.setVpForRound(number, event.currentTarget.value);
+						} else {
+							event.currentTarget.value = '0';
+							player.setVpForRound(number, '0');
+						}
 						player.save();
 						that.calculateTpAndVpDiff(that.round, player);
 						tournamentStandingsView.render();
@@ -376,12 +443,19 @@ $(function() {
 				if (player1.id === player.id || player2.id === player.id) {
 					var player1vp = parseInt(player1.getVpForRound(round.get('number')));
 					var player2vp = parseInt(player2.getVpForRound(round.get('number')));
-					if (player1vp >= 0 && player1vp <=10 && player2vp >= 0 && player2vp <=10) {
+					if (player1vp >= 0 && player2vp >= 0) {
 						var diff = player1vp - player2vp;
 						player1.setVpDiffForRound(round.get('number'), diff);
 						player2.setVpDiffForRound(round.get('number'), -diff);
 						player1.setTpForRound(round.get('number'), diff > 0 ? 3 : diff < 0 ? 0: 1);
 						player2.setTpForRound(round.get('number'), diff < 0 ? 3 : diff > 0 ? 0: 1);
+						player1.save();
+						player2.save();
+					} else {
+						player1.setVpDiffForRound(round.get('number'), 0);
+						player2.setVpDiffForRound(round.get('number'), 0);
+						player1.setTpForRound(round.get('number'), 0);
+						player2.setTpForRound(round.get('number'), 0);
 						player1.save();
 						player2.save();
 					}
@@ -399,6 +473,10 @@ $(function() {
 			return false;
 		},
 
+		showHelpBye: function(e) {
+			showHelpBye();
+		},
+
 	});
 
 	var tournamentRoundView = new TournamentRoundView();
@@ -412,9 +490,11 @@ $(function() {
 
 	var router = new Router;
 	router.on('route:settings', function() {
-	  tournamentSettingsView.render({});
+		tournamentSettingsView.registerListeners();
+		tournamentSettingsView.render({});
 	});
 	router.on('route:round', function(number) {
+		tournamentSettingsView.unregisterListeners();
 		tournamentRoundView.render(number);
 		tournamentRoundView.registerListeners(number);
 		// tournamentStandingsView.render();
