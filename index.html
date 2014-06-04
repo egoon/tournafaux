@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" manifest="cache.manifest"> <!--  -->
+<html lang="en" manifest="cache.manifest"> <!--   -->
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,7 +10,7 @@
 
 
   <div class="container">
-    <h1>Tournament planner</h1> <!-- <h1 style="color:red; background-color:yellow">No cache!</h1> -->
+    <h1>Tournament planner</h1>  <!-- <h1 style="color:red; background-color:yellow">No cache!</h1>-->
     <div class="row">
       <div class="col-md-9">
         <div id="tournament-nav"></div>
@@ -56,7 +56,7 @@
     <form class="form-inline tournament-settings-form" role="form">
       <div class="form-group">
         <label for="rounds">Rounds</label>
-        <input class="form-control " id="rounds" name="rounds" type="text" value="<%= settings.get('rounds') %>" />
+        <input class="form-control " id="rounds" name="rounds" type="text" value="<%- settings.get('rounds') %>" />
       </div>  
       <table class="table table-striped">
         <thead>
@@ -66,8 +66,8 @@
           
           <% players.each(function(player) { %>
             <tr>
-              <td><%= player.get('name') %></td>
-              <td><button type="button" class="btn btn-danger removePlayer" id="<%=player.id %>">X</button></td> 
+              <td><%- player.get('name') %></td>
+              <td><button type="button" class="btn btn-danger removePlayer" id="<%-player.id %>">X</button></td> 
             </tr>
           <% }); %>
           <tr>
@@ -76,14 +76,14 @@
           </tr>
         </tbody>
       </table>
-      <button type="button" id="generate-round" class="btn btn-primary" <%= parseInt(settings.get('rounds')) >= players.length ? "disabled" : "" %>>Generate round 1</button>
+      <button type="button" id="generate-round" class="btn btn-primary" <%- parseInt(settings.get('rounds')) >= players.length ? "disabled" : "" %>>Generate round 1</button>
       
     </form>
   	
   </script>
 
   <script type="text/template" id="tournament-round-template">
-      <h4>Round <%=number %></h4>
+      <h4>Round <%-number %></h4>
       <div class="row">
         <div class="col-md-5">
           <table class="table table-striped" style="width:auto">
@@ -93,20 +93,20 @@
             <tbody>
               <% _.each(tables, function(table) { %>
                 <tr>
-                  <td><%= table.number %></td>
-                  <td><%= table.player1name %></td>
-                  <td><input id="<%= table.player1id %>" value="<%= table.player1vp %>" class="form-control" 
-                    style="width:50px" <%=table.player2id == '0' || table.player1id == '0' ? "disabled": "" %> /></td>
-                  <td><input id="<%= table.player2id %>" value="<%= table.player2vp %>" class="form-control" 
-                    style="width:50px" <%=table.player2id == '0' || table.player1id == '0' ? "disabled": "" %> /></td>
-                  <td><%= table.player2name %></td>
+                  <td><%- table.number %></td>
+                  <td><%- table.player1name %></td>
+                  <td><input id="<%- table.player1id %>" value="<%- table.player1vp %>" class="form-control" 
+                    style="width:50px" <%-table.player2id == '0' || table.player1id == '0' ? "disabled": "" %> /></td>
+                  <td><input id="<%- table.player2id %>" value="<%- table.player2vp %>" class="form-control" 
+                    style="width:50px" <%-table.player2id == '0' || table.player1id == '0' ? "disabled": "" %> /></td>
+                  <td><%- table.player2name %></td>
                   
                 </tr>
               <% }); %>
             <tbody>
           </table>
-          <div <%= parseInt(settings.get('rounds')) <= parseInt(number) ? 'style="display:none"' : "" %> >
-          <button type="button" id="generate-rounds" class="btn btn-primary">Generate round <%= parseInt(number) + 1 %></button>
+          <div <%- parseInt(settings.get('rounds')) <= parseInt(number) ? 'style="display:none"' : "" %> >
+          <button type="button" id="generate-rounds" class="btn btn-primary">Generate round <%- parseInt(number) + 1 %></button>
           </div>
         </div>
         <div class="col-md-4">
@@ -125,11 +125,11 @@
         <% var i = 1;
         _.each(players, function(player) { %>
           <tr>
-            <td><%= i %></td>
-            <td><%= player.get('name') %></td>
-            <td><%= player.getTotalTp() %></td>
-            <td><%= player.getVpDiff() %></td>
-            <td><%= player.getTotalVp() %></td>
+            <td><%- i %></td>
+            <td><%- player.get('name') %></td>
+            <td><%- player.getTotalTp() %></td>
+            <td><%- player.getVpDiff() %></td>
+            <td><%- player.getTotalVp() %></td>
           </tr>
         <% ++i; }); %>
       <tbody>
@@ -137,7 +137,7 @@
   </script>
 
   <script type="text/template" id="tournament-no-round-template">
-      <h4>Round <%=number %> does not exist</h4>
+      <h4>Round <%-number %> does not exist</h4>
       Sorry!
   </script>
 
