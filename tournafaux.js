@@ -1,5 +1,8 @@
 $(function() {
 
+	var BYE_ID = "0";
+	var BYE_SCORE = "-";
+
 	var Player = Backbone.Model.extend({
 
 		initialize: function() {
@@ -25,7 +28,7 @@ $(function() {
     		var bye = false;
     		var realGames = 0;
     		while(this.get(pointType+i)) {
-    			if (this.get(pointType+i) === "-") {
+    			if (this.get(pointType+i) === BYE_SCORE) {
     				bye = true;
     			} else {
     				total += parseInt(this.get(pointType+i));
@@ -43,15 +46,15 @@ $(function() {
     	},
 
     	getTotalTp: function() {
-    		return this.countPointsWithBye("tp", 1);
+    		return this.countPointsWithBye('tp', 1);
     	},
 
     	getTotalVp: function() {
-    		return this.countPointsWithBye("vp", 1);
+    		return this.countPointsWithBye('vp', 1);
     	},
 
     	getVpDiff: function() {
-    		return this.countPointsWithBye("vpdiff", 0);
+    		return this.countPointsWithBye('vpdiff', 0);
     	},
 
     	getBestMatches: function(players) {
@@ -65,12 +68,34 @@ $(function() {
     		});
     		
     		var bestMatches = _.sortBy(possibleOpps, function(opp) {
-    			return
+    			var scoreForSorting =
     			(Math.abs(that.getTotalTp() - opp.getTotalTp()) * 10000) +
     			(Math.abs(that.getVpDiff() - opp.getVpDiff()) * 100) +
     			(Math.abs(that.getTotalVp() - opp.getTotalVp()));
+    			return -scoreForSorting;
     		});
+    		
     		return bestMatches;
+    	},
+
+    	getVpForRound: function(round) { return this.get('vp'+round);},
+    	setVpForRound: function(round, vp) { return this.set('vp'+round, ""+vp);},
+    	getVpDiffForRound: function(round) { return this.get('vpdiff'+round);},
+    	setVpDiffForRound: function(round, vpdiff) { return this.set('vpdiff'+round, ""+vpdiff);},
+    	getTpForRound: function(round) { return this.get('tp'+round);},
+    	setTpForRound: function(round, tp) { return this.set('tp'+round, ""+tp);},
+    	getOpponentForRound: function(round) { return this.get('opponent'+round);},
+    	setOpponentForRound: function(round, opponent) { return this.set('opponent'+round, ""+opponent);},
+
+    	clearGames: function() {
+			var i = 1;
+			while(this.getOpponentForRound(i)) {
+				this.unset('vp'+i);
+				this.unset('vpdiff'+i);
+				this.unset('tp'+i);
+				this.unset('opponent'+i);
+				++i;
+			}
     	},
 
 	});
@@ -116,54 +141,40 @@ $(function() {
 
 			// Create bye if needed
 			if (Players.models.length % 2 == 1)
-				Players.create({id:"0", name:"-"});
+				Players.create({id:BYE_ID, name:"-"});
 
 			var players = Players.models;
-
-			// players = _.shuffle(players);
-			// players = _.sortBy(players, function(p) {return p.getTotalVp()});
-			// players = _.sortBy(players, function(p) {return p.getVpDiff()});
-			// players = _.sortBy(players, function(p) {return p.getTotalTp()});
-			
 			var matches = [];
 
 			_.each(players, function(player) {
 				matches.push({player: player, matches: player.getBestMatches(Players.models)});
 			});
 
-			console.log(matches);
-
 			var table = 1;
 			while (matches.length > 0) {
-				console.log("matching");
 
 				matches = _.shuffle(matches);
 				matches = _.sortBy(matches, function(match) {return match.player.getTotalVp()});
 				matches = _.sortBy(matches, function(match) {return match.player.getVpDiff()});
 				matches = _.sortBy(matches, function(match) {return match.player.getTotalTp()});
 				matches = _.sortBy(matches, function(match) {return -match.matches.length});
-				console.log(matches);
+
 				var match = matches.pop();
 				var player1 = match.player;
 				var player2 = match.matches.pop();
-				console.log(" players: " + player1.id + ", " + player2.id);
-				console.log(player1);
-				console.log(player2);
-				console.log(" remaining matches");
+
 				matches = _.reject(matches, function(m) {return m.player.id == player2.id});
 				_.each(matches, function(match) {
 					match.matches = _.reject(match.matches, function(m) { 
 						return m.id == player1.id || m.id == player2.id; 
 					});
 				});
-				console.log(matches);
-
 
 				player1.set("opponent" + number, player2.id);
 				player2.set("opponent" + number, player1.id);
-				if (player1.id == "0")
+				if (player1.id == BYE_ID)
 					this.setScoresForBye(player1, player2, number);
-				if (player2.id == "0")
+				if (player2.id == BYE_ID)
 					this.setScoresForBye(player2, player1, number);
 				player1.save();
 				player2.save();
@@ -174,47 +185,15 @@ $(function() {
 				table ++;
 			}
 
-
-			
-
-			// var table = 1;
-			// while(players.length > 0) {
-			// 	var p1 = players.pop();
-			// 	var p2 = players.pop();
-				
-			// 	var prevOpps = [];
-
-			// 	while(_.indexOf(p1.getPreviousOpponents(), p2.id) >= 0) {
-			// 		prevOpps.push(p2);
-			// 		p2 = players.pop();
-			// 	}
-			// 	while(prevOpps.length > 0)
-			// 		players.push(prevOpps.pop());
-
-			// 	p1.set("opponent" + number, p2.id);
-			// 	p2.set("opponent" + number, p1.id);
-			// 	if (p1.id == "0")
-			// 		this.setScoresForBye(p1, p2, number);
-			// 	if (p2.id == "0")
-			// 		this.setScoresForBye(p2, p1, number);
-			// 	p1.save();
-			// 	p2.save();
-			// 	round.set("table"+table+"player1", p1.id);
-			// 	round.set("table"+table+"player2", p2.id);
-
-			// 	round.save();
-			// 	table ++;
-			// }
-
 		},
 
 		setScoresForBye: function(bye, opp, number) {
-			bye.set('vp'+ number, "0");
-			bye.set('vpdiff'+ number, "0");
-			bye.set('tp'+ number, "0");
-			opp.set('vp'+ number, "-");
-			opp.set('vpdiff'+ number, "-");
-			opp.set('tp'+ number, "-");
+			bye.setVpForRound(number, "0");
+			bye.setVpDiffForRound(number, "0");
+			bye.setTpForRound(number, "0");
+			opp.setVpForRound(number, BYE_SCORE);
+			opp.setVpDiffForRound(number, BYE_SCORE);
+			opp.setTpForRound(number, BYE_SCORE);
 
 
 		},
@@ -245,8 +224,6 @@ $(function() {
 		},
 		
 		render: function(options) {
-			console.log("render settings");
-			console.log(Players.models);
 			var template = _.template($('#tournament-settings-template').html(), {players: Players});
 	      	this.$el.html(template);
 	      	this.newPlayer = this.$("#new-player");
@@ -267,15 +244,8 @@ $(function() {
 				if (confirm("This will destroy all generated rounds!")) {
 					Players.get(e.currentTarget.id).destroy();
 					Rounds.each(function(round) { round.destroy(); });
-					Players.each(function(player){
-						var i = 1;
-						while(player.get('opponent'+i)) {
-							player.unset('vp'+i);
-							player.unset('vpdiff'+i);
-							player.unset('tp'+i);
-							player.unset('opponent'+i);
-							++i;
-						}
+					Players.each(function(player) {
+						player.clearGames();
 					});
 				}
 			} else 
@@ -343,10 +313,10 @@ $(function() {
 					var player2 = Players.get(this.round.get('table'+i+'player2'));
 					tables.push({number: ""+i,
 						player1name: player1.get('name'),
-						player1vp: player1.get('vp'+number) ? player1.get('vp'+number) : "",
+						player1vp: player1.getVpForRound(number) ? player1.getVpForRound(number) : "",
 						player1id: player1.id,
 						player2name: player2.get('name'),
-						player2vp: player2.get('vp'+number) ? player2.get('vp'+number) : "",
+						player2vp: player2.getVpForRound(number) ? player2.getVpForRound(number) : "",
 						player2id: player2.id});
 					++i;
 				};
@@ -371,9 +341,8 @@ $(function() {
 			if (this.round) {
 				_.each(Players.models, function(player) {
 					this.$("#" + player.id).change(function(event) {
-						player.set("vp"+number, event.currentTarget.value);
+						player.setVpForRound(number, event.currentTarget.value);
 						player.save();
-						console.log(that.round);
 						that.calculateTpAndVpDiff(that.round, player);
 						tournamentStandingsView.render();
 					});
@@ -387,14 +356,14 @@ $(function() {
 				var player1 = Players.get(round.get('table'+i+'player1'));
 				var player2 = Players.get(round.get('table'+i+'player2'));
 				if (player1.id === player.id || player2.id === player.id) {
-					var player1vp = parseInt(player1.get('vp'+round.get('number')));
-					var player2vp = parseInt(player2.get('vp'+round.get('number')));
+					var player1vp = parseInt(player1.getVpForRound(round.get('number')));
+					var player2vp = parseInt(player2.getVpForRound(round.get('number')));
 					if (player1vp >= 0 && player1vp <=10 && player2vp >= 0 && player2vp <=10) {
 						var diff = player1vp - player2vp;
-						player1.set('vpdiff'+round.get('number'), "" + diff);
-						player2.set('vpdiff'+round.get('number'), "" + -diff);
-						player1.set('tp'+round.get('number'), diff > 0 ? "3" : diff < 0 ? "0": "1");
-						player2.set('tp'+round.get('number'), diff < 0 ? "3" : diff > 0 ? "0": "1");
+						player1.setVpDiffForRound(round.get('number'), diff);
+						player2.setVpDiffForRound(round.get('number'), -diff);
+						player1.setTpForRound(round.get('number'), diff > 0 ? 3 : diff < 0 ? 0: 1);
+						player2.setTpForRound(round.get('number'), diff < 0 ? 3 : diff > 0 ? 0: 1);
 						player1.save();
 						player2.save();
 					}
