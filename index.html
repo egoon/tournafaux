@@ -105,7 +105,7 @@
               <% }); %>
             <tbody>
           </table>
-          <div <%= parseInt(settings.get('rounds')) >= parseInt(number) ? 'style="display:none"' : "" %> >
+          <div <%= parseInt(settings.get('rounds')) <= parseInt(number) ? 'style="display:none"' : "" %> >
           <button type="button" id="generate-rounds" class="btn btn-primary">Generate round <%= parseInt(number) + 1 %></button>
           </div>
         </div>
