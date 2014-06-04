@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" manifest="cache.manifest">
+<html lang="en" manifest="cache.manifest"> <!-- manifest="cache.manifest" -->
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,7 +10,7 @@
 
 
   <div class="container">
-    <h1>Tournament planner</h1>
+    <h1>Tournament planner</h1> <!--<h1 style="color:red; background-color:yellow">No cache!</h1>-->
     <div class="row">
       <div class="col-md-9">
         <div id="tournament-nav"></div>
@@ -22,15 +22,15 @@
           Hi! My name is Bennie, <a href="http://wyrd-games.net/community/user/20217-egoon/">egoon on the Wyrd forums</a>, and I'm a henchman in Stockholm, Sweden. I created this tournament planner on my spare time, for fun. If you have questions, issues, feedback or want to support me in this project in some other way, please see the links below. Cheers!
         </p>
         <p><a href="https://github.com/egoon/tournafaux/wiki">Wiki</a></p>
-        <!--<p><a href="">Feedback</a></p>-->
+        <!--<p><a href="">Feedback (Wyrd forum)</a></p>-->
         <p><a href="https://github.com/egoon/tournafaux/issues">
-        Bugs and Feature requests</a></p>
+        Bugs and Feature requests (Github)</a></p>
         <p>
         <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
           <input type="hidden" name="cmd" value="_s-xclick">
           <input type="hidden" name="hosted_button_id" value="CKC9L6HWPSVEC">
           <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-          <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+          <img alt="Donate!" title="Donate!" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
         </form>
 
         </p>
@@ -96,9 +96,9 @@
                   <td><%= table.number %></td>
                   <td><%= table.player1name %></td>
                   <td><input id="<%= table.player1id %>" value="<%= table.player1vp %>" class="form-control" 
-                    style="width:50px" /></td>
+                    style="width:50px" <%=table.player2id == '0' || table.player1id == '0' ? "disabled": "" %> /></td>
                   <td><input id="<%= table.player2id %>" value="<%= table.player2vp %>" class="form-control" 
-                    style="width:50px"/></td>
+                    style="width:50px" <%=table.player2id == '0' || table.player1id == '0' ? "disabled": "" %> /></td>
                   <td><%= table.player2name %></td>
                   
                 </tr>
