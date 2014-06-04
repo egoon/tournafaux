@@ -103,6 +103,19 @@ $(function() {
     		return bestMatches;
     	},
 
+    	getDissimilarPlayers: function(players) {
+    		var that = this;
+
+    		var possibleOpps = _.filter(players, function(player) {
+    			if (that.id == player.id) return false;
+    			if (that.get('city') != '' && that.get('city') == player.get('city')) return false;
+    			if (that.get('faction') != '' && that.get('faction') == player.get('faction')) return false;
+    			return true;
+    		});
+
+    		return possibleOpps;
+    	},
+
     	getVpForRound: function(round) { return this.get('vp'+round);},
     	setVpForRound: function(round, vp) { return this.set('vp'+round, ""+vp);},
     	getVpDiffForRound: function(round) { return this.get('vpdiff'+round);},
@@ -163,9 +176,15 @@ $(function() {
 			var players = Players.models;
 			var matches = [];
 
-			_.each(players, function(player) {
-				matches.push({player: player, matches: player.getBestMatches(Players.models)});
-			});
+			if (number == 1 || number == "1") {
+				_.each(players, function(player) {
+					matches.push({player: player, matches: player.getDissimilarPlayers(Players.models)});
+				});
+			} else {
+				_.each(players, function(player) {
+					matches.push({player: player, matches: player.getBestMatches(Players.models)});
+				});
+			}
 
 			var table = 1;
 			while (matches.length > 0) {
@@ -179,6 +198,10 @@ $(function() {
 				var match = matches.pop();
 				var player1 = match.player;
 				var player2 = match.matches.pop();
+				// if no match can be found, just take the next player
+				if (!player2) 
+					player2 = matches.pop().player;
+
 
 				matches = _.reject(matches, function(m) {return m.player.id == player2.id});
 				_.each(matches, function(match) {
