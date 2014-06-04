@@ -25,7 +25,7 @@ $(function() {
 
   	var showHelpCityFaction = function() {
   		$("#help").html("<h4>City/Club and Faction</h4>If you fill these fields, players from the same city, "+
-		"or playing the same faction, will not face each other in the first game. If possible. (Feature not yet complete!)<hr/>");
+		"or playing the same faction, will not face each other in the first game. If possible.<hr/>");
   	};
 
 	var Player = Backbone.Model.extend({
