@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" manifest="cache.manifest"> <!-- manifest="cache.manifest" -->
+<html lang="en" manifest="cache.manifest"> <!--  -->
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,7 +10,7 @@
 
 
   <div class="container">
-    <h1>Tournament planner</h1> <!--<h1 style="color:red; background-color:yellow">No cache!</h1>-->
+    <h1>Tournament planner</h1> <!-- <h1 style="color:red; background-color:yellow">No cache!</h1> -->
     <div class="row">
       <div class="col-md-9">
         <div id="tournament-nav"></div>
@@ -56,7 +56,7 @@
     <form class="form-inline tournament-settings-form" role="form">
       <div class="form-group">
         <label for="rounds">Rounds</label>
-        <input class="form-control " id="rounds" name="rounds" type="text" value="3" />
+        <input class="form-control " id="rounds" name="rounds" type="text" value="<%= settings.get('rounds') %>" />
       </div>  
       <table class="table table-striped">
         <thead>
@@ -76,7 +76,7 @@
           </tr>
         </tbody>
       </table>
-      <button type="button" id="generate-round" class="btn btn-primary">Generate round 1</button>
+      <button type="button" id="generate-round" class="btn btn-primary" <%= parseInt(settings.get('rounds')) >= players.length ? "disabled" : "" %>>Generate round 1</button>
       
     </form>
   	
@@ -105,7 +105,9 @@
               <% }); %>
             <tbody>
           </table>
+          <div <%= parseInt(settings.get('rounds')) >= parseInt(number) ? 'style="display:none"' : "" %> >
           <button type="button" id="generate-rounds" class="btn btn-primary">Generate round <%= parseInt(number) + 1 %></button>
+          </div>
         </div>
         <div class="col-md-4">
           <div class="standings"></div>

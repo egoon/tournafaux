@@ -2,6 +2,9 @@ $(function() {
 
 	var BYE_ID = "0";
 	var BYE_SCORE = "-";
+	var SETTINGS_ID ="settings";
+
+ 	document.title="Tournafaux";
 
 	var Player = Backbone.Model.extend({
 
@@ -111,15 +114,7 @@ $(function() {
 	var Players = new PlayerList;
 
 
-	var Round = Backbone.Model.extend({
-		
-		initialize: function() {
-      		if (!this.get("number")) {
-        		this.set({"number": "666"});
-      		}
-    	},
-
-	});
+	var Round = Backbone.Model.extend({});
 
 	var RoundList = Backbone.Collection.extend({
 
@@ -127,14 +122,14 @@ $(function() {
 
 		localStorage: new Backbone.LocalStorage("tournafaux-rounds"),
 
-		newRound: function(number, maxNumber) {
+		newRound: function(number) {
 
 
 
 			var round = _.find(this.models, function(round){ return round.get("number") == ""+number});
 			
 			if (!round) {
-				round = this.create({number: ""+number, maxNumber: maxNumber});
+				round = this.create({number: ""+number});
 			} else {
 				_.each(Players.models, function(p) {p.unset("opponent"+number)});
 			}
@@ -201,6 +196,12 @@ $(function() {
 
 	var Rounds = new RoundList();
 
+	var Settings = Backbone.Model.extend({
+
+        localStorage: new Backbone.LocalStorage("tournafaux-settings"),
+
+    });
+
 	var TournamentSettingsView = Backbone.View.extend({
 		
 		el: '.page',
@@ -208,23 +209,31 @@ $(function() {
 		events: {
 			"keypress #new-player": "createOnEnter",
 			"click button.removePlayer": "removePlayer",
-			"click #generate-round": "generateRound"
+			"click #generate-round": "generateRound",
+			"change #rounds": "changeRounds",
+
 		},
+
+		model: Settings,
 		
 		initialize: function() {
 			Players.fetch();
 			Rounds.fetch();
 
+			this.settings = new Settings({id: SETTINGS_ID, rounds: "3"});
+			this.settings.fetch();
+
 			this.listenTo(Players, 'add', this.render);
 			this.listenTo(Players, 'remove', this.render);
 			this.listenTo(Players, 'reset', this.render);
+			this.listenTo(this.settings, 'change', this.render);
 			// this.listenTo(router, 'route:settings', this.render);
 		
 
 		},
 		
 		render: function(options) {
-			var template = _.template($('#tournament-settings-template').html(), {players: Players});
+			var template = _.template($('#tournament-settings-template').html(), {players: Players, settings: this.settings});
 	      	this.$el.html(template);
 	      	this.newPlayer = this.$("#new-player");
 		},
@@ -254,9 +263,14 @@ $(function() {
 			return false;
 		},
 
+		changeRounds: function() {
+			this.settings.set('rounds', this.$("#rounds").val());
+			this.settings.save();
+		},
+
 		generateRound: function() {
 			//TODO validation
-			Rounds.newRound(1, this.$("#rounds").val());
+			Rounds.newRound(1);
 			router.navigate("#/round/1");
 			return false;
 		}
@@ -292,6 +306,7 @@ $(function() {
 		el: '.page',
 
 		initialize: function() {
+			this.settings = new Settings({id: SETTINGS_ID});
 		},
 
 		events: {
@@ -299,8 +314,11 @@ $(function() {
 		},
 
 		render: function(number) {
+
 			Players.fetch();
 			Rounds.fetch();
+			this.settings.fetch();
+			console.log(this.settings);
 
 			this.round = _.find(Rounds.models, function(round){ return round.get("number") == "" + number});
 			
@@ -321,7 +339,7 @@ $(function() {
 					++i;
 				};
 
-				var template = _.template($('#tournament-round-template').html(), {number: this.round.get('number'), tables: tables});
+				var template = _.template($('#tournament-round-template').html(), {number: this.round.get('number'), tables: tables, settings: this.settings});
 		      	this.$el.html(template);
 			} else {
 				var template = _.template($('#tournament-no-round-template').html(), {number: number});
@@ -376,7 +394,7 @@ $(function() {
 		generateRounds: function() {
 			//TODO validation
 			var number = parseInt(this.round.get('number')) + 1;
-			Rounds.newRound(number, this.$("#rounds").val());
+			Rounds.newRound(number);
 			router.navigate("#/round/"+ number);
 			return false;
 		},
