@@ -346,9 +346,9 @@ $(function() {
 
 		el: '.standings',
 
-		initialize: function(players) {
-			this.playerList = players;
-			// this.listenTo(Players, 'change', this.render);
+		initialize: function(options) {
+			this.playerList = options.playerList;
+			this.listenTo(this.playerList, 'change', this.render);
 
 		},
 
@@ -357,7 +357,6 @@ $(function() {
 		},
 
 		render: function() {
-			// this.playerList.fetch();
 			var players = this.playerList.models;
 			players = _.sortBy(players, function(p) {return p.getTotalVp()});
 			players = _.sortBy(players, function(p) {return p.getVpDiff()});
@@ -371,8 +370,6 @@ $(function() {
 			showHelpBye();
 		},
 	});
-
-	var tournamentStandingsView = new TournamentStandingsView();
 
 	var TournamentRoundView = Backbone.View.extend({
 
@@ -395,8 +392,6 @@ $(function() {
 		},
 
 		render: function() {
-			
-			
 			if (this.round) {
 				var tables = [];
 				var i = 1;
@@ -424,15 +419,13 @@ $(function() {
 
 			this.registerListeners();
 			
-			tournamentStandingsView.remove();
-			tournamentStandingsView = new TournamentStandingsView(this.playerList);
-			tournamentStandingsView.render();
+			new TournamentStandingsView({playerList: this.playerList}).render();
 			
 		},
 
 		registerListeners: function() {
 			var that = this;
-
+			var number = this.round.get('number');
 			if (this.round) {
 				_.each(this.playerList.models, function(player) {
 					this.$("#" + player.id).change(function(event) {
@@ -444,7 +437,6 @@ $(function() {
 						}
 						player.save();
 						that.calculateTpAndVpDiff(that.round, player);
-						tournamentStandingsView.render();
 					});
 				});
 			}
