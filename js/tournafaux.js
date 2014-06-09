@@ -1,4 +1,10 @@
-$(function() {
+define([
+  'jquery',
+  'underscore',
+  'backbone',
+  'localstorage'
+  
+], function($, _, Backbone, localstorage) {
 
 	var BYE_ID = "0";
 	var BYE_SCORE = "-";
@@ -513,22 +519,27 @@ $(function() {
 	    }
 	});
 
-	var router = new Router;
-	router.on('route:settings', function() {
-		var playerList = new PlayerList();
-		var roundList = new RoundList();
-		var settings = new Settings({id: SETTINGS_ID});
-		new TournamentSettingsView({playerList: playerList, roundList: roundList, settings: settings}).render();
-		new TournamentNavView({active: "settings", roundList: roundList}).render();
-	});
-	router.on('route:round', function(number) {
-		var playerList = new PlayerList();
-		var roundList = new RoundList();
-		var settings = new Settings({id: SETTINGS_ID});
-		new TournamentRoundView({number: number, playerList: playerList, roundList: roundList, settings: settings}).render();
-		new TournamentNavView({active: number, roundList: roundList}).render();
-	});
-
-    Backbone.history.start();
+	
   
+	return {
+    	initialize: function() {
+    		var router = new Router;
+			router.on('route:settings', function() {
+				var playerList = new PlayerList();
+				var roundList = new RoundList();
+				var settings = new Settings({id: SETTINGS_ID});
+				new TournamentSettingsView({playerList: playerList, roundList: roundList, settings: settings}).render();
+				new TournamentNavView({active: "settings", roundList: roundList}).render();
+			});
+			router.on('route:round', function(number) {
+				var playerList = new PlayerList();
+				var roundList = new RoundList();
+				var settings = new Settings({id: SETTINGS_ID});
+				new TournamentRoundView({number: number, playerList: playerList, roundList: roundList, settings: settings}).render();
+				new TournamentNavView({active: number, roundList: roundList}).render();
+			});
+
+		    Backbone.history.start();
+    	}
+  	};
 });
