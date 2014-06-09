@@ -500,6 +500,7 @@ $(function() {
 		initialize: function(options) {
 			this.roundList = options.roundList;
 			this.roundList.fetch();
+			this.roundList.sortBy(function(round){ return parseInt(round.get('number'));});
 			this.active = options.active;
 			
 			this.listenTo(this.roundList, 'remove', this.render);
