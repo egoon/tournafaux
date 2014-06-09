@@ -146,8 +146,6 @@ $(function() {
 
 	});
 
-	var Players = new PlayerList;
-
 
 	var Round = Backbone.Model.extend({});
 
@@ -159,30 +157,31 @@ $(function() {
 
 		newRound: function(number) {
 
-
+			var playerList = new PlayerList();
+			playerList.fetch();
 
 			var round = _.find(this.models, function(round){ return round.get("number") == ""+number});
 			
 			if (!round) {
 				round = this.create({number: ""+number});
 			} else {
-				_.each(Players.models, function(p) {p.unset("opponent"+number)});
+				_.each(playerList.models, function(p) {p.unset("opponent"+number)});
 			}
 
 			// Create bye if needed
-			if (Players.models.length % 2 == 1)
-				Players.create({id:BYE_ID, name:"-"});
+			if (playerList.models.length % 2 == 1)
+				playerList.create({id:BYE_ID, name:"-"});
 
-			var players = Players.models;
+			var players = playerList.models;
 			var matches = [];
 
 			if (number == 1 || number == "1") {
 				_.each(players, function(player) {
-					matches.push({player: player, matches: player.getDissimilarPlayers(Players.models)});
+					matches.push({player: player, matches: player.getDissimilarPlayers(players)});
 				});
 			} else {
 				_.each(players, function(player) {
-					matches.push({player: player, matches: player.getBestMatches(Players.models)});
+					matches.push({player: player, matches: player.getBestMatches(players)});
 				});
 			}
 
@@ -239,8 +238,6 @@ $(function() {
 		},
 	});
 
-	var Rounds = new RoundList();
-
 	var Settings = Backbone.Model.extend({
 
         localStorage: new Backbone.LocalStorage("tournafaux-settings"),
@@ -263,31 +260,24 @@ $(function() {
 
 		model: Settings,
 		
-		initialize: function() {
-			Players.fetch();
-			Rounds.fetch();
+		initialize: function(options) {
+			this.playerList = options.playerList;
+			this.playerList.fetch();
+			this.roundList = options.roundList;
+			this.roundList.fetch();
 
-			this.settings = new Settings({id: SETTINGS_ID, rounds: "3"});
+			this.settings = options.settings;
 			this.settings.fetch();
 			
-			this.registerListeners();
-		},
-
-		registerListeners: function() {
-			this.listenTo(Players, 'change', this.render);
-			this.listenTo(Players, 'remove', this.render);
-			this.listenTo(Players, 'reset', this.render);
+			this.listenTo(this.playerList, 'change', this.render);
+			this.listenTo(this.playerList, 'remove', this.render);
+			this.listenTo(this.playerList, 'reset', this.render);
 			this.listenTo(this.settings, 'change', this.render);
 		},
-
-		unregisterListeners: function() {
-			this.stopListening(Players);
-			this.stopListening(this.settings);
-		},
 		
-		render: function(options) {
+		render: function() {
 			
-			var template = _.template($('#tournament-settings-template').html(), {players: Players, settings: this.settings});
+			var template = _.template($('#tournament-settings-template').html(), {players: this.playerList, settings: this.settings});
 	      	this.$el.html(template);
 	      	this.newPlayer = this.$("#new-player");
 		},
@@ -296,31 +286,31 @@ $(function() {
 			if (e.keyCode != 13 && e.keyCode != 9) return;
 			if (!this.newPlayer.val()) return;
 
-			var player = Players.create({name: this.newPlayer.val(), city: '', faction: ''});
+			var player = this.playerList.create({name: this.newPlayer.val(), city: '', faction: ''});
 
 			this.newPlayer.val('');
 			this.$("#"+player.id+".city").focus();
 		},
 
 		removePlayer: function(e) {
-			// console.log(Players.get(e.currentTarget.id.replace("remove-", "")));
-			// console.log(e.currentTarget.id);
-			if (Rounds.models.length > 0) {
+			
+			this.roundList.fetch();
+			if (this.roundList.models.length > 0) {
 				if (confirm("This will destroy all generated rounds!")) {
-					Players.get(e.currentTarget.id).destroy();
-					Rounds.each(function(round) { round.destroy(); });
-					Players.each(function(player) {
+					this.playerList.get(e.currentTarget.id).destroy();
+					this.roundList.each(function(round) { round.destroy(); });
+					this.playerList.each(function(player) {
 						player.clearGames();
 					});
 				}
 			} else 
-				Players.get(e.currentTarget.id).destroy();
+				this.playerList.get(e.currentTarget.id).destroy();
 
 			return false;
 		},
 
 		updateCity: function(e) {
-			var player = Players.get(e.currentTarget.id);
+			var player = this.playerList.get(e.currentTarget.id);
 			player.set('city', e.currentTarget.value);
 			player.save();
 			this.$("#"+player.id +".faction").focus();
@@ -328,7 +318,7 @@ $(function() {
 		},
 
 		updateFaction: function(e) {
-			var player = Players.get(e.currentTarget.id);
+			var player = this.playerList.get(e.currentTarget.id);
 			player.set('faction', e.currentTarget.value);
 			player.save();
 			this.$("#"+player.id +".removePlayer").focus();
@@ -342,7 +332,7 @@ $(function() {
 
 		generateRound: function() {
 			//TODO validation
-			Rounds.newRound(1);
+			this.roundList.newRound(1);
 			router.navigate("#/round/1");
 			return false;
 		},
@@ -352,13 +342,12 @@ $(function() {
 		},
 	});
 
-	var tournamentSettingsView = new TournamentSettingsView();
-
 	var TournamentStandingsView = Backbone.View.extend({
 
 		el: '.standings',
 
-		initialize: function() {
+		initialize: function(players) {
+			this.playerList = players;
 			// this.listenTo(Players, 'change', this.render);
 
 		},
@@ -368,8 +357,8 @@ $(function() {
 		},
 
 		render: function() {
-			Players.fetch();
-			var players = Players.models;
+			// this.playerList.fetch();
+			var players = this.playerList.models;
 			players = _.sortBy(players, function(p) {return p.getTotalVp()});
 			players = _.sortBy(players, function(p) {return p.getVpDiff()});
 			players = _.sortBy(players, function(p) {return p.getTotalTp()});
@@ -389,8 +378,15 @@ $(function() {
 
 		el: '.page',
 
-		initialize: function() {
-			this.settings = new Settings({id: SETTINGS_ID});
+		initialize: function(options) {
+			this.playerList = options.playerList;
+			this.playerList.fetch();
+			this.roundList = options.roundList;
+			this.roundList.fetch();
+			this.settings = options.settings;
+			this.settings.fetch();
+
+			this.round = _.find(this.roundList.models, function(round){ return round.get("number") == "" + options.number});
 		},
 
 		events: {
@@ -398,22 +394,17 @@ $(function() {
 			"click #helpBye": "showHelpBye",
 		},
 
-		render: function(number) {
-			console.log("render");
-			Players.fetch();
-			Rounds.fetch();
-			this.settings.fetch();
-			console.log(this.settings);
-
-			this.round = _.find(Rounds.models, function(round){ return round.get("number") == "" + number});
+		render: function() {
+			
 			
 			if (this.round) {
 				var tables = [];
 				var i = 1;
+				var number = this.round.get('number');
 
 				while (this.round.get('table'+i+'player1')) {
-					var player1 = Players.get(this.round.get('table'+i+'player1'));
-					var player2 = Players.get(this.round.get('table'+i+'player2'));
+					var player1 = this.playerList.get(this.round.get('table'+i+'player1'));
+					var player2 = this.playerList.get(this.round.get('table'+i+'player2'));
 					tables.push({number: ""+i,
 						player1name: player1.get('name'),
 						player1vp: player1.getVpForRound(number) ? player1.getVpForRound(number) : "",
@@ -424,25 +415,26 @@ $(function() {
 					++i;
 				};
 
-				var template = _.template($('#tournament-round-template').html(), {number: this.round.get('number'), tables: tables, settings: this.settings});
+				var template = _.template($('#tournament-round-template').html(), {number: number, tables: tables, settings: this.settings});
 		      	this.$el.html(template);
 			} else {
 				var template = _.template($('#tournament-no-round-template').html(), {number: number});
 		      	this.$el.html(template);
 			}
+
+			this.registerListeners();
 			
 			tournamentStandingsView.remove();
-			tournamentStandingsView = new TournamentStandingsView();
+			tournamentStandingsView = new TournamentStandingsView(this.playerList);
 			tournamentStandingsView.render();
 			
 		},
 
-		registerListeners: function(number) {
-			this.round = _.find(Rounds.models, function(round){ return round.get("number") == "" + number});
+		registerListeners: function() {
 			var that = this;
 
 			if (this.round) {
-				_.each(Players.models, function(player) {
+				_.each(this.playerList.models, function(player) {
 					this.$("#" + player.id).change(function(event) {
 						if (parseInt(event.currentTarget.value) >= 0) {
 							player.setVpForRound(number, event.currentTarget.value);
@@ -461,8 +453,8 @@ $(function() {
 		calculateTpAndVpDiff: function(round, player) {
 			var i = 1;
 			while(round.get('table'+i+'player1')) {
-				var player1 = Players.get(round.get('table'+i+'player1'));
-				var player2 = Players.get(round.get('table'+i+'player2'));
+				var player1 = this.playerList.get(round.get('table'+i+'player1'));
+				var player2 = this.playerList.get(round.get('table'+i+'player2'));
 				if (player1.id === player.id || player2.id === player.id) {
 					var player1vp = parseInt(player1.getVpForRound(round.get('number')));
 					var player2vp = parseInt(player2.getVpForRound(round.get('number')));
@@ -491,7 +483,7 @@ $(function() {
 		generateRounds: function() {
 			//TODO validation
 			var number = parseInt(this.round.get('number')) + 1;
-			Rounds.newRound(number);
+			this.roundList.newRound(number);
 			router.navigate("#/round/"+ number);
 			return false;
 		},
@@ -502,20 +494,24 @@ $(function() {
 
 	});
 
-	var tournamentRoundView = new TournamentRoundView();
-
 	var TournamentNavView = Backbone.View.extend({
 		el: '#tournament-nav',
 
-		render: function(active) {
-			Rounds.fetch();
+		initialize: function(options) {
+			this.roundList = options.roundList;
+			this.roundList.fetch();
+			this.active = options.active;
 			
-			var template = _.template($('#tournament-nav-template').html(), {rounds: Rounds, active: active});
+			this.listenTo(this.roundList, 'remove', this.render);
+			this.listenTo(this.roundList, 'reset', this.render);
+			this.listenTo(this.roundList, 'add', this.render);
+		},
+
+		render: function() {
+			var template = _.template($('#tournament-nav-template').html(), {rounds: this.roundList, active: this.active});
 		    this.$el.html(template);
 		},
 	});
-
-	var tournamentNavView = new TournamentNavView();
 
 	var Router = Backbone.Router.extend({
 	    routes: {
@@ -526,16 +522,18 @@ $(function() {
 
 	var router = new Router;
 	router.on('route:settings', function() {
-		tournamentSettingsView.registerListeners();
-		tournamentSettingsView.render({});
-		tournamentNavView.render("settings");
+		var playerList = new PlayerList();
+		var roundList = new RoundList();
+		var settings = new Settings({id: SETTINGS_ID});
+		new TournamentSettingsView({playerList: playerList, roundList: roundList, settings: settings}).render();
+		new TournamentNavView({active: "settings", roundList: roundList}).render();
 	});
 	router.on('route:round', function(number) {
-		tournamentSettingsView.unregisterListeners();
-		tournamentRoundView.render(number);
-		tournamentRoundView.registerListeners(number);
-		tournamentNavView.render(number);
-		// tournamentStandingsView.render();
+		var playerList = new PlayerList();
+		var roundList = new RoundList();
+		var settings = new Settings({id: SETTINGS_ID});
+		new TournamentRoundView({number: number, playerList: playerList, roundList: roundList, settings: settings}).render();
+		new TournamentNavView({active: number, roundList: roundList}).render();
 	});
 
     Backbone.history.start();
