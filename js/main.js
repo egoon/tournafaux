@@ -1,19 +1,15 @@
 require.config({
   paths: {
-    jquery: '//cdnjs.cloudflare.com/ajax/libs/jquery/1.8.2/jquery',
-    underscore: '//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.2/underscore',
-    backbone: '//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone',
-    localstorage: '//cdnjs.cloudflare.com/ajax/libs/backbone-localstorage.js/1.1.7/backbone.localStorage',
+    jquery: 'libs/jquery-1.11.1',
+    underscore: 'libs/underscore-1.6.0',
+    backbone: 'libs/backbone-1.1.2',
+    localstorage: 'libs/backbone.localStorage-1.1.7',
   }
 
 });
 
 require([
-
-  // Load our app module and pass it to our definition function
-  'tournafaux',
+  'app',
 ], function(App){
-	console.log(App);
-  // The "app" dependency is passed in as "App"
   App.initialize();
 });

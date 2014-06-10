@@ -1,0 +1,17 @@
+<table class="table table-striped" style="width:auto">
+  <theader>
+    <tr><th>#</th><th>Player</th><th>TP</th><th>VP Diff</th><th>VP</th></tr>
+  </theader>
+  <tbody>
+    <% var i = 1;
+    _.each(players, function(player) { %>
+      <tr>
+        <td><%- i %></td>
+        <td><%- player.get('name') %> <%= player.id == '0' ? '<a id="helpBye">(?)</a>' : ''%></td>
+        <td><%- player.getTotalTp() %></td>
+        <td><%- player.getVpDiff() %></td>
+        <td><%- player.getTotalVp() %></td>
+      </tr>
+    <% ++i; }); %>
+  <tbody>
+</table>

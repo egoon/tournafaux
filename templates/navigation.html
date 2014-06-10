@@ -1,0 +1,7 @@
+<ul class="nav nav-tabs" style="margin-bottom: 10px;">
+  <li <%= active == "settings" ? 'class="active"' : '' %> ><a href="">Settings</a></li>
+  <% rounds.each(function(round) { %>
+    <li <%= active == round.get('number') ? 'class="active"' : '' %> ><a href='#/round/<%- round.get("number") %>'>Round <%- round.get("number") %></a></li>
+  <% }); %>
+  
+</ul>
