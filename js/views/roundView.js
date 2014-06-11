@@ -2,9 +2,10 @@ define([
   'jquery',
   'underscore',
   'backbone',
+  'logic/generateRound',
   'views/standingsView',
   'text!../../templates/round.html',
-], function($, _, Backbone, StandingsView, roundTemplate) {
+], function($, _, Backbone, GenerateRound, StandingsView, roundTemplate) {
   	
   	var showHelpBye = function () {
 		$("#help").html("<h4>Bye</h4>If the tournament has an uneven amount of players, "+
