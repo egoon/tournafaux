@@ -34,21 +34,31 @@ define([
 
 			this.router = options.router;
 			
-			// this.listenTo(this.playerList, 'change', this.render);
-			// this.listenTo(this.playerList, 'remove', this.render);
-			// this.listenTo(this.playerList, 'reset', this.render);
-			// this.listenTo(this.settings, 'change', this.render);
+			this.listenTo(this.playerList, 'add', this.enableGenerateButton);
+			this.listenTo(this.playerList, 'remove', this.enableGenerateButton);
+			this.listenTo(this.playerList, 'reset', this.enableGenerateButton);
+			this.listenTo(this.settings, 'change', this.enableGenerateButton);
 		},
 		
 		render: function() {
-			var template = _.template(settingsTemplate, {noPlayers: this.playerList.length, settings: this.settings});
+			var template = _.template(settingsTemplate, {settings: this.settings});
 	      	this.$el.html(template);
 	      	this.newPlayer = this.$("#new-player");
-	      	this.playerList.each(this.addPlayerView);
+
+	      	var i = 0;
+	      	while(this.playerList.at(i)) {
+	      		this.addPlayerView(this.playerList.at(i));
+	      		++i;
+	      	};
+	      	this.enableGenerateButton();
 		},
 
 		addPlayerView: function(player) {
-			var playerView = new PlayerView({player: player});
+			var playerView = new PlayerView({
+				player: player, 
+				playerList: this.playerList, 
+				roundList: this.roundList
+			});
 			playerView.render();
 			this.$("#new-player-row").before(playerView.el);
 		},
@@ -61,26 +71,6 @@ define([
 
 			this.newPlayer.val('');
 			this.addPlayerView(player);
-
-		},
-
-		removePlayer: function(e) {
-			this.roundList.fetch();
-			if (this.roundList.models.length > 0) {
-				if (confirm("This will destroy all generated rounds!")) {
-					this.playerList.get(e.currentTarget.id).destroy();
-					while(this.roundList.at(0)) {
-						this.roundList.at(0).destroy();
-					}
-					this.playerList.each(function(player) {
-						player.clearGames();
-						player.save();
-					});
-				}
-			} else 
-				this.playerList.get(e.currentTarget.id).destroy();
-
-			return false;
 		},
 
 		changeRounds: function() {
@@ -93,6 +83,14 @@ define([
 			GenerateRound.generate(1, this.playerList, this.roundList);
 			this.router.navigate("#/round/1");
 			return false;
+		},
+
+		enableGenerateButton: function(e) {
+			if (parseInt(this.settings.get('rounds')) >= this.playerList.length) {
+				this.$("#generate-round").prop("disabled", true);
+			} else {
+				this.$("#generate-round").prop("disabled", false);
+			}
 		},
 
 		showHelpCityFaction: function(e) {
