@@ -43,7 +43,7 @@ define([
     			else
     				total += (total / realGames);
     		}
-    		return total;
+    		return Math.round(total*10)/10;
     	},
 
     	getTotalTp: function() {
@@ -102,7 +102,7 @@ define([
     	setOpponentForRound: function(round, opponent) { return this.set('opponent'+round, ""+opponent);},
 
     	clearGames: function() {
-			var i = 1;
+            var i = 1;
 			while(this.getOpponentForRound(i)) {
 				this.unset('vp'+i);
 				this.unset('vpdiff'+i);

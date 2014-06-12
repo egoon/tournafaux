@@ -63,9 +63,12 @@ define([
 			if (this.roundList.models.length > 0) {
 				if (confirm("This will destroy all generated rounds!")) {
 					this.playerList.get(e.currentTarget.id).destroy();
-					this.roundList.each(function(round) { round.destroy(); });
+					while(this.roundList.at(0)) {
+						this.roundList.at(0).destroy();
+					}
 					this.playerList.each(function(player) {
 						player.clearGames();
+						player.save();
 					});
 				}
 			} else 
