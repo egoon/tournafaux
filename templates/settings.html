@@ -9,22 +9,13 @@
     </thead>
     <tbody id="player-table">
       
-      <% players.each(function(player) { %>
-        <tr>
-          <td><%- player.get('name') %></td>
-          <td><input type="text" class="form-control city" name="city" id="<%- player.get('id') %>" 
-            value="<%- player.get('city') %>"/></td>
-          <td><input type="text" class="form-control faction" name="faction" id="<%- player.get('id') %>" 
-            value="<%- player.get('faction') %>"/></td>
-          <td><button type="button" class="btn btn-danger removePlayer" id="<%- player.get('id') %>">X</button></td> 
-        </tr>
-      <% }); %>
-      <tr>
+      
+      <tr id="new-player-row">
         <td><input id="new-player" class="form-control" name="player" type="text" placeholder="New Player"/>
         </td><td></td><td></td><td></td>
       </tr>
     </tbody>
   </table>
-  <button type="button" id="generate-round" class="btn btn-primary" <%- parseInt(settings.get('rounds')) >= players.length ? "disabled" : "" %>>Generate round 1</button>
+  <button type="button" id="generate-round" class="btn btn-primary" <%- parseInt(settings.get('rounds')) >= noPlayers ? "disabled" : "" %>>Generate round 1</button>
   
 </form>

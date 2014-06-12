@@ -3,8 +3,9 @@ define([
   'underscore',
   'backbone',
   'logic/generateRound',
+  'views/playerView',
   'text!../../templates/settings.html',
-], function($, _, Backbone, GenerateRound, settingsTemplate) {
+], function($, _, Backbone, GenerateRound, PlayerView, settingsTemplate) {
 
 	var showHelpCityFaction = function() {
   		$("#help").html("<h4>City/Club and Faction</h4>If you fill these fields, players from the same city, "+
@@ -17,11 +18,8 @@ define([
 
 		events: {
 			"keypress #new-player": "createOnEnter",
-			"click button.removePlayer": "removePlayer",
 			"click #generate-round": "generateRound",
 			"change #rounds": "changeRounds",
-			"change input.city": "updateCity",
-			"change input.faction": "updateFaction",
 			"click #helpCityFaction": "showHelpCityFaction",
 		},
 		
@@ -36,16 +34,23 @@ define([
 
 			this.router = options.router;
 			
-			this.listenTo(this.playerList, 'change', this.render);
-			this.listenTo(this.playerList, 'remove', this.render);
-			this.listenTo(this.playerList, 'reset', this.render);
-			this.listenTo(this.settings, 'change', this.render);
+			// this.listenTo(this.playerList, 'change', this.render);
+			// this.listenTo(this.playerList, 'remove', this.render);
+			// this.listenTo(this.playerList, 'reset', this.render);
+			// this.listenTo(this.settings, 'change', this.render);
 		},
 		
 		render: function() {
-			var template = _.template(settingsTemplate, {players: this.playerList, settings: this.settings});
+			var template = _.template(settingsTemplate, {noPlayers: this.playerList.length, settings: this.settings});
 	      	this.$el.html(template);
 	      	this.newPlayer = this.$("#new-player");
+	      	this.playerList.each(this.addPlayerView);
+		},
+
+		addPlayerView: function(player) {
+			var playerView = new PlayerView({player: player});
+			playerView.render();
+			this.$("#new-player-row").before(playerView.el);
 		},
 
 		createOnEnter: function(e) {
@@ -55,7 +60,8 @@ define([
 			var player = this.playerList.create({name: this.newPlayer.val(), city: '', faction: ''});
 
 			this.newPlayer.val('');
-			this.$("#"+player.id+".city").focus();
+			this.addPlayerView(player);
+
 		},
 
 		removePlayer: function(e) {
@@ -74,22 +80,6 @@ define([
 			} else 
 				this.playerList.get(e.currentTarget.id).destroy();
 
-			return false;
-		},
-
-		updateCity: function(e) {
-			var player = this.playerList.get(e.currentTarget.id);
-			player.set('city', e.currentTarget.value);
-			player.save();
-			this.$("#"+player.id +".faction").focus();
-			return false;
-		},
-
-		updateFaction: function(e) {
-			var player = this.playerList.get(e.currentTarget.id);
-			player.set('faction', e.currentTarget.value);
-			player.save();
-			this.$("#"+player.id +".removePlayer").focus();
 			return false;
 		},
 
