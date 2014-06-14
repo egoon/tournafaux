@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# Sat Jun 14 15:06:21 CEST 2014
+# Sat Jun 14 15:48:21 CEST 2014
 //netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css
 ./img/btn_donate_SM.gif
 ./index.html
@@ -17,11 +17,13 @@ CACHE MANIFEST
 ./js/order.js
 ./js/router.js
 ./js/text.js
+./js/views/lastUpdatedView.js
 ./js/views/navigationView.js
 ./js/views/playerView.js
 ./js/views/roundView.js
 ./js/views/settingsView.js
 ./js/views/standingsView.js
+./templates/lastUpdated.html
 ./templates/navigation.html
 ./templates/player.html
 ./templates/round.html
