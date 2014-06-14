@@ -30,42 +30,55 @@ define([
 		if (playerList.models.length % 2 == 1)
 			playerList.create({id:BYE_ID, name:"-"});
 
+		// find possible opponents for each player
+
 		var players = playerList.models;
-		var matches = [];
+		var possibleMatches = [];
 
 		if (number == 1 || number == "1") {
 			_.each(players, function(player) {
-				matches.push({player: player, matches: player.getDissimilarPlayers(players)});
+				possibleMatches.push({player: player, matches: player.getDissimilarPlayers(players)});
 			});
 		} else {
 			_.each(players, function(player) {
-				matches.push({player: player, matches: player.getBestMatches(players)});
+				possibleMatches.push({player: player, matches: player.getBestMatches(players)});
 			});
 		}
 
-		var table = 1;
-		while (matches.length > 0) {
+		// assign opponents
 
-			matches = _.shuffle(matches);
-			matches = _.sortBy(matches, function(match) {return match.player.getTotalVp()});
-			matches = _.sortBy(matches, function(match) {return match.player.getVpDiff()});
-			matches = _.sortBy(matches, function(match) {return match.player.getTotalTp()});
-			matches = _.sortBy(matches, function(match) {return -match.matches.length});
+		var matchedPlayers = [];
+		while (possibleMatches.length > 0) {
 
-			var match = matches.pop();
+			possibleMatches = _.shuffle(possibleMatches);
+			possibleMatches = _.sortBy(possibleMatches, function(match) {return match.player.getTotalVp()});
+			possibleMatches = _.sortBy(possibleMatches, function(match) {return match.player.getVpDiff()});
+			possibleMatches = _.sortBy(possibleMatches, function(match) {return match.player.getTotalTp()});
+			possibleMatches = _.sortBy(possibleMatches, function(match) {return match.matches.length > 0 ? -match.matches.length : -1000});
+			// console.log("matching");
+			// console.log(_.reduce(possibleMatches, function(memo, match) { return memo + match.player.get('name') + " " + match.matches.length + ", "}, ""));
+			var match = possibleMatches.pop();
+			
 			var player1 = match.player;
 			var player2 = match.matches.pop();
 			// if no match can be found, just take the next player
-			if (!player2) 
-				player2 = matches.pop().player;
+			if (!player2) {
+				player2 = possibleMatches.pop().player;
+				console.log("bad match!");
+			}
+			// console.log(player1.get('name') + " vs " + player2.get('name'));
+			// remove player2 from possibleMatches
+			possibleMatches = _.reject(possibleMatches, function(m) {return m.player.id == player2.id});
 
-
-			matches = _.reject(matches, function(m) {return m.player.id == player2.id});
-			_.each(matches, function(match) {
+			// remove player1 and player2 form remaining players matches
+			_.each(possibleMatches, function(match) {
 				match.matches = _.reject(match.matches, function(m) { 
 					return m.id == player1.id || m.id == player2.id; 
 				});
+				// console.log(_.reduce(match.matches, function(memo, m) { return memo + m.get('name') +", "},  match.player.get('name') + ": "));
 			});
+
+
 
 			player1.set("opponent" + number, player2.id);
 			player2.set("opponent" + number, player1.id);
@@ -73,13 +86,48 @@ define([
 				setScoresForBye(player1, player2, number);
 			if (player2.id == BYE_ID)
 				setScoresForBye(player2, player1, number);
-			player1.save();
-			player2.save();
-			round.set("table"+table+"player1", player1.id);
-			round.set("table"+table+"player2", player2.id);
+			
 
+			var playedTables = player1.getPlayedTables
+			matchedPlayers.push({
+				player1: player1, 
+				player2: player2, 
+				playedTables: _.union(player1.getPlayedTables(), player2.getPlayedTables())
+			});
+		}
+
+		// assign tables
+		var tablesNumbers = [];
+		for (var i = 1; i <= playerList.length / 2; ++i) 
+			tablesNumbers.push(i.toString());
+		while (matchedPlayers.length > 0) {
+			console.log("tables");
+			matchedPlayers = _.sortBy(matchedPlayers, function(players) { 
+				return players.playedTables.length > 0 ? -players.playedTables.length : -1000
+			});
+			console.log(matchedPlayers);
+			match = matchedPlayers.pop();
+			unplayedTables = _.filter(tablesNumbers, function(number) {return !_.contains(match.playedTables, number)});
+			console.log(match.player1.get('name') +", " + match.player2.get('name') + ": "+ match.playedTables.toString());
+			console.log(unplayedTables);
+			var selectedTable;
+			if (unplayedTables.length > 0) {
+				selectedTable = unplayedTables.pop();
+				tablesNumbers = _.without(tablesNumbers, selectedTable);
+			} else
+				selectedTable = tablesNumbers.pop();
+
+			_.each(matchedPlayers, function(players) {players.playedTables = _.without(players.playedTables, selectedTable)});
+
+			console.log(selectedTable);
+			match.player1.set('table'+number, selectedTable);
+			match.player2.set('table'+number, selectedTable);
+			match.player1.save();
+			match.player2.save();
+			round.set('table'+selectedTable+'player1', match.player1.id);
+			round.set('table'+selectedTable+'player2', match.player2.id);
 			round.save();
-			table ++;
+			console.log(round);
 		}
 
 	};

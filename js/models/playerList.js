@@ -23,6 +23,16 @@ define([
     		return opponents;
     	},
 
+        getPlayedTables: function() {
+            var i = 1;
+            var tables = [];
+            while (this.get("table"+i)) {
+                tables.push(this.get("table"+i))
+                i++;
+            }
+            return tables;
+        },
+
     	countPointsWithBye: function(pointType, byeScore) {
     		var i = 1;
 			var total = 0;
@@ -59,14 +69,19 @@ define([
     	},
 
     	getBestMatches: function(players) {
+            // console.log("bestMatches");
     		var that = this;
 
     		var prevOpps = this.getPreviousOpponents();
+
+            // console.log(this.get('name') + ": " + prevOpps.length)
 
     		var possibleOpps = _.filter(players, function(player) {
     			if (that.id == player.id) return false;
     			return _.indexOf(prevOpps, player.id) == -1;
     		});
+
+            // console.log(_.reduce(possibleOpps, function(memo, o){ return memo + o.get('name') + ", "}, this.get('name') + ": "))
     		
     		var bestMatches = _.sortBy(possibleOpps, function(opp) {
     			var scoreForSorting =
@@ -100,15 +115,16 @@ define([
     	setTpForRound: function(round, tp) { return this.set('tp'+round, ""+tp);},
     	getOpponentForRound: function(round) { return this.get('opponent'+round);},
     	setOpponentForRound: function(round, opponent) { return this.set('opponent'+round, ""+opponent);},
+        getTableForRound: function(round) { return this.get('table'+round);},
+        setTableForRound: function(round, table) { return this.set('table'+round, ""+table);},
 
-    	clearGames: function() {
-            var i = 1;
-			while(this.getOpponentForRound(i)) {
+    	clearGames: function(number) {
+            for(var i = 1; i <= number; ++i) {
 				this.unset('vp'+i);
 				this.unset('vpdiff'+i);
 				this.unset('tp'+i);
 				this.unset('opponent'+i);
-				++i;
+                this.unset('table'+i);
 			}
     	},
 

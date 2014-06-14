@@ -37,13 +37,13 @@ define([
 			this.listenTo(this.playerList, 'add', this.enableGenerateButton);
 			this.listenTo(this.playerList, 'remove', this.enableGenerateButton);
 			this.listenTo(this.playerList, 'reset', this.enableGenerateButton);
-			this.listenTo(this.settings, 'change', this.enableGenerateButton);
+			this.listenTo(this.settings, 'change:rounds', this.enableGenerateButton);
 		},
 		
 		render: function() {
 			var template = _.template(settingsTemplate, {settings: this.settings});
 	      	this.$el.html(template);
-	      	this.newPlayer = this.$("#new-player");
+	      	this.newPlayerInput = this.$("#new-player");
 
 	      	var i = 0;
 	      	while(this.playerList.at(i)) {
@@ -65,11 +65,11 @@ define([
 
 		createOnEnter: function(e) {
 			if (e.keyCode != 13 && e.keyCode != 9) return;
-			if (!this.newPlayer.val()) return;
+			if (!this.newPlayerInput.val()) return;
 
-			var player = this.playerList.create({name: this.newPlayer.val(), city: '', faction: ''});
+			var player = this.playerList.create({name: this.newPlayerInput.val(), city: '', faction: ''});
 
-			this.newPlayer.val('');
+			this.newPlayerInput.val('');
 			this.addPlayerView(player);
 		},
 
