@@ -5,3 +5,4 @@ README
 \.sh
 nonCachedFiles
 cache.manifest
+\./test/

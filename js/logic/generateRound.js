@@ -101,15 +101,15 @@ define([
 		for (var i = 1; i <= playerList.length / 2; ++i) 
 			tablesNumbers.push(i.toString());
 		while (matchedPlayers.length > 0) {
-			console.log("tables");
+			// console.log("tables");
 			matchedPlayers = _.sortBy(matchedPlayers, function(players) { 
 				return players.playedTables.length > 0 ? -players.playedTables.length : -1000
 			});
-			console.log(matchedPlayers);
+			// console.log(matchedPlayers);
 			match = matchedPlayers.pop();
 			unplayedTables = _.filter(tablesNumbers, function(number) {return !_.contains(match.playedTables, number)});
-			console.log(match.player1.get('name') +", " + match.player2.get('name') + ": "+ match.playedTables.toString());
-			console.log(unplayedTables);
+			// console.log(match.player1.get('name') +", " + match.player2.get('name') + ": "+ match.playedTables.toString());
+			// console.log(unplayedTables);
 			var selectedTable;
 			if (unplayedTables.length > 0) {
 				selectedTable = unplayedTables.pop();
@@ -119,7 +119,7 @@ define([
 
 			_.each(matchedPlayers, function(players) {players.playedTables = _.without(players.playedTables, selectedTable)});
 
-			console.log(selectedTable);
+			// console.log(selectedTable);
 			match.player1.set('table'+number, selectedTable);
 			match.player2.set('table'+number, selectedTable);
 			match.player1.save();
@@ -127,7 +127,7 @@ define([
 			round.set('table'+selectedTable+'player1', match.player1.id);
 			round.set('table'+selectedTable+'player2', match.player2.id);
 			round.save();
-			console.log(round);
+			// console.log(round);
 		}
 
 	};

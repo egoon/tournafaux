@@ -1,3 +1,4 @@
+"use strict";
 define([
   'underscore',
   'backbone',
@@ -11,6 +12,12 @@ define([
       		if (!this.get("name")) {
         		this.set({"name": "No name?"});
       		}
+            if (!this.get("city")) {
+                this.set({"city": ""});
+            }
+            if (!this.get("faction")) {
+                this.set({"faction": ""});
+            }
     	},
 
     	getPreviousOpponents: function() {
@@ -118,6 +125,12 @@ define([
         getTableForRound: function(round) { return this.get('table'+round);},
         setTableForRound: function(round, table) { return this.set('table'+round, ""+table);},
 
+        setVpTpAndDiffForRound: function(round, vp, tp, diff) {
+            this.setVpForRound(round, vp);
+            this.setTpForRound(round, tp);
+            this.setVpDiffForRound(round, diff);
+        },
+
     	clearGames: function(number) {
             for(var i = 1; i <= number; ++i) {
 				this.unset('vp'+i);
@@ -133,6 +146,12 @@ define([
 	var PlayerList = Backbone.Collection.extend({
 
 		model: Player,
+
+        initialize: function(options) {
+            // if (options && options.localStorageId)
+            //     this.localStorage = new Backbone.LocalStorage(options.localStorageId);
+            
+        },
 	
 		localStorage: new Backbone.LocalStorage("tournafaux-players"),
 

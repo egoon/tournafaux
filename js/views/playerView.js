@@ -57,7 +57,7 @@ define([
 					this.player.destroy();
 					while(this.roundList.at(0)) {
 						this.roundList.at(0).destroy();
-					}
+					};
 					this.remove();
 				}
 			} else {
