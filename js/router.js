@@ -22,13 +22,15 @@ define([
 	});
 
 	var initialize = function() {
-		var router = new Router;
+		var router = new Router();
 		router.on('route:settings', function() {
 			var playerList = new PlayerList();
 			var roundList = new RoundList();
 			var settings = new Settings({id: SETTINGS_ID, rounds: "3"});
 			new SettingsView({playerList: playerList, roundList: roundList, settings: settings, router: this}).render();
-			new NavigationView({active: "settings", roundList: roundList}).render();
+			var navigationView = new NavigationView({active: "settings", roundList: roundList});
+			navigationView.render();
+			$('#navigation').html(navigationView.el);
 			new LastUpdatedView().render();
 		});
 		router.on('route:round', function(number) {
@@ -36,7 +38,9 @@ define([
 			var roundList = new RoundList();
 			var settings = new Settings({id: SETTINGS_ID, rounds: "3"});
 			new RoundView({number: number, playerList: playerList, roundList: roundList, settings: settings, router: this}).render();
-			new NavigationView({active: number, roundList: roundList}).render();
+			var navigationView = new NavigationView({active: number, roundList: roundList});
+			navigationView.render();
+			$('#navigation').html(navigationView.el);
 			new LastUpdatedView().render();
 		});
 

@@ -20,10 +20,13 @@ require.config({
 
 // require the unit tests.
 require([
-  'QUnit', 'unitTests/playerListTest'
-],function(QUnit, playerListTest) {
+  'QUnit',
+  'unitTests/playerListTest',
+  'unitTests/navigationViewTest'
+],function(QUnit, playerListTest, navigationViewTest) {
   // run the tests.
   playerListTest.run();
+  navigationViewTest.run();
 
   // start QUnit.
   QUnit.load();

@@ -4,7 +4,7 @@ define([
   'text!../../templates/navigation.html',
 ], function(_, Backbone, navigationTemplate) {
   	var NavigationView = Backbone.View.extend({
-		el: '#navigation',
+		tagName: 'div',
 
 		initialize: function(options) {
 			this.roundList = options.roundList;

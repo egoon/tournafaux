@@ -6,8 +6,6 @@ define([
 	'../../js/models/playerList'
 ], function(_, Backbone, localstorage, PlayerList) {
     var run = function() {
-        // var playerList;
-        // var player;
     	module("PlayerList tests - one player", {
 			setup: function() {
 				this.playerList = new PlayerList();
