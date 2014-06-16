@@ -28,7 +28,7 @@ define([
             
             notEqual($('#qunit-fixture li.active').html().indexOf("Settings"), -1, 'the active tab contains the string "settings"');
         });
-        test('navigationView - render severl rounds', function() {
+        test('navigationView - render several rounds, settings active', function() {
         	expect(5);
         	this.roundList.create({number: '1'});
         	this.roundList.create({number: '2'});
@@ -42,7 +42,7 @@ define([
             notEqual($('#qunit-fixture').html().indexOf("Round 1"), -1, 'there is a tab named "Round 1"');
             notEqual($('#qunit-fixture').html().indexOf("Round 2"), -1, 'there is a tab named "Round 2"');
         });
-        test('navigationView - render severl rounds', function() {
+        test('navigationView - render several rounds, round 2 active', function() {
         	expect(5);
         	this.roundList.create({number: '1'});
         	this.roundList.create({number: '2'});
@@ -55,6 +55,25 @@ define([
             notEqual($('#qunit-fixture li.active').html().indexOf("Round 2"), -1, 'the active tab contains the string "Round 2"');
             notEqual($('#qunit-fixture').html().indexOf("Round 1"), -1, 'there is a tab named "Round 1"');
             notEqual($('#qunit-fixture').html().indexOf("Settings"), -1, 'there is a tab named "Settings"');
+        });
+        test('navigationView - removing rounds', function() {
+        	expect(6);
+        	var round1 = this.roundList.create({number: '1'});
+        	var round2 = this.roundList.create({number: '2'});
+            var navigationView = new NavigationView({active: "settings", roundList: this.roundList});
+			navigationView.render();
+			$('#qunit-fixture').html(navigationView.el);
+            
+            notEqual($('#qunit-fixture li.active').html().indexOf("Settings"), -1, 'the active tab contains the string "Settings"');
+            notEqual($('#qunit-fixture').html().indexOf("Round 1"), -1, 'there is a tab named "Round 1"');
+            notEqual($('#qunit-fixture').html().indexOf("Round 2"), -1, 'there is a tab named "Round 2"');
+
+            round1.destroy();
+            round2.destroy();
+
+            notEqual($('#qunit-fixture li.active').html().indexOf("Settings"), -1, 'the active tab is still "Settings"');
+            equal($('#qunit-fixture').html().indexOf("Round 1"), -1, 'there is no tab named "Round 1"');
+            equal($('#qunit-fixture').html().indexOf("Round 2"), -1, 'there is no tab named "Round 2"');
         });
 	};
     return {run: run};
