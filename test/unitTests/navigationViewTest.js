@@ -23,8 +23,7 @@ define([
         test('navigationView - render', function() {
         	expect(1);
         	var navigationView = new NavigationView({active: "settings", roundList: this.roundList});
-			navigationView.render();
-			$('#qunit-fixture').html(navigationView.el);
+			$('#qunit-fixture').html(navigationView.render().el);
             
             notEqual($('#qunit-fixture li.active').html().indexOf("Settings"), -1, 'the active tab contains the string "settings"');
         });
@@ -33,8 +32,7 @@ define([
         	this.roundList.create({number: '1'});
         	this.roundList.create({number: '2'});
             var navigationView = new NavigationView({active: "settings", roundList: this.roundList});
-			navigationView.render();
-			$('#qunit-fixture').html(navigationView.el);
+			$('#qunit-fixture').html(navigationView.render().el);
             
             notEqual($('#qunit-fixture li.active').html().indexOf("Settings"), -1, 'the active tab contains the string "Settings"');
             equal($('#qunit-fixture li.active').html().indexOf("Round 1"), -1, 'the active tab does not contain the string "Round 1"');
@@ -47,8 +45,7 @@ define([
         	this.roundList.create({number: '1'});
         	this.roundList.create({number: '2'});
         	var navigationView = new NavigationView({active: "2", roundList: this.roundList});
-			navigationView.render();
-			$('#qunit-fixture').html(navigationView.el);
+			$('#qunit-fixture').html(navigationView.render().el);
        	 	
        	 	equal($('#qunit-fixture li.active').html().indexOf("Settings"), -1, 'the active tab does not contain the string "Settings"');
             equal($('#qunit-fixture li.active').html().indexOf("Round 1"), -1, 'the active tab does not contain the string "Round 1"');
@@ -61,8 +58,7 @@ define([
         	var round1 = this.roundList.create({number: '1'});
         	var round2 = this.roundList.create({number: '2'});
             var navigationView = new NavigationView({active: "settings", roundList: this.roundList});
-			navigationView.render();
-			$('#qunit-fixture').html(navigationView.el);
+			$('#qunit-fixture').html(navigationView.render().el);
             
             notEqual($('#qunit-fixture li.active').html().indexOf("Settings"), -1, 'the active tab contains the string "Settings"');
             notEqual($('#qunit-fixture').html().indexOf("Round 1"), -1, 'there is a tab named "Round 1"');

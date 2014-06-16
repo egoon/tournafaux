@@ -1,3 +1,4 @@
+"use strict";
 define([
   'underscore',
   'backbone',
@@ -17,9 +18,10 @@ define([
 		},
 
 		render: function() {
-			var rounds = _.sortBy(this.roundList.models, function(round){ return parseInt(round.get('number'));});
+			var rounds = _.sortBy(this.roundList.models, function(round) { return parseInt(round.get('number'));});
 			var template = _.template(navigationTemplate, {rounds: rounds, active: this.active});
 		    this.$el.html(template);
+		    return this;
 		},
 	});
   	return NavigationView;

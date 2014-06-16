@@ -39,8 +39,7 @@ define([
 			var settings = new Settings({id: SETTINGS_ID, rounds: "3"});
 			new RoundView({number: number, playerList: playerList, roundList: roundList, settings: settings, router: this}).render();
 			var navigationView = new NavigationView({active: number, roundList: roundList});
-			navigationView.render();
-			$('#navigation').html(navigationView.el);
+			$('#navigation').html(navigationView.render().el);
 			new LastUpdatedView().render();
 		});
 
