@@ -13,7 +13,7 @@ define([
 		opp.setTpForRound(number, BYE_SCORE);
 	};
 
-  	var generateRound = function(number, playerList, roundList) {
+  	var generate = function(number, playerList, roundList) {
 
 		roundList.fetch();
 		playerList.fetch();
@@ -130,6 +130,8 @@ define([
 			// console.log(round);
 		}
 
+		return round;
+
 	};
-  	return {generate: generateRound};
+  	return {generate: generate};
 });
