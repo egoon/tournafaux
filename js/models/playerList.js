@@ -10,13 +10,13 @@ define([
 		initialize: function() {
 
       		if (!this.get("name")) {
-        		this.set({"name": "No name?"});
+        		this.set("name", "No name?");
       		}
             if (!this.get("city")) {
-                this.set({"city": ""});
+                this.set("city", "");
             }
             if (!this.get("faction")) {
-                this.set({"faction": ""});
+                this.set("faction", "");
             }
     	},
 
@@ -41,6 +41,8 @@ define([
         },
 
     	countPointsWithBye: function(pointType, byeScore) {
+            if (player.id == "0") //the bye
+                return -1;
     		var i = 1;
 			var total = 0;
     		var bye = false;
