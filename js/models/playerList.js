@@ -41,7 +41,7 @@ define([
         },
 
     	countPointsWithBye: function(pointType, byeScore) {
-            if (player.id == "0") //the bye
+            if (this.id == "0") //the bye
                 return -1;
     		var i = 1;
 			var total = 0;

@@ -1,21 +1,30 @@
-<form class="form-inline tournament-settings-form" role="form">
+<form class="form-horizontal tournament-settings-form" role="form">
   <div class="form-group">
-    <label for="rounds">Rounds</label>
-    <input class="form-control " id="rounds" name="rounds" type="text" value="<%- settings.get('rounds') %>" />
-  </div>  
+    <label for="rounds" class="col-sm-2 control-label">Rounds</label>
+    <div class="col-sm-1">
+      <input class="form-control" id="rounds" name="rounds" type="text" value="<%- settings.get('rounds') %>" />
+    </div>
+
+    <label for="tables" class="col-sm-2 control-label">Tables</label>
+    <div class="col-sm-1">
+      <input class="form-control" id="tables" name="tables" type="text" title="Number of tables. Leave empty for players/2" value="<%- settings.get('tables') %>" placeholder=""/>
+    </div>
+    
+  </div> 
+  <hr/>
   <table class="table table-striped">
     <thead>
       <tr><th>Player name</th><th>City/Club <a id="helpCityFaction">(?)</a></th><th>Faction <a id="helpCityFaction">(?)</a></th><th>Remove</th</tr>
     </thead>
     <tbody id="player-table">
-      
-      
+
       <tr id="new-player-row">
         <td><input id="new-player" class="form-control" name="player" type="text" placeholder="New Player"/>
         </td><td></td><td></td><td></td>
       </tr>
     </tbody>
   </table>
+  <ul id="validation-errors" class="text-danger" display:none> </ul>
   <button type="button" id="generate-round" class="btn btn-primary">Generate round 1</button>
   
 </form>

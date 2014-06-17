@@ -18,7 +18,7 @@ define([
                 this.playerList = new PlayerList();
                 this.playerList.localStorage = new Backbone.LocalStorage("test-players");
                 this.playerList.fetch();
-                this.settings = new Settings({id: 'settings', rounds: '3'});
+                this.settings = new Settings();
                 this.settings.localstorage = new Backbone.LocalStorage("test-settings");
                 this.settings.fetch();
 			},

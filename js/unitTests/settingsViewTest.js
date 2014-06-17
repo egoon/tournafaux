@@ -18,7 +18,7 @@ define([
                 this.playerList = new PlayerList();
                 this.playerList.localStorage = new Backbone.LocalStorage("test-settingsView-players");
                 this.playerList.fetch();
-                this.settings = new Settings({id: 'settings', rounds: '3'});
+                this.settings = new Settings();
                 this.settings.localstorage = new Backbone.LocalStorage("test-settingsView-settings");
                 this.settings.fetch();
 			},
@@ -40,7 +40,7 @@ define([
             equal($('#qunit-fixture #rounds').val(), "3", 'default rounds');
             ok(! $('#qunit-fixture #player-table #name').html(), 'no player rows');
             ok($('#qunit-fixture #player-table #new-player'), 'new player input');
-            ok($('#qunit-fixture #generate-round:disabled').html(), 'generate round disabled');
+            ok($('#qunit-fixture #generate-round.btn-danger').html(), 'generate round button has danger css');
 
         });
         test('edit settings', function() {
@@ -151,15 +151,15 @@ define([
             addPlayer('B');
             addPlayer('C');
 
-            ok($('#qunit-fixture #generate-round:disabled').html(), 'generate round disabled');
+            ok($('#qunit-fixture #generate-round.btn-danger').html(), 'generate round button has danger css');
 
             addPlayer('D');
 
-            ok($('#qunit-fixture #generate-round:enabled').html(), 'generate round enabled');
+            ok($('#qunit-fixture #generate-round.btn-primary').html(), 'generate round har primary css');
 
             this.settings.set('rounds', '4');
 
-            ok($('#qunit-fixture #generate-round:disabled').html(), 'generate round disabled');
+            ok($('#qunit-fixture #generate-round.btn-danger').html(), 'generate round button has danger css');
         });
     };
     return {run: run};

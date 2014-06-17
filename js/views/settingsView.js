@@ -20,6 +20,7 @@ define([
 			"keypress #new-player": "createOnEnter",
 			"click #generate-round": "generateRound",
 			"change #rounds": "changeRounds",
+			"change #tables": "changeTables",
 			"click #helpCityFaction": "showHelpCityFaction",
 		},
 		
@@ -34,10 +35,11 @@ define([
 
 			this.router = options.router;
 			
-			this.listenTo(this.playerList, 'add', this.enableGenerateButton);
-			this.listenTo(this.playerList, 'remove', this.enableGenerateButton);
-			this.listenTo(this.playerList, 'reset', this.enableGenerateButton);
-			this.listenTo(this.settings, 'change:rounds', this.enableGenerateButton);
+			this.listenTo(this.playerList, 'add', this.validate);
+			this.listenTo(this.playerList, 'remove', this.validate);
+			this.listenTo(this.playerList, 'reset', this.validate);
+			this.listenTo(this.settings, 'change:rounds', this.validate);
+			this.listenTo(this.settings, 'change:tables', this.validate);
 		},
 		
 		render: function() {
@@ -50,7 +52,7 @@ define([
 	      		this.addPlayerView(this.playerList.at(i));
 	      		++i;
 	      	};
-	      	this.enableGenerateButton();
+	      	this.validate();
 	      	return this;
 		},
 
@@ -75,22 +77,55 @@ define([
 		},
 
 		changeRounds: function() {
+			if (isNaN(this.$("#rounds").val()))
+				this.$("#rounds").val('');
+			
 			this.settings.set('rounds', this.$("#rounds").val());
+			this.settings.save();
+			
+		},
+
+		changeTables: function() {
+			if (isNaN(this.$("#tables").val()))
+				this.$("#tables").val('');
+		
+			this.settings.set('tables', this.$("#tables").val());
 			this.settings.save();
 		},
 
 		generateRound: function() {
-			//TODO validation
-			GenerateRound.generate(1, this.playerList, this.roundList);
-			this.router.navigate("#/round/1");
+			this.validate();
+			if (this.errors.length > 0) {
+				for(var i = 0; i < this.errors.length; ++i) {
+					this.$('#validation-errors').append('<li>'+this.errors[i]+'</li>');
+				}
+			} else {
+				GenerateRound.generate(1, this.playerList, this.roundList);
+				this.router.navigate("#/round/1");
+			}
 			return false;
 		},
 
-		enableGenerateButton: function(e) {
-			if (parseInt(this.settings.get('rounds')) >= this.playerList.length) {
-				this.$("#generate-round").attr("disabled", true);
+		validate: function(e) {
+			var that = this;
+			this.errors = [];
+			// rounds
+			if (isNaN(this.settings.get('rounds'))) {
+				this.errors.push('You must select a number of rounds');
+			} else if (parseInt(this.settings.get('rounds')) >= this.playerList.length) {
+				this.errors.push('You must have more players than rounds');
+			} 
+			// tables
+			if (!isNaN(this.settings.get('tables')) && parseInt(this.settings.get('tables')) * 2 >= Math.floor(this.playerList.length / 2)) {
+				this.errors.push('You need at least ' + Math.floor(this.playerList.length / 2) + ' tables for ' + this.playerList.length + ' players');
+			}
+
+			if (this.errors.length > 0) {
+				this.$('#generate-round').attr('class', 'btn btn-danger');
 			} else {
-				this.$("#generate-round").attr("disabled", false);
+				this.$('#generate-round').attr('class', 'btn btn-primary');
+				// hide and clear errors
+				this.$('#validation-errors').hide(function() {that.$('#validation-errors').html('')});
 			}
 		},
 
