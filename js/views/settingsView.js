@@ -14,7 +14,7 @@ define([
 
   	var SettingsView = Backbone.View.extend({
 		
-		el: '#page',
+		tagName: 'div',
 
 		events: {
 			"keypress #new-player": "createOnEnter",
@@ -51,6 +51,7 @@ define([
 	      		++i;
 	      	};
 	      	this.enableGenerateButton();
+	      	return this;
 		},
 
 		addPlayerView: function(player) {
@@ -87,9 +88,9 @@ define([
 
 		enableGenerateButton: function(e) {
 			if (parseInt(this.settings.get('rounds')) >= this.playerList.length) {
-				this.$("#generate-round").prop("disabled", true);
+				this.$("#generate-round").attr("disabled", true);
 			} else {
-				this.$("#generate-round").prop("disabled", false);
+				this.$("#generate-round").attr("disabled", false);
 			}
 		},
 

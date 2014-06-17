@@ -2,10 +2,10 @@
 require.config({
   paths: {
     QUnit: 'libs/qunit-1.14.0',
-    jquery: '../js/libs/jquery-1.11.1',
-    underscore: '../js/libs/underscore-1.6.0',
-    backbone: '../js/libs/backbone-1.1.2',
-    localstorage: '../js/libs/backbone.localStorage-1.1.7',
+    jquery: 'libs/jquery-1.11.1',
+    underscore: 'libs/underscore-1.6.0',
+    backbone: 'libs/backbone-1.1.2',
+    localstorage: 'libs/backbone.localStorage-1.1.7',
   },
   shim: {
     QUnit: {
@@ -22,11 +22,13 @@ require.config({
 require([
   'QUnit',
   'unitTests/playerListTest',
-  'unitTests/navigationViewTest'
-],function(QUnit, playerListTest, navigationViewTest) {
+  'unitTests/navigationViewTest',
+  'unitTests/settingsViewTest',
+],function(QUnit, playerListTest, navigationViewTest, settingsViewTest) {
   // run the tests.
   playerListTest.run();
   navigationViewTest.run();
+  settingsViewTest.run();
 
   // start QUnit.
   QUnit.load();

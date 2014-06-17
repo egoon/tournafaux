@@ -24,6 +24,7 @@ define([
 		render: function() {
 			var template =_.template(playerTemplate, {player: this.player});
 			this.$el.html(template);
+			this.$el.attr('id', this.player.id);
 		},
 
 		updateName: function(e) {

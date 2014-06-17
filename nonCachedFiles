@@ -5,4 +5,6 @@ README
 \.sh
 nonCachedFiles
 cache.manifest
-\./test/
+test
+Test
+qunit

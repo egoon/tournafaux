@@ -27,7 +27,8 @@ define([
 			var playerList = new PlayerList();
 			var roundList = new RoundList();
 			var settings = new Settings({id: SETTINGS_ID, rounds: "3"});
-			new SettingsView({playerList: playerList, roundList: roundList, settings: settings, router: this}).render();
+			var settingsView = new SettingsView({playerList: playerList, roundList: roundList, settings: settings, router: this});
+			$('#page').html(settingsView.render().el);
 			var navigationView = new NavigationView({active: "settings", roundList: roundList});
 			navigationView.render();
 			$('#navigation').html(navigationView.el);
