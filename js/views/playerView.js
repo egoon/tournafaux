@@ -59,11 +59,12 @@ define([
 					while(this.roundList.at(0)) {
 						this.roundList.at(0).destroy();
 					};
-					this.remove();
+					this.$el.hide(function() {that.remove()});
+					
 				}
 			} else {
 				this.player.destroy();
-				this.remove();
+				this.$el.hide(function() {that.remove()});
 			}
 
 			return false;
