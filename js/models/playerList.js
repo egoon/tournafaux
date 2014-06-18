@@ -18,6 +18,9 @@ define([
             if (!this.get("faction")) {
                 this.set("faction", "");
             }
+            if (!this.get("active")) {
+                this.set("active", "true");
+            }
     	},
 
     	getPreviousOpponents: function() {

@@ -18,28 +18,54 @@ define([
 	    routes: {
 	      "": "settings",
 	      "round/:number": "round",
-	    }
+	    },
+
+	    initialize: function() {
+	    	this.viewOptions = {
+	    		playerList: new PlayerList(),
+				roundList: new RoundList(),
+				settings: new Settings(),
+				router: this,
+	    	};
+	    	this.compensateForOldVersions(this.viewOptions);
+	    },
+
+	    compensateForOldVersions: function(options) {
+	    	options.settings.fetch();
+	    	var version = parseInt(options.settings.get('version'));
+	    	if (!options.settings.get('version') || version < 1) { 
+	    		console.log('compensating for data older than 18 Jun 2014');
+	    		options.roundList.fetch();
+	    		options.playerList.fetch();
+	    		if (options.roundList.length > 0) {
+	    			options.settings.set('tables', Math.floor(parseInt(options.playerList.length/2)));
+	    			options.playerList.each(function(player) {player.set('active', 'true'); player.save()});
+	    		}
+	    		_.each(options.playerList.where({id:'-'}), function(player) {
+	    			player.set('noncompeting', 'true'); 
+	    			player.set('bye', 'true');
+	    		});
+	    		options.settings.set('version', 1);
+	    		options.settings.save();
+	    	}
+	    },
 	});
 
 	var initialize = function() {
+		
+
 		var router = new Router();
 		router.on('route:settings', function() {
-			var playerList = new PlayerList();
-			var roundList = new RoundList();
-			var settings = new Settings();
-			var settingsView = new SettingsView({playerList: playerList, roundList: roundList, settings: settings, router: this});
-			$('#page').html(settingsView.render().el);
-			var navigationView = new NavigationView({active: "settings", roundList: roundList});
+			$('#page').html(new SettingsView(router.viewOptions).render().el);
+			var navigationView = new NavigationView({active: "settings", roundList: router.viewOptions.roundList});
 			navigationView.render();
 			$('#navigation').html(navigationView.el);
 			new LastUpdatedView().render();
 		});
 		router.on('route:round', function(number) {
-			var playerList = new PlayerList();
-			var roundList = new RoundList();
-			var settings = new Settings();
-			new RoundView({number: number, playerList: playerList, roundList: roundList, settings: settings, router: this}).render();
-			var navigationView = new NavigationView({active: number, roundList: roundList});
+			router.viewOptions.number = number;
+			new RoundView(router.viewOptions).render();
+			var navigationView = new NavigationView({active: number, roundList: router.viewOptions.roundList});
 			$('#navigation').html(navigationView.render().el);
 			new LastUpdatedView().render();
 		});

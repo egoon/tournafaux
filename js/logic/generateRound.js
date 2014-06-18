@@ -13,7 +13,7 @@ define([
 		opp.setTpForRound(number, BYE_SCORE);
 	};
 
-  	var generate = function(number, playerList, roundList) {
+  	var generate = function(number, playerList, roundList, settings) {
 
 		roundList.fetch();
 		playerList.fetch();
@@ -28,7 +28,7 @@ define([
 
 		// Create bye if needed
 		if (playerList.models.length % 2 == 1)
-			playerList.create({id:BYE_ID, name:"-"});
+			playerList.create({id:BYE_ID, name:"Bye", nonCompeting: 'true', bye: 'true'});
 
 		// find possible opponents for each player
 
@@ -98,8 +98,11 @@ define([
 
 		// assign tables
 		var tablesNumbers = [];
-		for (var i = 1; i <= playerList.length / 2; ++i) 
+		var noTables = parseInt(settings.get('tables'));
+
+		for (var i = noTables; i > 0; --i) 
 			tablesNumbers.push(i.toString());
+	
 		while (matchedPlayers.length > 0) {
 			// console.log("tables");
 			matchedPlayers = _.sortBy(matchedPlayers, function(players) { 
@@ -129,7 +132,7 @@ define([
 			round.save();
 			// console.log(round);
 		}
-
+		console.log(round);
 		return round;
 
 	};

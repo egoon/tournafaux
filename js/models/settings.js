@@ -9,17 +9,17 @@ define([
 	  	initialize: function() {
 
 	  		if (!this.id) {
-        		this.set("id", "settings");
-      		}
-      		if (!this.get("rounds")) {
-        		this.set("rounds", "3");
-      		}
-            if (!this.get("tables")) {
-                this.set("tables", "");
-            }
+      		this.set("id", "settings");
+    		}
+    		if (!this.get("rounds")) {
+      		this.set("rounds", "3");
+    		}
+        if (!this.get("tables")) {
+            this.set("tables", "");
+        }
     	},
 
-        localStorage: new Backbone.LocalStorage("tournafaux-settings"),
+      localStorage: new Backbone.LocalStorage("tournafaux-settings"),
 
     });
   return Settings;

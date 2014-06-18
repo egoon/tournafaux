@@ -38,10 +38,11 @@ define([
             for (var i = 0; i < 4; ++i) {
                 players[i] = this.playerList.create({name: String.fromCharCode(65 + i)});
             }
-            var round = GenerateRound.generate(1, this.playerList, this.roundList);
+            this.settings.set('tables', '2');
+            var round = GenerateRound.generate(1, this.playerList, this.roundList, this.settings);
 
             var playerIds = [];
-            var tables = round.getTables();
+            var tables = round.getTables(2, this.playerList);
             while (tables.length > 0) {
             	var table = tables.pop(); 
             	playerIds.push(table.player1id, table.player2id);

@@ -100,7 +100,11 @@ define([
 					this.$('#validation-errors').append('<li>'+this.errors[i]+'</li>');
 				}
 			} else {
-				GenerateRound.generate(1, this.playerList, this.roundList);
+				if (this.settings.get('tables') == '') {
+					this.settings.set('tables', Math.floor(parseInt(this.playerList.length/2)));
+					this.settings.save();
+				}
+				GenerateRound.generate(1, this.playerList, this.roundList, this.settings);
 				this.router.navigate("#/round/1");
 			}
 			return false;
@@ -116,7 +120,7 @@ define([
 				this.errors.push('You must have more players than rounds');
 			} 
 			// tables
-			if (!isNaN(this.settings.get('tables')) && parseInt(this.settings.get('tables')) * 2 >= Math.floor(this.playerList.length / 2)) {
+			if (this.settings.get('tables') != '' && parseInt(this.settings.get('tables')) < Math.floor(this.playerList.length / 2)) {
 				this.errors.push('You need at least ' + Math.floor(this.playerList.length / 2) + ' tables for ' + this.playerList.length + ' players');
 			}
 

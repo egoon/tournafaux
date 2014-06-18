@@ -40,22 +40,22 @@ define([
 
 		render: function() {
 			if (this.round) {
-				var tables = [];
-				var i = 1;
+				var noTables = parseInt(this.settings.get('tables'));
+				console.log(noTables);
+				var tables = this.round.getTables(noTables, this.playerList);
+				
 				var number = this.round.get('number');
 
-				while (this.round.get('table'+i+'player1')) {
-					var player1 = this.playerList.get(this.round.get('table'+i+'player1'));
-					var player2 = this.playerList.get(this.round.get('table'+i+'player2'));
-					tables.push({number: ""+i,
-						player1name: player1.get('name'),
-						player1vp: player1.getVpForRound(number) ? player1.getVpForRound(number) : "",
-						player1id: player1.id,
-						player2name: player2.get('name'),
-						player2vp: player2.getVpForRound(number) ? player2.getVpForRound(number) : "",
-						player2id: player2.id});
-					++i;
-				};
+				_.each(tables, function(table) {
+					table.player1name = table.player1.get('name');
+					table.player1vp = table.player1.getVpForRound(number) ? table.player1.getVpForRound(number) : "";
+					table.player1id = table.player1.id;
+					table.player2name = table.player2.get('name');
+					table.player2vp = table.player2.getVpForRound(number) ? table.player2.getVpForRound(number) : "";
+					table.player2id = table.player2.id;
+				});
+
+				console.log(tables);
 
 				var template = _.template(roundTemplate, {number: number, tables: tables, settings: this.settings});
 		      	this.$el.html(template);
@@ -120,7 +120,7 @@ define([
 		generateRounds: function() {
 			//TODO validation
 			var number = parseInt(this.round.get('number')) + 1;
-			GenerateRound.generate(number, this.playerList, this.roundList);
+			GenerateRound.generate(number, this.playerList, this.roundList, this.settings);
 			this.router.navigate("#/round/"+ number);
 			return false;
 		},

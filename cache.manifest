@@ -1,12 +1,11 @@
 CACHE MANIFEST
-# Tue Jun 17 09:06:22 CEST 2014
+# Wed Jun 18 08:02:52 CEST 2014
 ./css/bootstrap-3.1.1-min.css
 ./img/btn_donate_SM.gif
 ./index.html
 ./js/app.js
 ./js/libs/backbone-1.1.2.js
 ./js/libs/backbone.localStorage-1.1.7.js
-./js/libs/blanket-1.1.5-min.js
 ./js/libs/jquery-1.11.1.js
 ./js/libs/require-2.1.14.js
 ./js/libs/underscore-1.6.0.js
