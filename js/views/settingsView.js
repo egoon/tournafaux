@@ -96,9 +96,7 @@ define([
 		generateRound: function() {
 			this.validate();
 			if (this.errors.length > 0) {
-				for(var i = 0; i < this.errors.length; ++i) {
-					this.$('#validation-errors').append('<li>'+this.errors[i]+'</li>');
-				}
+				this.$('#validation-errors').show();
 			} else {
 				if (this.settings.get('tables') == '') {
 					this.settings.set('tables', Math.floor(parseInt(this.playerList.length/2)));
@@ -106,6 +104,7 @@ define([
 				}
 				GenerateRound.generate(1, this.playerList, this.roundList, this.settings);
 				this.router.navigate("#/round/1");
+				this.remove();
 			}
 			return false;
 		},
@@ -114,7 +113,7 @@ define([
 			var that = this;
 			this.errors = [];
 			// rounds
-			if (isNaN(this.settings.get('rounds'))) {
+			if (this.settings.get('rounds') == '') {
 				this.errors.push('You must select a number of rounds');
 			} else if (parseInt(this.settings.get('rounds')) >= this.playerList.length) {
 				this.errors.push('You must have more players than rounds');
@@ -125,6 +124,10 @@ define([
 			}
 
 			if (this.errors.length > 0) {
+				this.$('#validation-errors').html('');
+				for(var i = 0; i < this.errors.length; ++i) {
+					this.$('#validation-errors').append('<li>'+this.errors[i]+'</li>');
+				}
 				this.$('#generate-round').attr('class', 'btn btn-danger');
 			} else {
 				this.$('#generate-round').attr('class', 'btn btn-primary');

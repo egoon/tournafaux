@@ -7,7 +7,7 @@
     _.each(players, function(player) { %>
       <tr>
         <td><%- i %></td>
-        <td><%- player.get('name') %> <%= player.id == '0' ? '<a id="helpBye">(?)</a>' : ''%></td>
+        <td><%- player.get('name') %></td>
         <td><%- player.getTotalTp() %></td>
         <td><%- player.getVpDiff() %></td>
         <td><%- player.getTotalVp() %></td>

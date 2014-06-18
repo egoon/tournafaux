@@ -51,9 +51,9 @@ define([
 		while (possibleMatches.length > 0) {
 
 			possibleMatches = _.shuffle(possibleMatches);
-			possibleMatches = _.sortBy(possibleMatches, function(match) {return match.player.getTotalVp()});
-			possibleMatches = _.sortBy(possibleMatches, function(match) {return match.player.getVpDiff()});
-			possibleMatches = _.sortBy(possibleMatches, function(match) {return match.player.getTotalTp()});
+			possibleMatches = _.sortBy(possibleMatches, function(match) {return -match.player.getTotalVp()});
+			possibleMatches = _.sortBy(possibleMatches, function(match) {return -match.player.getVpDiff()});
+			possibleMatches = _.sortBy(possibleMatches, function(match) {return -match.player.getTotalTp()});
 			possibleMatches = _.sortBy(possibleMatches, function(match) {return match.matches.length > 0 ? -match.matches.length : -1000});
 			// console.log("matching");
 			// console.log(_.reduce(possibleMatches, function(memo, match) { return memo + match.player.get('name') + " " + match.matches.length + ", "}, ""));
@@ -114,13 +114,17 @@ define([
 			// console.log(match.player1.get('name') +", " + match.player2.get('name') + ": "+ match.playedTables.toString());
 			// console.log(unplayedTables);
 			var selectedTable;
-			if (unplayedTables.length > 0) {
-				selectedTable = unplayedTables.pop();
-				tablesNumbers = _.without(tablesNumbers, selectedTable);
-			} else
-				selectedTable = tablesNumbers.pop();
+			if (match.player1.isBye() || match.player2.isBye()) {
+				selectedTable = '-';
+			} else {
+				if (unplayedTables.length > 0) {
+					selectedTable = unplayedTables.pop();
+					tablesNumbers = _.without(tablesNumbers, selectedTable);
+				} else
+					selectedTable = tablesNumbers.pop();
 
-			_.each(matchedPlayers, function(players) {players.playedTables = _.without(players.playedTables, selectedTable)});
+				_.each(matchedPlayers, function(players) {players.playedTables = _.without(players.playedTables, selectedTable)});
+			}
 
 			// console.log(selectedTable);
 			match.player1.set('table'+number, selectedTable);

@@ -8,20 +8,27 @@ define([
 			var tables = [];
 			for (var i = 1; i <= noTables; ++i) {
 				if (this.get('table' + i + 'player1')) {
-					var table = {
-						name: i.toString(),
-						player1id: this.get('table' + i + 'player1'),
-						player2id: this.get('table' + i + 'player2')
-					};
-					if (playerList) {
-						table.player1 = playerList.get(table.player1id);
-						table.player2 = playerList.get(table.player2id);
-					}
-					tables.push(table);
+					tables.push(this.getTable(i, playerList));
 				}
+			}
+			if (this.get('table-player1')) {
+				tables.push(this.getTable('-', playerList));
 			}
 			return tables;
 		},
+		getTable: function(number, playerList) {
+			var table = {
+				name: number.toString(),
+				player1id: this.get('table' + number + 'player1'),
+				player2id: this.get('table' + number + 'player2')
+			};
+			if (playerList) {
+				table.player1 = playerList.get(table.player1id);
+				table.player2 = playerList.get(table.player2id);
+			}
+			return table;
+		},
+
 		setPlayer1ForTable: function(table, player) {
 			this.set('table' + table + 'player1', player.id);
 		},

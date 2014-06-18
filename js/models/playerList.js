@@ -146,6 +146,14 @@ define([
 			}
     	},
 
+        isBye: function() {
+            return this.get('bye') == 'true';
+        },
+
+        isNonCompeting: function() {
+            return this.get('nonCompeting') == 'true';
+        },
+
 	});
 
 	var PlayerList = Backbone.Collection.extend({

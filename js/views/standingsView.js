@@ -20,10 +20,12 @@ define([
 
 		render: function() {
 			var players = this.playerList.models;
+			players = _.reject(players, function(p) {return p.isNonCompeting()});
 			players = _.sortBy(players, function(p) {return p.getTotalVp()});
 			players = _.sortBy(players, function(p) {return p.getVpDiff()});
 			players = _.sortBy(players, function(p) {return p.getTotalTp()});
 			players = players.reverse();
+			console.log(players);
 			var template = _.template(standingsTemplate, {players: players});
 		    this.$el.html(template);
 		},
