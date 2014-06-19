@@ -31,6 +31,8 @@ define([
 			this.router = options.router;
 
 			this.round = _.find(this.roundList.models, function(round){ return round.get("number") == "" + options.number});
+
+			this.listenTo(this.playerList, 'change', this.validate);
 		},
 
 		events: {
@@ -117,11 +119,38 @@ define([
 			}
 		},
 
+		validate: function(e) {
+			var that = this;
+			this.errors = [];
+
+			var tables = this.round.getTables(this.settings.get('tables'), this.playerList);
+
+			for(var i = 0; i < tables.length; ++i) {
+				var vp = tables[i].player1.getVpForRound(this.round.get('number'))
+				if (!vp || vp == '') {
+					this.errors.push(tables[i].player1.get('name') + ' has no registered victory points');	
+				}
+				vp = tables[i].player2.getVpForRound(this.round.get('number'))
+				if (!vp || vp == '') {
+					this.errors.push(tables[i].player2.get('name') + ' has no registered victory points');	
+				}
+			}
+
+			this.$('#validation-errors').html('');
+			for(var i = 0; i < this.errors.length; ++i) {
+				this.$('#validation-errors').append('<li>'+this.errors[i]+'</li>');
+			}
+		},
+
 		generateRounds: function() {
-			//TODO validation
-			var number = parseInt(this.round.get('number')) + 1;
-			GenerateRound.generate(number, this.playerList, this.roundList, this.settings);
-			this.router.navigate("#/round/"+ number);
+			this.validate();
+			if (this.errors.length > 0) {
+				this.$('#validation-errors').show();
+			} else {
+				var number = parseInt(this.round.get('number')) + 1;
+				GenerateRound.generate(number, this.playerList, this.roundList, this.settings);
+				this.router.navigate("#/round/"+ number);
+			}
 			return false;
 		},
 
