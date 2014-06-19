@@ -123,16 +123,9 @@ define([
 				this.errors.push('You need at least ' + Math.floor(this.playerList.length / 2) + ' tables for ' + this.playerList.length + ' players');
 			}
 
-			if (this.errors.length > 0) {
-				this.$('#validation-errors').html('');
-				for(var i = 0; i < this.errors.length; ++i) {
-					this.$('#validation-errors').append('<li>'+this.errors[i]+'</li>');
-				}
-				this.$('#generate-round').attr('class', 'btn btn-danger');
-			} else {
-				this.$('#generate-round').attr('class', 'btn btn-primary');
-				// hide and clear errors
-				this.$('#validation-errors').hide(function() {that.$('#validation-errors').html('')});
+			this.$('#validation-errors').html('');
+			for(var i = 0; i < this.errors.length; ++i) {
+				this.$('#validation-errors').append('<li>'+this.errors[i]+'</li>');
 			}
 		},
 
