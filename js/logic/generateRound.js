@@ -136,7 +136,7 @@ define([
 			round.save();
 			// console.log(round);
 		}
-		console.log(round);
+		
 		return round;
 
 	};

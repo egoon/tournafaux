@@ -25,7 +25,7 @@ define([
 			players = _.sortBy(players, function(p) {return p.getVpDiff()});
 			players = _.sortBy(players, function(p) {return p.getTotalTp()});
 			players = players.reverse();
-			console.log(players);
+
 			var template = _.template(standingsTemplate, {players: players});
 		    this.$el.html(template);
 		},

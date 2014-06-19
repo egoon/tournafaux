@@ -43,7 +43,7 @@ define([
 		render: function() {
 			if (this.round) {
 				var noTables = parseInt(this.settings.get('tables'));
-				console.log(noTables);
+				
 				var tables = this.round.getTables(noTables, this.playerList);
 				
 				var number = this.round.get('number');
@@ -56,8 +56,6 @@ define([
 					table.player2vp = table.player2.getVpForRound(number) ? table.player2.getVpForRound(number) : "";
 					table.player2id = table.player2.id;
 				});
-
-				console.log(tables);
 
 				var template = _.template(roundTemplate, {number: number, tables: tables, settings: this.settings});
 		      	this.$el.html(template);
