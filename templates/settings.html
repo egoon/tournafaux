@@ -1,16 +1,36 @@
 <form class="form-horizontal tournament-settings-form" role="form">
-  <div class="form-group">
-    <label for="rounds" class="col-sm-2 control-label">Rounds</label>
-    <div class="col-sm-1">
-      <input class="form-control" id="rounds" name="rounds" type="text" value="<%- settings.get('rounds') %>" />
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="rounds" class="col-sm-2 control-label">Rounds</label>
+        <div class="col-sm-2">
+          <input class="form-control" id="rounds" name="rounds" type="text" value="<%- settings.get('rounds') %>" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="tables" class="col-sm-2 control-label">Tables</label>
+        <div class="col-sm-2">
+          <input class="form-control" id="tables" name="tables" type="text" title="Number of tables. Leave empty for players/2" value="<%- settings.get('tables') %>" placeholder=""/>
+        </div>
+      </div>
     </div>
 
-    <label for="tables" class="col-sm-2 control-label">Tables</label>
-    <div class="col-sm-1">
-      <input class="form-control" id="tables" name="tables" type="text" title="Number of tables. Leave empty for players/2" value="<%- settings.get('tables') %>" placeholder=""/>
-    </div>
-    
-  </div> 
+    <div class="col-md-6">
+      <div class="radio">
+        <label>
+          <input type="radio" name="byes" value="average-bye" checked>
+          Average Bye
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" name="byes" value="gg14-bye">
+          GG'14 Bye
+        </label>
+      </div>
+    </div> 
+
+  </div>
   <hr/>
   <table class="table table-striped">
     <thead>

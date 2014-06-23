@@ -21,6 +21,7 @@ define([
 			"click #generate-round": "generateRound",
 			"change #rounds": "changeRounds",
 			"change #tables": "changeTables",
+			"click input[name=byes]": "changeBye",
 			"click #helpCityFaction": "showHelpCityFaction",
 		},
 		
@@ -46,6 +47,8 @@ define([
 			var template = _.template(settingsTemplate, {settings: this.settings});
 	      	this.$el.html(template);
 	      	this.newPlayerInput = this.$("#new-player");
+
+	      	this.$('input[name="byes"]').filter('[value="' + this.settings.getBye() +'"]').prop('checked', true);
 
 	      	var i = 0;
 	      	while(this.playerList.at(i)) {
@@ -79,18 +82,17 @@ define([
 		changeRounds: function() {
 			if (isNaN(this.$("#rounds").val()))
 				this.$("#rounds").val('');
-			
-			this.settings.set('rounds', this.$("#rounds").val());
-			this.settings.save();
-			
+			this.settings.setRounds( this.$("#rounds").val());
 		},
 
 		changeTables: function() {
 			if (isNaN(this.$("#tables").val()))
 				this.$("#tables").val('');
-		
-			this.settings.set('tables', this.$("#tables").val());
-			this.settings.save();
+			this.settings.setTables(this.$("#tables").val());
+		},
+
+		changeBye: function() {
+			this.settings.setBye(this.$('input[name="byes"]:checked').val());
 		},
 
 		generateRound: function() {

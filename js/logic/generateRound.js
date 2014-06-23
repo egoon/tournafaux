@@ -4,13 +4,20 @@ define([
 	var BYE_ID = "0";
 	var BYE_SCORE = "-";
 
-	var setScoresForBye = function(bye, opp, number) {
-		bye.setVpForRound(number, "0");
-		bye.setVpDiffForRound(number, "0");
-		bye.setTpForRound(number, "0");
-		opp.setVpForRound(number, BYE_SCORE);
-		opp.setVpDiffForRound(number, BYE_SCORE);
-		opp.setTpForRound(number, BYE_SCORE);
+	var setScoresForBye = function(bye, opp, number, type) {
+			bye.setVpDiffForRound(number, "");
+			bye.setTpForRound(number, "");
+		if (type == "average-bye") {
+			bye.setVpForRound(number, 0);
+			opp.setVpForRound(number, BYE_SCORE);
+			opp.setVpDiffForRound(number, BYE_SCORE);
+			opp.setTpForRound(number, BYE_SCORE);
+		} else if (type == "gg14-bye") {
+			bye.setVpForRound(number, 5);
+			opp.setVpForRound(number, 10);
+			opp.setVpDiffForRound(number, 5);
+			opp.setTpForRound(number, 3);
+		}
 	};
 
   	var generate = function(number, playerList, roundList, settings) {
@@ -83,9 +90,9 @@ define([
 			player1.set("opponent" + number, player2.id);
 			player2.set("opponent" + number, player1.id);
 			if (player1.id == BYE_ID)
-				setScoresForBye(player1, player2, number);
+				setScoresForBye(player1, player2, number, settings.getBye());
 			if (player2.id == BYE_ID)
-				setScoresForBye(player2, player1, number);
+				setScoresForBye(player2, player1, number, settings.getBye());
 			
 
 			var playedTables = player1.getPlayedTables

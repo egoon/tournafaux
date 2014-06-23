@@ -17,7 +17,39 @@ define([
         if (!this.get("tables")) {
             this.set("tables", "");
         }
+        if (!this.get('bye')) {
+          this.set('bye', 'average-bye');
+        }
     	},
+
+      getRounds: function() {
+        parseInt(this.get('rounds'));
+      },
+      setRounds: function(rounds) {
+        this.set('rounds', rounds.toString());
+        this.save();
+      },
+      getTables: function() {
+        parseInt(this.get('tables'));
+      },
+      setTables: function(rounds) {
+        this.set('tables', rounds.toString());
+        this.save();
+      },
+      getBye: function() {
+        var bye =  this.get('bye');
+        if (bye == this.GG14_BYE) {
+          return this.GG14_BYE;
+        } else {
+          return this.AVERAGE_BYE;
+        }
+      },
+      setBye: function(bye) {
+        this.set('bye', bye);
+        this.save();
+      },
+      AVERAGE_BYE: 'average-bye',
+      GG14_BYE: 'gg14-bye',
 
       localStorage: new Backbone.LocalStorage("tournafaux-settings"),
 
