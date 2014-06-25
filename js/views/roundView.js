@@ -6,14 +6,6 @@ define([
   'views/standingsView',
   'text!../../templates/round.html',
 ], function($, _, Backbone, GenerateRound, StandingsView, roundTemplate) {
-  	
-  	var showHelpBye = function () {
-		$("#help").html("<h4>Bye</h4>If the tournament has an uneven amount of players, " +
-		 "a Bye is created. The player that was matched against the bye will score an average of " + 
-		 "all games. This will be recalculated after every round. If the player has played no games, she " +
-		 "will have 1 TP and 1 VP temporarily. The bye will always be matched against the player with the " +
-		 "lowest score that has not yet been matched with the bye.<hr/>");
-  	};
 
   	var RoundView = Backbone.View.extend({
 
@@ -40,7 +32,6 @@ define([
 
 		events: {
 			"click #generate-next-round": "generateRound",
-			"click #helpBye": "showHelpBye",
 		},
 
 		render: function() {
@@ -153,11 +144,7 @@ define([
 				this.router.navigate("#/round/"+ number);
 			}
 			return false;
-		},
-
-		showHelpBye: function(e) {
-			showHelpBye();
-		},
+		}
 
 	});
   	return RoundView;

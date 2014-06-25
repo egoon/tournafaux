@@ -12,6 +12,23 @@ define([
 		"or playing the same faction, will not face each other in the first game. If possible.<hr/>");
   	};
 
+    var showHelpBye = function() {
+        $("#help").html("<h4>Bye</h4>If you have an uneven amount of players, a Bye will be automatically generated. " +
+        "In the first round a random player will be matched against the bye. In the next rounds the player with the " +
+        "lowest score, that has not already received a bye, will get the bye.<h5>Average Bye</h5>" +
+        "Scoring against this bye will be an average of the other games by the player that was matched against the bye. " +
+        "The first round (when there is no average), the player will get a temporary 0-0 draw.<h5>Gaining Grounds 2014 Bye</h5>" +
+        "A player that receives the bye will score 3 TP, 10 VP and +5 VP diff.<hr/>");
+    };
+
+    var showHelpRinger = function() {
+        $("#help").html("<h4>Ringer</h4>A Ringer is a good friend or other person who agrees to step in and play, should the number " +
+        "of players be uneven. And concede should the number of players even out again, due to disqualifications or " +
+        "forfeits.<h5>Non-Competing Ringer</h5>If a tournaments organiser steps in as Ringer, she will not be part of " +
+        "the final results, and will be matched like a bye.<h5>Competing Ringer</h5>A regular Ringer will, assuming " +
+        "she takes part of the entire tournament, be treated and matched like a regular player.<hr/>");
+    };
+
   	var SettingsView = Backbone.View.extend({
 		
 		tagName: 'div',
@@ -23,6 +40,8 @@ define([
 			"change #tables": "changeTables",
 			"click input[name=byes]": "changeBye",
 			"click #helpCityFaction": "showHelpCityFaction",
+            "click #helpBye": "showHelpBye",
+            "click #helpRinger": "showHelpRinger",
 		},
 		
 		initialize: function(options) {
@@ -134,6 +153,12 @@ define([
 		showHelpCityFaction: function(e) {
 			showHelpCityFaction();
 		},
+        showHelpBye: function(e) {
+            showHelpBye();
+        },
+        showHelpRinger: function(e) {
+            showHelpRinger();
+        }
 	});
   	return SettingsView;
 });
