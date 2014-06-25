@@ -11,8 +11,6 @@ define([
   'views/roundView',
   'views/lastUpdatedView',
 ], function($, _, Backbone, localstorage, PlayerList, RoundList, Settings, SettingsView, NavigationView, RoundView, LastUpdatedView) {
-	
-	var SETTINGS_ID ="settings";
   	
 	var Router = Backbone.Router.extend({
 	    routes: {
@@ -52,8 +50,6 @@ define([
 	});
 
 	var initialize = function() {
-		
-
 		var router = new Router();
 		router.on('route:settings', function() {
 			$('#page').html(new SettingsView(router.viewOptions).render().el);
@@ -63,8 +59,12 @@ define([
 			new LastUpdatedView().render();
 		});
 		router.on('route:round', function(number) {
-			router.viewOptions.number = number;
-			new RoundView(router.viewOptions).render();
+            if (router.roundView)
+                router.roundView.setRoundNumber(number).render();
+            else {
+                console.log('new round view');
+                router.roundView = new RoundView(router.viewOptions).setRoundNumber(number).render();
+            }
 			var navigationView = new NavigationView({active: number, roundList: router.viewOptions.roundList});
 			$('#navigation').html(navigationView.render().el);
 			new LastUpdatedView().render();

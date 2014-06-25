@@ -1,12 +1,9 @@
 define([
   'underscore',
 ], function(_) {
-	var BYE_ID = "0";
 	var BYE_SCORE = "-";
 
 	var setScoresForBye = function(bye, opp, number, type) {
-			bye.setVpDiffForRound(number, "");
-			bye.setTpForRound(number, "");
 		if (type == "average-bye") {
 			bye.setVpForRound(number, 0);
 			opp.setVpForRound(number, BYE_SCORE);
@@ -26,16 +23,21 @@ define([
 		playerList.fetch();
 
 		var round = _.find(roundList.models, function(round){ return round.get("number") == ""+number});
-		
-		if (!round) {
-			round = roundList.create({number: ""+number});
-		} else {
-			_.each(playerList.models, function(p) {p.unset("opponent"+number)});
-		}
+		if (round)
+            round.destroy();
 
-		// Create bye if needed
-		if (playerList.models.length % 2 == 1)
-			playerList.create({id:BYE_ID, name:"Bye", nonCompeting: 'true', bye: 'true'});
+		round = roundList.create({number: ""+number});
+
+		// Create bye/ringer if needed
+		if (playerList.models.length % 2 == 1) {
+            var byeRinger = settings.getBye();
+            if (byeRinger == settings.AVERAGE_BYE || byeRinger == settings.GG14_BYE)
+                playerList.create({name: "Bye", nonCompeting: 'true', bye: 'true'});
+            else if (byeRinger == settings.NON_COMPETING_RINGER)
+                playerList.create({name: "Ringer", nonCompeting: 'true', ringer: 'true'});
+            else if (byeRinger == settings.NON_COMPETING_RINGER)
+                playerList.create({name: "Ringer", nonCompeting: 'false', ringer: 'true'});
+        }
 
 		// find possible opponents for each player
 
@@ -89,9 +91,9 @@ define([
 
 			player1.set("opponent" + number, player2.id);
 			player2.set("opponent" + number, player1.id);
-			if (player1.id == BYE_ID)
+			if (player1.isBye())
 				setScoresForBye(player1, player2, number, settings.getBye());
-			if (player2.id == BYE_ID)
+			if (player2.isBye())
 				setScoresForBye(player2, player1, number, settings.getBye());
 			
 

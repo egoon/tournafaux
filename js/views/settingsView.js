@@ -18,7 +18,7 @@ define([
 
 		events: {
 			"keypress #new-player": "createOnEnter",
-			"click #generate-round": "generateRound",
+			"click #generate-first-round": "generateRound",
 			"change #rounds": "changeRounds",
 			"change #tables": "changeTables",
 			"click input[name=byes]": "changeBye",
@@ -100,8 +100,8 @@ define([
 			if (this.errors.length > 0) {
 				this.$('#validation-errors').show();
 			} else {
-				if (this.settings.get('tables') == '') {
-					this.settings.set('tables', Math.floor(parseInt(this.playerList.length/2)));
+				if (isNaN(this.settings.getTables())) {
+					this.settings.setTables(Math.floor(parseInt(this.playerList.length/2)));
 					this.settings.save();
 				}
 				GenerateRound.generate(1, this.playerList, this.roundList, this.settings);
@@ -115,13 +115,13 @@ define([
 			var that = this;
 			this.errors = [];
 			// rounds
-			if (this.settings.get('rounds') == '') {
+			if (isNaN(this.settings.getRounds())) {
 				this.errors.push('You must select a number of rounds');
-			} else if (parseInt(this.settings.get('rounds')) >= this.playerList.length) {
+			} else if (this.settings.getRounds() >= this.playerList.length) {
 				this.errors.push('You must have more players than rounds');
 			} 
 			// tables
-			if (this.settings.get('tables') != '' && parseInt(this.settings.get('tables')) < Math.floor(this.playerList.length / 2)) {
+			if (!isNaN(this.settings.getTables()) && this.settings.getTables() < Math.floor(this.playerList.length / 2)) {
 				this.errors.push('You need at least ' + Math.floor(this.playerList.length / 2) + ' tables for ' + this.playerList.length + ' players');
 			}
 

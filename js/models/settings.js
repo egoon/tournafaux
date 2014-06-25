@@ -23,14 +23,14 @@ define([
     	},
 
       getRounds: function() {
-        parseInt(this.get('rounds'));
+        return parseInt(this.get('rounds'));
       },
       setRounds: function(rounds) {
         this.set('rounds', rounds.toString());
         this.save();
       },
       getTables: function() {
-        parseInt(this.get('tables'));
+        return parseInt(this.get('tables'));
       },
       setTables: function(rounds) {
         this.set('tables', rounds.toString());
@@ -40,6 +40,10 @@ define([
         var bye =  this.get('bye');
         if (bye == this.GG14_BYE) {
           return this.GG14_BYE;
+        } else if (bye == this.COMPETING_RINGER) {
+            return this.COMPETING_RINGER;
+        } else if (bye == this.NON_COMPETING_RINGER) {
+            return this.NON_COMPETING_RINGER;
         } else {
           return this.AVERAGE_BYE;
         }
@@ -50,6 +54,8 @@ define([
       },
       AVERAGE_BYE: 'average-bye',
       GG14_BYE: 'gg14-bye',
+      COMPETING_RINGER: 'competing-ringer',
+      NON_COMPETING_RINGER: 'non-competing-ringer',
 
       localStorage: new Backbone.LocalStorage("tournafaux-settings"),
 

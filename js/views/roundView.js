@@ -30,13 +30,16 @@ define([
 
 			this.router = options.router;
 
-			this.round = _.find(this.roundList.models, function(round){ return round.get("number") == "" + options.number});
-
 			this.listenTo(this.playerList, 'change', this.validate);
 		},
 
+        setRoundNumber: function(number) {
+            this.round = _.find(this.roundList.models, function(round){ return round.get("number") == number.toString()});
+            return this;
+        },
+
 		events: {
-			"click #generate-rounds": "generateRounds",
+			"click #generate-next-round": "generateRound",
 			"click #helpBye": "showHelpBye",
 		},
 
@@ -65,7 +68,7 @@ define([
 				var template = _.template("<h4>Round <%-number %> does not exist</h4>Sorry!", {number: number});
 		      	this.$el.html(template);
 			}
-			
+			return this;
 		},
 
 		registerListeners: function() {
@@ -87,33 +90,33 @@ define([
 			}
 		},
 
-		calculateTpAndVpDiff: function(round, player) {
-			var i = 1;
-			while(round.get('table'+i+'player1')) {
-				var player1 = this.playerList.get(round.get('table'+i+'player1'));
-				var player2 = this.playerList.get(round.get('table'+i+'player2'));
+		calculateTpAndVpDiff: function(round, player) { //TODO: refactor to tableView
+            var tables = round.getTables(this.settings.getTables(), this.playerList);
+            var number = round.get('number');
+            for (var i = 0; i < tables.length; ++i) {
+                var table = tables[i];
+				var player1 = table.player1;
+				var player2 = table.player2;
 				if (player1.id === player.id || player2.id === player.id) {
-					var player1vp = parseInt(player1.getVpForRound(round.get('number')));
-					var player2vp = parseInt(player2.getVpForRound(round.get('number')));
+					var player1vp = parseInt(player1.getVpForRound(number));
+					var player2vp = parseInt(player2.getVpForRound(number));
 					if (player1vp >= 0 && player2vp >= 0) {
 						var diff = player1vp - player2vp;
-						player1.setVpDiffForRound(round.get('number'), diff);
-						player2.setVpDiffForRound(round.get('number'), -diff);
-						player1.setTpForRound(round.get('number'), diff > 0 ? 3 : diff < 0 ? 0: 1);
-						player2.setTpForRound(round.get('number'), diff < 0 ? 3 : diff > 0 ? 0: 1);
+						player1.setVpDiffForRound(number, diff);
+						player2.setVpDiffForRound(number, -diff);
+						player1.setTpForRound(number, diff > 0 ? 3 : diff < 0 ? 0: 1);
+						player2.setTpForRound(number, diff < 0 ? 3 : diff > 0 ? 0: 1);
 						player1.save();
 						player2.save();
 					} else {
-						player1.setVpDiffForRound(round.get('number'), 0);
-						player2.setVpDiffForRound(round.get('number'), 0);
-						player1.setTpForRound(round.get('number'), 0);
-						player2.setTpForRound(round.get('number'), 0);
+						player1.setVpDiffForRound(number, 0);
+						player2.setVpDiffForRound(number, 0);
+						player1.setTpForRound(number, 0);
+						player2.setTpForRound(number, 0);
 						player1.save();
 						player2.save();
 					}
 				}
-				
-				++i;
 			}
 		},
 
@@ -140,7 +143,7 @@ define([
 			}
 		},
 
-		generateRounds: function() {
+		generateRound: function() {
 			this.validate();
 			if (this.errors.length > 0) {
 				this.$('#validation-errors').show();

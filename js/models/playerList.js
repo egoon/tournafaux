@@ -44,7 +44,7 @@ define([
         },
 
     	countPointsWithBye: function(pointType, byeScore) {
-            if (this.id == "0") //the bye
+            if (this.isNonCompeting()) //the bye or non-competing ringer
                 return -1;
     		var i = 1;
 			var total = 0;
@@ -73,7 +73,7 @@ define([
     	},
 
     	getTotalVp: function() {
-    		return this.countPointsWithBye('vp', 1);
+    		return this.countPointsWithBye('vp', 0);
     	},
 
     	getVpDiff: function() {
@@ -147,10 +147,12 @@ define([
     	},
 
         isBye: function() {
+            if (this.id == "0") return true; // legacy
             return this.get('bye') == 'true';
         },
 
         isNonCompeting: function() {
+            if (this.id == "0") return true; // legacy
             return this.get('nonCompeting') == 'true';
         },
 
