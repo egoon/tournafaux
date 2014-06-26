@@ -65,7 +65,7 @@ define([
 			possibleMatches = _.sortBy(possibleMatches, function(match) {return -match.player.getTotalTp()});
 			possibleMatches = _.sortBy(possibleMatches, function(match) {return match.matches.length > 0 ? -match.matches.length : -1000});
 			// console.log("matching");
-			// console.log(_.reduce(possibleMatches, function(memo, match) { return memo + match.player.get('name') + " " + match.matches.length + ", "}, ""));
+			// console.log(_.reduce(possibleMatches, function(memo, match) { return memo + match.player.getName() + " " + match.matches.length + ", "}, ""));
 			var match = possibleMatches.pop();
 			
 			var player1 = match.player;
@@ -75,7 +75,7 @@ define([
 				player2 = possibleMatches.pop().player;
 				console.log("bad match!");
 			}
-			// console.log(player1.get('name') + " vs " + player2.get('name'));
+			// console.log(player1.getName() + " vs " + player2.getName());
 			// remove player2 from possibleMatches
 			possibleMatches = _.reject(possibleMatches, function(m) {return m.player.id == player2.id});
 
@@ -84,7 +84,7 @@ define([
 				match.matches = _.reject(match.matches, function(m) { 
 					return m.id == player1.id || m.id == player2.id; 
 				});
-				// console.log(_.reduce(match.matches, function(memo, m) { return memo + m.get('name') +", "},  match.player.get('name') + ": "));
+				// console.log(_.reduce(match.matches, function(memo, m) { return memo + m.getName() +", "},  match.player.getName() + ": "));
 			});
 
 
@@ -120,7 +120,7 @@ define([
 			// console.log(matchedPlayers);
 			match = matchedPlayers.pop();
 			unplayedTables = _.filter(tablesNumbers, function(number) {return !_.contains(match.playedTables, number)});
-			// console.log(match.player1.get('name') +", " + match.player2.get('name') + ": "+ match.playedTables.toString());
+			// console.log(match.player1.getName() +", " + match.player2.getName() + ": "+ match.playedTables.toString());
 			// console.log(unplayedTables);
 			var selectedTable;
 			if (match.player1.isBye() || match.player2.isBye()) {

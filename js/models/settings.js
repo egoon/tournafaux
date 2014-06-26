@@ -4,23 +4,26 @@ define([
   'backbone',
   'localstorage',
 ], function($, _, Backbone, localstorage){
-  var Settings = Backbone.Model.extend({
+    var Settings = Backbone.Model.extend({
 
-	  	initialize: function() {
+        initialize: function() {
 
-	  		if (!this.id) {
-      		this.set("id", "settings");
-    		}
-    		if (!this.get("rounds")) {
-      		this.set("rounds", "3");
-    		}
-        if (!this.get("tables")) {
-            this.set("tables", "");
-        }
-        if (!this.get('bye')) {
-          this.set('bye', 'average-bye');
-        }
-    	},
+            if (!this.id) {
+                this.set("id", "settings");
+            }
+            if (!this.get("rounds")) {
+                this.set("rounds", "3");
+                }
+            if (!this.get("tables")) {
+                this.set("tables", "");
+            }
+            if (!this.get('bye')) {
+                this.set('bye', this.AVERAGE_BYE);
+            }
+            if (!this.get('pairings')) {
+                this.set('pairings', 'average-bye');
+            }
+        },
 
       getRounds: function() {
         return parseInt(this.get('rounds'));
@@ -52,10 +55,24 @@ define([
         this.set('bye', bye);
         this.save();
       },
+      getPairings: function() {
+          var pairings =  this.get('pairings');
+          if (pairings == this.GG14_PAIRINGS) {
+              return this.GG14_PAIRINGS;
+          } else {
+              return this.NEVER_MEET_TWICE;
+          }
+      },
+      setPairings: function(pairings) {
+          this.set('pairings', pairings);
+          this.save();
+      },
       AVERAGE_BYE: 'average-bye',
       GG14_BYE: 'gg14-bye',
       COMPETING_RINGER: 'competing-ringer',
       NON_COMPETING_RINGER: 'non-competing-ringer',
+      NEVER_MEET_TWICE: 'never-meet-twice',
+      GG14_PAIRINGS: 'gg14-pairings',
 
       localStorage: new Backbone.LocalStorage("tournafaux-settings"),
 

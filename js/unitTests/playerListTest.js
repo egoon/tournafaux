@@ -12,14 +12,14 @@ define([
                 this.playerList.localStorage = new Backbone.LocalStorage("test-player-players");
 				this.playerList.fetch();
                 this.player = this.playerList.create({name: "tester"});
-                this.player.set('city', 'testCity');
-                this.player.set('faction', 'gremlins');
+                this.player.setCity('testCity');
+                this.player.setFaction('gremlins');
 			},
 			teardown: function() {
                 while(this.playerList.at(0)) {
                     this.playerList.at(0).destroy();
                 }
-			},
+			}
 		});
         test('clearGames', function() {
             expect(10);
@@ -42,9 +42,9 @@ define([
             ok(!this.player.get('vp2'), "vp2 should be unset");
             ok(!this.player.get('vp3'), "vp3 should be unset");
 
-            equal(this.player.get('name'), 'tester', 'name should be unchanged');
-            equal(this.player.get('city'), 'testCity', 'city should be unchanged');
-            equal(this.player.get('faction'), 'gremlins', 'faction should be unchanged');
+            equal(this.player.getName(), 'tester', 'name should be unchanged');
+            equal(this.player.getCity(), 'testCity', 'city should be unchanged');
+            equal(this.player.getFaction(), 'gremlins', 'faction should be unchanged');
         });
         test('getPreviousOpponents', function() {
             expect(2);
@@ -76,7 +76,7 @@ define([
             expect(12);
             player.setVpTpAndDiffForRound(1, '-','-','-');
 
-            equal(player.getTotalVp(), 1, 'score 1 vp for first bye');
+            equal(player.getTotalVp(), 0, 'score 0 vp for first bye');
             equal(player.getTotalTp(), 1, 'score 1 tp for first bye');
             equal(player.getVpDiff(), 0, 'score 0 diff for first bye');
 
@@ -112,7 +112,7 @@ define([
                 while(this.playerList.at(0)) {
                     this.playerList.at(0).destroy();
                 }
-            },
+            }
         });
         test('getDissimilarPlayers - simple setup', function() {
             expect(4);
@@ -123,7 +123,7 @@ define([
             
             equal(player.getDissimilarPlayers(this.playerList.models).length, 3, 'all players are dissimilar');
             _.each(player.getDissimilarPlayers(this.playerList.models), function(other) {
-                notEqual(other.get('name'), player.get('name'), 'the player should not be in her own list');
+                notEqual(other.getName(), player.getName(), 'the player should not be in her own list');
             });
         });
         test('getDissimilarPlayers - complex setup', function() {
@@ -135,9 +135,9 @@ define([
             
             var models = this.playerList.models;
             _.each(models, function(p) {
-                equal(player.getDissimilarPlayers(models).length, 1, p.get('name') + ' only has one dissimilar player');
+                equal(player.getDissimilarPlayers(models).length, 1, p.getName() + ' only has one dissimilar player');
             });
-            equal(player.getDissimilarPlayers(models).pop().get('name'), 'outGbg', 'rezSthlm should be unlike outGbg only');
+            equal(player.getDissimilarPlayers(models).pop().getName(), 'outGbg', 'rezSthlm should be unlike outGbg only');
         });
         var playGame = function(round, player1, player2, scoreP1, scoreP2) {
             if (scoreP1 > scoreP2) {
@@ -165,15 +165,15 @@ define([
 
             for (var i = 0; i < 6; ++i) {
                 var bestMatches = players[i].getBestMatches(players);
-                equal(bestMatches.length, 4, 'player ' + players[i].get('name') + ' should have four possible matches');
+                equal(bestMatches.length, 4, 'player ' + players[i].getName() + ' should have four possible matches');
             }
 
             deepEqual(
-                _.map(players[0].getBestMatches(players), function(p) {return p.get('name')}),
+                _.map(players[0].getBestMatches(players), function(p) {return p.getName()}),
                 ['D', 'F', 'C', 'E'], 'preferred opponents for player A');
 
             deepEqual(
-                _.map(players[5].getBestMatches(players), function(p) {return p.get('name')}),
+                _.map(players[5].getBestMatches(players), function(p) {return p.getName()}),
                 ['C', 'A', 'D', 'B'], 'preferred opponents for player F');
         });
     };

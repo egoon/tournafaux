@@ -39,6 +39,7 @@ define([
 			"change #rounds": "changeRounds",
 			"change #tables": "changeTables",
 			"click input[name=byes]": "changeBye",
+            "click input[name=pairings]": "changePairings",
 			"click #helpCityFaction": "showHelpCityFaction",
             "click #helpBye": "showHelpBye",
             "click #helpRinger": "showHelpRinger",
@@ -64,18 +65,19 @@ define([
 		
 		render: function() {
 			var template = _.template(settingsTemplate, {settings: this.settings});
-	      	this.$el.html(template);
-	      	this.newPlayerInput = this.$("#new-player");
+        this.$el.html(template);
+        this.newPlayerInput = this.$("#new-player");
 
-	      	this.$('input[name="byes"]').filter('[value="' + this.settings.getBye() +'"]').prop('checked', true);
+        this.$('input[name="byes"]').filter('[value="' + this.settings.getBye() +'"]').prop('checked', true);
+        this.$('input[name="pairings"]').filter('[value="' + this.settings.getPairings() +'"]').prop('checked', true);
 
-	      	var i = 0;
-	      	while(this.playerList.at(i)) {
-	      		this.addPlayerView(this.playerList.at(i));
-	      		++i;
-	      	};
-	      	this.validate();
-	      	return this;
+        var i = 0;
+        while(this.playerList.at(i)) {
+          this.addPlayerView(this.playerList.at(i));
+          ++i;
+        };
+        this.validate();
+        return this;
 		},
 
 		addPlayerView: function(player) {
@@ -113,6 +115,10 @@ define([
 		changeBye: function() {
 			this.settings.setBye(this.$('input[name="byes"]:checked').val());
 		},
+
+        changePairings: function() {
+            this.settings.setPairings(this.$('input[name="pairings"]:checked').val());
+        },
 
 		generateRound: function() {
 			this.validate();

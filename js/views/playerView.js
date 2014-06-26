@@ -2,7 +2,7 @@ define([
   'jquery',
   'underscore',
   'backbone',
-  'text!../../templates/player.html',
+  'text!../../templates/player.html'
 ], function($, _, Backbone, playerTemplate) {
 
 	var PlayerView = Backbone.View.extend({
@@ -16,9 +16,7 @@ define([
 
 		events: {
 			"click button.removePlayer": "removePlayer",
-			"change input.name": "updateName",
-			"change input.city": "updateCity",
-			"change input.faction": "updateFaction",
+            "change input": "updateProperty"
 		},
 
 		render: function() {
@@ -27,25 +25,13 @@ define([
 			this.$el.attr('id', this.player.id);
 		},
 
-		updateName: function(e) {
-			this.player.set('name', e.currentTarget.value);
-			this.player.save();
-			return false;
-		},
+        updateProperty: function(e) {
+            this.player.set(e.currentTarget.name, e.currentTarget.value);
+            this.player.save();
+            return false;
+        },
 
-		updateCity: function(e) {
-			this.player.set('city', e.currentTarget.value);
-			this.player.save();
-			return false;
-		},
-
-		updateFaction: function(e) {
-			this.player.set('faction', e.currentTarget.value);
-			this.player.save();
-			return false;
-		},
-
-		removePlayer: function(e) {
+		removePlayer: function() {
 			this.roundList.fetch();
 			this.playerList.fetch();
 			var that = this;
@@ -58,7 +44,7 @@ define([
 					this.player.destroy();
 					while(this.roundList.at(0)) {
 						this.roundList.at(0).destroy();
-					};
+					}
 					this.$el.hide(function() {that.remove()});
 					
 				}
@@ -68,7 +54,7 @@ define([
 			}
 
 			return false;
-		},
+		}
 	});
   
   	return PlayerView;

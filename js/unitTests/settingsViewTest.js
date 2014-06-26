@@ -7,7 +7,7 @@ define([
 	'../models/roundList',
     '../models/playerList',
     '../models/settings',
-	'../views/settingsView',
+	'../views/settingsView'
 ], function($, _, Backbone, localstorage, RoundList, PlayerList, Settings, SettingsView) {
     var run = function() {
     	module("SettingsView", {
@@ -30,7 +30,7 @@ define([
                     this.playerList.at(0).destroy();
                 }
                 this.settings.destroy();
-			},
+			}
 		});
         test('render empty', function() {
         	expect(4);
@@ -40,7 +40,7 @@ define([
             equal($('#qunit-fixture #rounds').val(), "3", 'default rounds');
             ok(! $('#qunit-fixture #player-table #name').html(), 'no player rows');
             ok($('#qunit-fixture #player-table #new-player'), 'new player input');
-            ok($('#qunit-fixture #generate-round.btn-danger').html(), 'generate round button has danger css');
+            notEqual($('#qunit-fixture #validation-errors').html(), '', 'there are validation errors');
 
         });
         test('edit settings', function() {
@@ -96,9 +96,9 @@ define([
             $('#qunit-fixture').html(settingsView.render().el);
 
             for (var i = 0; i < 4; ++i) {
-                equal($('#qunit-fixture #player-table #' + players[i].id + ' #name').val(), players[i].get('name'), players[i].get('name') + ' rendered');
-                equal($('#qunit-fixture #player-table #' + players[i].id + ' #city').val(), players[i].get('city'), players[i].get('city') + ' rendered');
-                equal($('#qunit-fixture #player-table #' + players[i].id + ' #faction').val(), players[i].get('faction'), players[i].get('faction') + ' rendered');
+                equal($('#qunit-fixture #player-table #' + players[i].id + ' #name').val(), players[i].getName(), players[i].getName() + ' rendered');
+                equal($('#qunit-fixture #player-table #' + players[i].id + ' #city').val(), players[i].getCity(), players[i].getCity() + ' rendered');
+                equal($('#qunit-fixture #player-table #' + players[i].id + ' #faction').val(), players[i].getFaction(), players[i].getFaction() + ' rendered');
             }
 
             addPlayer('Tester');
@@ -131,13 +131,13 @@ define([
             editPlayer(egoon.id, 'city', 'Stockholm');
             editPlayer(tester.id, 'faction', 'Gremlins');
 
-            equal(egoon.get('name'), 'Bennie', 'Egoon changed name to Bennie');
-            equal(egoon.get('city'), 'Stockholm', 'Bennie\'s city is Stockholm');
-            equal(egoon.get('faction'), '', 'Bennie\'s faction is empty');
+            equal(egoon.getName(), 'Bennie', 'Egoon changed name to Bennie');
+            equal(egoon.getCity(), 'Stockholm', 'Bennie\'s city is Stockholm');
+            equal(egoon.getFaction(), '', 'Bennie\'s faction is empty');
 
-            equal(tester.get('name'), 'Tester', 'Tester did not change name');
-            equal(tester.get('city'), '', 'Tester\'s city is empty');
-            equal(tester.get('faction'), 'Gremlins', 'Tester\'s faction is Gremlins');
+            equal(tester.getName(), 'Tester', 'Tester did not change name');
+            equal(tester.getCity(), '', 'Tester\'s city is empty');
+            equal(tester.getFaction(), 'Gremlins', 'Tester\'s faction is Gremlins');
 
         });
         test('toggle generate button', function() {
@@ -151,15 +151,15 @@ define([
             addPlayer('B');
             addPlayer('C');
 
-            ok($('#qunit-fixture #generate-round.btn-danger').html(), 'generate round button has danger css');
+            notEqual($('#qunit-fixture #validation-errors').html(), '', 'there are validation errors');
 
             addPlayer('D');
 
-            ok($('#qunit-fixture #generate-round.btn-primary').html(), 'generate round har primary css');
+            equal($('#qunit-fixture #validation-errors').html(), '', 'there are no validation errors');
 
             this.settings.set('rounds', '4');
 
-            ok($('#qunit-fixture #generate-round.btn-danger').html(), 'generate round button has danger css');
+            notEqual($('#qunit-fixture #validation-errors').html(), '', 'there are validation errors');
         });
     };
     return {run: run};

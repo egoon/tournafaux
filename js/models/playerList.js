@@ -12,15 +12,6 @@ define([
       		if (!this.get("name")) {
         		this.set("name", "No name?");
       		}
-            if (!this.get("city")) {
-                this.set("city", "");
-            }
-            if (!this.get("faction")) {
-                this.set("faction", "");
-            }
-            if (!this.get("active")) {
-                this.set("active", "true");
-            }
     	},
 
     	getPreviousOpponents: function() {
@@ -121,13 +112,13 @@ define([
 
     	getVpForRound: function(round) { return this.get('vp'+round);},
     	setVpForRound: function(round, vp) { return this.set('vp'+round, ""+vp);},
-    	getVpDiffForRound: function(round) { return this.get('vpdiff'+round);},
+    	//getVpDiffForRound: function(round) { return this.get('vpdiff'+round);},
     	setVpDiffForRound: function(round, vpdiff) { return this.set('vpdiff'+round, ""+vpdiff);},
-    	getTpForRound: function(round) { return this.get('tp'+round);},
+    	//getTpForRound: function(round) { return this.get('tp'+round);},
     	setTpForRound: function(round, tp) { return this.set('tp'+round, ""+tp);},
     	getOpponentForRound: function(round) { return this.get('opponent'+round);},
     	setOpponentForRound: function(round, opponent) { return this.set('opponent'+round, ""+opponent);},
-        getTableForRound: function(round) { return this.get('table'+round);},
+        //getTableForRound: function(round) { return this.get('table'+round);},
         setTableForRound: function(round, table) { return this.set('table'+round, ""+table);},
 
         setVpTpAndDiffForRound: function(round, vp, tp, diff) {
@@ -155,6 +146,44 @@ define([
             if (this.id == "0") return true; // legacy
             return this.get('nonCompeting') == 'true';
         },
+
+        isActive: function() {
+            return this.get('active') == 'true';
+        },
+
+        setActive: function(active) {
+            this.set('active', active);
+        },
+
+        getName: function() {
+            if (this.isBye()) return 'Bye';
+            if (!this.get('name')) return '[No Name]';
+            return this.get('name');
+        },
+
+        setName: function(name) {
+            this.set('name', name);
+        },
+
+        getCity: function() {
+            if (this.isNonCompeting()) return '';
+            if (!this.get('city')) return '';
+            return this.get('city');
+        },
+
+        setCity: function(city) {
+            this.set('city', city);
+        },
+
+        getFaction: function() {
+            if (this.isNonCompeting()) return '';
+            if (!this.get('faction')) return '';
+            return this.get('faction');
+        },
+
+        setFaction: function(faction) {
+            this.set('faction', faction);
+        }
 
 	});
 
