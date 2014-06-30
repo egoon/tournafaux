@@ -23,25 +23,25 @@ define([
 		playerList.fetch();
 
 		var round = _.find(roundList.models, function(round){ return round.get("number") == ""+number});
-		if (round)
-            round.destroy();
+		if (round) {
+      round.destroy();
+      //TODO: clear players
+      //TODO: destroy later turns
+    }
 
 		round = roundList.create({number: ""+number});
 
-		// Create bye/ringer if needed
-		if (playerList.models.length % 2 == 1) {
-            var byeRinger = settings.getBye();
-            if (byeRinger == settings.AVERAGE_BYE || byeRinger == settings.GG14_BYE)
-                playerList.create({name: "Bye", nonCompeting: 'true', bye: 'true'});
-            else if (byeRinger == settings.NON_COMPETING_RINGER)
-                playerList.create({name: "Ringer", nonCompeting: 'true', ringer: 'true'});
-            else if (byeRinger == settings.NON_COMPETING_RINGER)
-                playerList.create({name: "Ringer", nonCompeting: 'false', ringer: 'true'});
-        }
+		// Toggle active bye/ringer as needed
+    var byeRinger = playerList.getByeRinger();
+		if (playerList.getActivePlayers().length % 2 == 1) {
+      byeRinger.setActive(!byeRinger.isActive());
+      //TODO: set non competing?
+      byeRinger.save();
+    }
 
 		// find possible opponents for each player
 
-		var players = playerList.models;
+		var players = playerList.getActivePlayers();
 		var possibleMatches = [];
 
 		if (number == 1 || number == "1") {
@@ -60,14 +60,23 @@ define([
 		while (possibleMatches.length > 0) {
 
 			possibleMatches = _.shuffle(possibleMatches);
-			possibleMatches = _.sortBy(possibleMatches, function(match) {return -match.player.getTotalVp()});
-			possibleMatches = _.sortBy(possibleMatches, function(match) {return -match.player.getVpDiff()});
-			possibleMatches = _.sortBy(possibleMatches, function(match) {return -match.player.getTotalTp()});
-			possibleMatches = _.sortBy(possibleMatches, function(match) {return match.matches.length > 0 ? -match.matches.length : -1000});
+			possibleMatches = _.sortBy(possibleMatches, function(match) {return match.player.getTotalVp()});
+			possibleMatches = _.sortBy(possibleMatches, function(match) {return match.player.getVpDiff()});
+			possibleMatches = _.sortBy(possibleMatches, function(match) {return match.player.getTotalTp()});
+			possibleMatches = _.sortBy(possibleMatches, function(match) {return match.matches.length > 0 ? -match.matches.length : -100000});
 			// console.log("matching");
-			// console.log(_.reduce(possibleMatches, function(memo, match) { return memo + match.player.getName() + " " + match.matches.length + ", "}, ""));
-			var match = possibleMatches.pop();
-			
+			console.log(_.reduce(possibleMatches, function(memo, match) { return memo + match.player.getName() + " " + match.matches.length + ", "}, ""));
+
+      var match;
+      var byeMatch = _.find(possibleMatches, function(match) { return match.player.isNonCompeting()});
+      if (byeMatch) {
+        match = byeMatch;
+        possibleMatches = _.reject(possibleMatches, function(match) { return match.player.isNonCompeting()});
+        console.log(_.last(match.matches).getName());
+      } else {
+        match = possibleMatches.pop();
+      }
+
 			var player1 = match.player;
 			var player2 = match.matches.pop();
 			// if no match can be found, just take the next player

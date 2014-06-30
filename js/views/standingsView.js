@@ -19,7 +19,7 @@ define([
 		},
 
 		render: function() {
-			var players = this.playerList.models;
+			var players = this.playerList.getCompetingPlayers();
 			players = _.reject(players, function(p) {return p.isNonCompeting()});
 			players = _.sortBy(players, function(p) {return p.getTotalVp()});
 			players = _.sortBy(players, function(p) {return p.getVpDiff()});

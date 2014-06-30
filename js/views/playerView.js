@@ -12,24 +12,30 @@ define([
 			this.player = options.player;
 			this.playerList = options.playerList;
 			this.roundList = options.roundList;
+      this.listenTo(this.player, 'change:ringer', this.render);
+      this.listenTo(this.player, 'change:nonCompeting', this.render);
+
 		},
 
 		events: {
 			"click button.removePlayer": "removePlayer",
-            "change input": "updateProperty"
+      "change input": "updateProperty"
 		},
 
 		render: function() {
 			var template =_.template(playerTemplate, {player: this.player});
 			this.$el.html(template);
 			this.$el.attr('id', this.player.id);
+      this.validate();
 		},
 
-        updateProperty: function(e) {
-            this.player.set(e.currentTarget.name, e.currentTarget.value);
-            this.player.save();
-            return false;
-        },
+    updateProperty: function(e) {
+      this.player.set(e.currentTarget.name, e.currentTarget.value);
+      this.player.save();
+      if (e.currentTarget.name === 'name')
+        e.currentTarget.value = this.player.getName();
+      return false;
+    },
 
 		removePlayer: function() {
 			this.roundList.fetch();
@@ -54,7 +60,25 @@ define([
 			}
 
 			return false;
-		}
+		},
+
+    validate: function() {
+      if (this.player.isBye()) {
+        this.$el.hide();
+      } else {
+        this.$el.show();
+      }
+      if (this.player.isNonCompeting()) {
+        this.$('#city').attr('disabled', 'true');
+        this.$('#faction').attr('disabled', 'true');
+      } else {
+        this.$('#city').removeAttr('disabled');
+        this.$('#faction').removeAttr('disabled');
+      }
+      if (this.player.isRinger()) {
+        this.$('#removePlayer').hide();
+      }
+    }
 	});
   
   	return PlayerView;

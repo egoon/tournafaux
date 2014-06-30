@@ -39,10 +39,10 @@ define([
 			"change #rounds": "changeRounds",
 			"change #tables": "changeTables",
 			"click input[name=byes]": "changeBye",
-            "click input[name=pairings]": "changePairings",
+      "click input[name=tournamentType]": "changeTournamentType",
 			"click #helpCityFaction": "showHelpCityFaction",
-            "click #helpBye": "showHelpBye",
-            "click #helpRinger": "showHelpRinger",
+      "click #helpBye": "showHelpBye",
+      "click #helpRinger": "showHelpRinger"
 		},
 		
 		initialize: function(options) {
@@ -61,6 +61,8 @@ define([
 			this.listenTo(this.playerList, 'reset', this.validate);
 			this.listenTo(this.settings, 'change:rounds', this.validate);
 			this.listenTo(this.settings, 'change:tables', this.validate);
+
+      this.byeRinger = this.playerList.getByeRinger();
 		},
 		
 		render: function() {
@@ -69,7 +71,7 @@ define([
         this.newPlayerInput = this.$("#new-player");
 
         this.$('input[name="byes"]').filter('[value="' + this.settings.getBye() +'"]').prop('checked', true);
-        this.$('input[name="pairings"]').filter('[value="' + this.settings.getPairings() +'"]').prop('checked', true);
+        this.$('input[name="tournamentType"]').filter('[value="' + this.settings.getTournamentType() +'"]').prop('checked', true);
 
         var i = 0;
         while(this.playerList.at(i)) {
@@ -114,11 +116,22 @@ define([
 
 		changeBye: function() {
 			this.settings.setBye(this.$('input[name="byes"]:checked').val());
+      if (this.settings.getBye() == this.settings.AVERAGE_BYE || this.settings.getBye() == this.settings.GG14_BYE) {
+        this.byeRinger.setBye(true);
+        this.byeRinger.setNonCompeting(true);
+      } else {
+        this.byeRinger.setRinger(true);
+        if (this.settings.getBye() == this.settings.COMPETING_RINGER)
+          this.byeRinger.setNonCompeting(false);
+        else
+          this.byeRinger.setNonCompeting(true);
+      }
+      this.byeRinger.save();
 		},
 
-        changePairings: function() {
-            this.settings.setPairings(this.$('input[name="pairings"]:checked').val());
-        },
+    changeTournamentType: function() {
+        this.settings.setTournamentType(this.$('input[name="tournamentType"]:checked').val());
+    },
 
 		generateRound: function() {
 			this.validate();
@@ -137,7 +150,6 @@ define([
 		},
 
 		validate: function(e) {
-			var that = this;
 			this.errors = [];
 			// rounds
 			if (isNaN(this.settings.getRounds())) {
@@ -159,12 +171,12 @@ define([
 		showHelpCityFaction: function(e) {
 			showHelpCityFaction();
 		},
-        showHelpBye: function(e) {
-            showHelpBye();
-        },
-        showHelpRinger: function(e) {
-            showHelpRinger();
-        }
+    showHelpBye: function(e) {
+      showHelpBye();
+    },
+    showHelpRinger: function(e) {
+      showHelpRinger();
+    }
 	});
   	return SettingsView;
 });

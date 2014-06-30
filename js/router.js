@@ -19,10 +19,11 @@ define([
 	    },
 
 	    initialize: function() {
+        var settings = new Settings();
 	    	this.viewOptions = {
-	    		playerList: new PlayerList(),
-				roundList: new RoundList(),
-				settings: new Settings(),
+	    		playerList: new PlayerList({settings: settings}),
+				  roundList: new RoundList(),
+				  settings: settings,
 				router: this,
 	    	};
 	    	this.compensateForOldVersions(this.viewOptions);
@@ -37,7 +38,6 @@ define([
 	    		options.playerList.fetch();
 	    		if (options.roundList.length > 0) {
 	    			options.settings.set('tables', Math.floor(parseInt(options.playerList.length/2)));
-	    			options.playerList.each(function(player) {player.set('active', 'true'); player.save()});
 	    		}
 	    		_.each(options.playerList.where({id:'-'}), function(player) {
 	    			player.set('noncompeting', 'true'); 
