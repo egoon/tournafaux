@@ -50,7 +50,8 @@ define([
 			});
 		} else {
 			_.each(players, function(player) {
-				possibleMatches.push({player: player, matches: player.getBestMatches(players)});
+        var swissThreshold = settings.getTournamentType() === settings.GG14_SWISS ? 2 : settings.getRounds();
+				possibleMatches.push({player: player, matches: player.getBestMatches(players, swissThreshold)});
 			});
 		}
 

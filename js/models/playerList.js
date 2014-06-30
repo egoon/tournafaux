@@ -11,14 +11,14 @@ define([
 
     },
 
-    getPreviousOpponents: function() {
+    getPreviousOpponents: function(number) {
       var i = 1;
       var opponents = [];
       while (this.get("opponent"+i)) {
         opponents.push(this.get("opponent"+i))
         i++;
       }
-      return opponents;
+      return _.last(opponents, number);
     },
 
     getPlayedTables: function() {
@@ -68,10 +68,10 @@ define([
       return this.countPointsWithBye('vpdiff', 0);
     },
 
-    getBestMatches: function(players) {
+    getBestMatches: function(players, swissThreshold) {
       var that = this;
 
-      var prevOpps = this.getPreviousOpponents();
+      var prevOpps = this.getPreviousOpponents(swissThreshold);
 
       var possibleOpps = _.filter(players, function(player) {
         if (that.id == player.id) return false;
