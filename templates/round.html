@@ -20,8 +20,21 @@
       <tbody>
     </table>
     <ul id="validation-errors" class="text-danger" style="display:none"></ul>
-    <div <%- parseInt(settings.get('rounds')) <= parseInt(number) ? 'style="display:none"' : "" %> >
-    <button type="button" id="generate-next-round" class="btn btn-primary" <%= parseInt(settings.get('rounds')) <= parseInt(number) ? 'style="display:none"' : "" %> >Generate round <%- parseInt(number) + 1 %></button>
+    <div class="row">
+      <div class="col-md-4" <%- parseInt(settings.get('rounds')) <= parseInt(number) ? 'style="display:none"' : "" %> >
+        <button type="button" id="generate-next-round" class="btn btn-primary" <%= parseInt(settings.get('rounds')) <= parseInt(number) ? 'style="display:none"' : "" %> >Generate round <%- parseInt(number) + 1 %></button>
+      </div>
+      <div class="col-md-5">
+        <select id="disqualify-select" class="form-control">
+          <option>Disqualify/Forfeit</option>
+          <% _.each(players, function(player) { %>
+            <option value="<%- player.id %>"><%- player.getName() %></option>
+          <% }); %>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <button id="disqualify-button" class="btn btn-danger">Remove</button>
+      </div>
     </div>
   </div>
   <div class="col-md-5">

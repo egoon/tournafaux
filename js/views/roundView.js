@@ -25,13 +25,14 @@ define([
 			this.listenTo(this.playerList, 'change', this.validate);
 		},
 
-        setRoundNumber: function(number) {
-            this.round = _.find(this.roundList.models, function(round){ return round.get("number") == number.toString()});
-            return this;
-        },
+    setRoundNumber: function(number) {
+        this.round = _.find(this.roundList.models, function(round){ return round.get("number") == number.toString()});
+        return this;
+    },
 
 		events: {
-			"click #generate-next-round": "generateRound"
+			"click #generate-next-round": "generateRound",
+      "click #disqualify-button": "disqualifyPlayer"
 		},
 
 		render: function() {
@@ -51,7 +52,7 @@ define([
 					table.player2id = table.player2.id;
 				});
 
-				var template = _.template(roundTemplate, {number: number, tables: tables, settings: this.settings});
+				var template = _.template(roundTemplate, {number: number, tables: tables, settings: this.settings, players: this.playerList.getCompetingPlayers()});
 		      	this.$el.html(template);
 		      	this.registerListeners();
 		      	new StandingsView({playerList: this.playerList}).render();
@@ -144,7 +145,20 @@ define([
 				this.router.navigate("#/round/"+ number);
 			}
 			return false;
-		}
+		},
+
+    disqualifyPlayer: function() {
+      var player = this.playerList.get(this.$('#disqualify-select').val());
+      if (player.isRinger()) {
+        alert("Removing ringer not supported. Yet.");
+      } else {
+        if (confirm("Are you sure you want to remove " + player.getName() + " from the tournament?")) {
+          player.setActive(false);
+          player.save();
+        }
+      }
+
+    }
 
 	});
   	return RoundView;
