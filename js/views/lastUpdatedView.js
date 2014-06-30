@@ -1,7 +1,7 @@
 define([
   'underscore',
   'backbone',
-  'text!../../templates/lastUpdated.html',
+  'text!../../templates/lastUpdated.tpl',
 ], function(_, Backbone, lastUpdatedTemplate) {
   	var LastUpdatedView = Backbone.View.extend({
   		el: "#last-updated",

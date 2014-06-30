@@ -74,7 +74,6 @@ define([
       if (byeMatch) {
         match = byeMatch;
         possibleMatches = _.reject(possibleMatches, function(match) { return match.player.isNonCompeting()});
-        console.log(_.last(match.matches).getName());
       } else {
         match = possibleMatches.pop();
       }

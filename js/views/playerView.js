@@ -2,7 +2,7 @@ define([
   'jquery',
   'underscore',
   'backbone',
-  'text!../../templates/player.html'
+  'text!../../templates/player.tpl'
 ], function($, _, Backbone, playerTemplate) {
 
 	var PlayerView = Backbone.View.extend({

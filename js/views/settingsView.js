@@ -4,7 +4,7 @@ define([
   'backbone',
   'logic/generateRound',
   'views/playerView',
-  'text!../../templates/settings.html',
+  'text!../../templates/settings.tpl',
 ], function($, _, Backbone, GenerateRound, PlayerView, settingsTemplate) {
 
 	var showHelpCityFaction = function() {

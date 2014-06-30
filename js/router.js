@@ -59,12 +59,11 @@ define([
 			new LastUpdatedView().render();
 		});
 		router.on('route:round', function(number) {
-            if (router.roundView)
-                router.roundView.setRoundNumber(number).render();
-            else {
-                console.log('new round view');
-                router.roundView = new RoundView(router.viewOptions).setRoundNumber(number).render();
-            }
+      if (router.roundView)
+          router.roundView.setRoundNumber(number).render();
+      else {
+          router.roundView = new RoundView(router.viewOptions).setRoundNumber(number).render();
+      }
 			var navigationView = new NavigationView({active: number, roundList: router.viewOptions.roundList});
 			$('#navigation').html(navigationView.render().el);
 			new LastUpdatedView().render();

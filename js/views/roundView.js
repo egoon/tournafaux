@@ -4,7 +4,7 @@ define([
   'backbone',
   'logic/generateRound',
   'views/standingsView',
-  'text!../../templates/round.html'
+  'text!../../templates/round.tpl'
 ], function($, _, Backbone, GenerateRound, StandingsView, roundTemplate) {
 
   	var RoundView = Backbone.View.extend({

@@ -2,7 +2,7 @@ define([
   'jquery',
   'underscore',
   'backbone',
-  'text!../../templates/standings.html',
+  'text!../../templates/standings.tpl',
 ], function($, _, Backbone, standingsTemplate) {
   	var StandingsView = Backbone.View.extend({
 

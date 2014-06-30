@@ -2,7 +2,7 @@
 define([
   'underscore',
   'backbone',
-  'text!../../templates/navigation.html',
+  'text!../../templates/navigation.tpl',
 ], function(_, Backbone, navigationTemplate) {
   	var NavigationView = Backbone.View.extend({
 		tagName: 'div',
