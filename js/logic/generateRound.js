@@ -66,10 +66,11 @@ define([
 			possibleMatches = _.sortBy(possibleMatches, function(match) {return match.player.getTotalTp()});
 			possibleMatches = _.sortBy(possibleMatches, function(match) {return match.matches.length > 0 ? -match.matches.length : -100000});
 			// console.log("matching");
-			console.log(_.reduce(possibleMatches, function(memo, match) { return memo + match.player.getName() + " " + match.matches.length + ", "}, ""));
+      // console.log(_.reduce(possibleMatches, function(memo, match) { return memo + match.player.getName() + " " + match.matches.length + ", "}, ""));
 
       var match;
       var byeMatch = _.find(possibleMatches, function(match) { return match.player.isNonCompeting()});
+      // match bye or non-competing ringer first
       if (byeMatch) {
         match = byeMatch;
         possibleMatches = _.reject(possibleMatches, function(match) { return match.player.isNonCompeting()});
@@ -97,17 +98,13 @@ define([
 				// console.log(_.reduce(match.matches, function(memo, m) { return memo + m.getName() +", "},  match.player.getName() + ": "));
 			});
 
-
-
 			player1.set("opponent" + number, player2.id);
 			player2.set("opponent" + number, player1.id);
 			if (player1.isBye())
 				setScoresForBye(player1, player2, number, settings.getBye());
 			if (player2.isBye())
 				setScoresForBye(player2, player1, number, settings.getBye());
-			
 
-			var playedTables = player1.getPlayedTables
 			matchedPlayers.push({
 				player1: player1, 
 				player2: player2, 
@@ -129,7 +126,7 @@ define([
 			});
 			// console.log(matchedPlayers);
 			match = matchedPlayers.pop();
-			unplayedTables = _.filter(tablesNumbers, function(number) {return !_.contains(match.playedTables, number)});
+			var unplayedTables = _.filter(tablesNumbers, function(number) {return !_.contains(match.playedTables, number)});
 			// console.log(match.player1.getName() +", " + match.player2.getName() + ": "+ match.playedTables.toString());
 			// console.log(unplayedTables);
 			var selectedTable;
