@@ -1,10 +1,11 @@
 "use strict";
 define([
-    'underscore',
-    'backbone',
-    'localstorage',
+  'underscore',
+  'backbone',
+  'localstorage',
+  'testUtils',
 	'../../js/models/playerList'
-], function(_, Backbone, localstorage, PlayerList) {
+], function(_, Backbone, localstorage, Utils, PlayerList) {
     var run = function() {
     	module("PlayerList tests - one player", {
 			setup: function() {
@@ -52,11 +53,11 @@ define([
             this.player.set('opponent2', 'y');
             this.player.set('opponent3', 'z');
 
-            deepEqual(this.player.getPreviousOpponents(), ['x', 'y', 'z'], 'should fetch all three oppoonents');
+            deepEqual(this.player.getPreviousOpponents(3), ['x', 'y', 'z'], 'should fetch all three oppoonents');
 
             this.player.unset('opponent2');
 
-            deepEqual(this.player.getPreviousOpponents(), ['x'], 'should fetch one oppoonent');
+            deepEqual(this.player.getPreviousOpponents(3), ['x'], 'should fetch one oppoonent');
         });
         test('getPlayedTables', function() {
             expect(2);
@@ -139,41 +140,28 @@ define([
             });
             equal(player.getDissimilarPlayers(models).pop().getName(), 'outGbg', 'rezSthlm should be unlike outGbg only');
         });
-        var playGame = function(round, player1, player2, scoreP1, scoreP2) {
-            if (scoreP1 > scoreP2) {
-                player1.setVpTpAndDiffForRound(round, scoreP1, 3, scoreP1 - scoreP2);
-                player2.setVpTpAndDiffForRound(round, scoreP2, 0, scoreP2 - scoreP1);
-            } else if (scoreP1 < scoreP2) {
-                player1.setVpTpAndDiffForRound(round, scoreP1, 0, scoreP1 - scoreP2);
-                player2.setVpTpAndDiffForRound(round, scoreP2, 3, scoreP2 - scoreP1);
-            } else {
-                player1.setVpTpAndDiffForRound(round, scoreP1, 1, scoreP1 - scoreP2);
-                player2.setVpTpAndDiffForRound(round, scoreP2, 1, scoreP2 - scoreP1);
-            }
-            player1.setOpponentForRound(round, player2.id);
-            player2.setOpponentForRound(round, player1.id);
-        };
+
         test('getBestMatches - A vs B: 6-4, C vs D: 9-1, E vs F: 7-3', function() {
             expect(8);
             var players = [];
             for (var i = 0; i < 6; ++i) {
                 players[i] = this.playerList.create({name: String.fromCharCode(65 + i)});
             }
-            playGame(1, players[0], players[1], 6, 4);
-            playGame(1, players[2], players[3], 9, 1);
-            playGame(1, players[4], players[5], 7, 3);
+            Utils.playGame(1, players[0], players[1], 6, 4);
+            Utils.playGame(1, players[2], players[3], 9, 1);
+            Utils.playGame(1, players[4], players[5], 7, 3);
 
             for (var i = 0; i < 6; ++i) {
-                var bestMatches = players[i].getBestMatches(players);
+                var bestMatches = players[i].getBestMatches(players, 3);
                 equal(bestMatches.length, 4, 'player ' + players[i].getName() + ' should have four possible matches');
             }
 
             deepEqual(
-                _.map(players[0].getBestMatches(players), function(p) {return p.getName()}),
+                _.map(players[0].getBestMatches(players, 3), function(p) {return p.getName()}),
                 ['D', 'F', 'C', 'E'], 'preferred opponents for player A');
 
             deepEqual(
-                _.map(players[5].getBestMatches(players), function(p) {return p.getName()}),
+                _.map(players[5].getBestMatches(players, 3), function(p) {return p.getName()}),
                 ['C', 'A', 'D', 'B'], 'preferred opponents for player F');
         });
     };

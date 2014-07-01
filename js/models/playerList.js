@@ -94,8 +94,8 @@ define([
 
       var possibleOpps = _.filter(players, function(player) {
         if (that.id == player.id) return false;
-        if (that.get('city') != '' && that.get('city') == player.get('city')) return false;
-        if (that.get('faction') != '' && that.get('faction') == player.get('faction')) return false;
+        if (that.getCity() != '' && that.getCity() == player.getCity()) return false;
+        if (that.getFaction() != '' && that.getFaction() == player.getFaction()) return false;
         return true;
       });
 
@@ -131,12 +131,10 @@ define([
     },
 
     isBye: function() {
-      if (this.id == "0") return true; // legacy
       return this.get('bye') == 'true';
     },
 
     isRinger: function() {
-      if (this.id == "0") return true; // legacy
       return this.get('ringer') == 'true';
     },
 
@@ -155,7 +153,6 @@ define([
     },
 
     isNonCompeting: function() {
-      if (this.id == "0") return true; // legacy
       return this.get('nonCompeting') == 'true';
     },
 

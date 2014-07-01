@@ -44,7 +44,7 @@
     </div>
 
     <div class="col-md-4">
-      <label>Tournament Type</label>
+      <label>Tournament Type <a id="helpTournamentType">(?)</a></label>
       <div class="radio">
           <label>
               <input type="radio" name="tournamentType" value="swiss" checked>

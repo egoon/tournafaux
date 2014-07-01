@@ -39,7 +39,7 @@ define([
 	    		if (options.roundList.length > 0) {
 	    			options.settings.set('tables', Math.floor(parseInt(options.playerList.length/2)));
 	    		}
-	    		_.each(options.playerList.where({id:'-'}), function(player) {
+	    		_.each(options.playerList.where({id:'0'}), function(player) {
 	    			player.set('noncompeting', 'true'); 
 	    			player.set('bye', 'true');
 	    		});

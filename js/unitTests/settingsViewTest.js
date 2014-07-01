@@ -75,7 +75,7 @@ define([
 
             addPlayer('Egoon');
 
-            equal($('#qunit-fixture #player-table #name').val(), 'Egoon', 'player added through form');
+            equal($('#qunit-fixture #player-table #name:visible').val(), 'Egoon', 'player added through form');
 
             addPlayer('Tester');
             var player = getPlayer(this.playerList, 'Tester');
@@ -149,11 +149,10 @@ define([
 
             addPlayer('A');
             addPlayer('B');
-            addPlayer('C');
 
             notEqual($('#qunit-fixture #validation-errors').html(), '', 'there are validation errors');
 
-            addPlayer('D');
+            addPlayer('C');
 
             equal($('#qunit-fixture #validation-errors').html(), '', 'there are no validation errors');
 
