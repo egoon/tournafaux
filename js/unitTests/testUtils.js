@@ -4,7 +4,7 @@ define([
   'underscore'
 ], function($, _) {
   var Utils = {
-    playGame: function(round, player1, player2, scoreP1, scoreP2) {
+    playGame: function(round, player1, player2, scoreP1, scoreP2, table) {
       if (scoreP1 > scoreP2) {
         player1.setVpTpAndDiffForRound(round, scoreP1, 3, scoreP1 - scoreP2);
         player2.setVpTpAndDiffForRound(round, scoreP2, 0, scoreP2 - scoreP1);
@@ -17,6 +17,8 @@ define([
       }
       player1.setOpponentForRound(round, player2.id);
       player2.setOpponentForRound(round, player1.id);
+      player1.setTableForRound(round, table);
+      player2.setTableForRound(round, table);
     }
   };
   return Utils;

@@ -3,23 +3,23 @@ define([
   'underscore',
   'backbone',
   'localstorage',
-  'testUtils',
+  'unitTests/testUtils',
 	'../../js/models/playerList'
 ], function(_, Backbone, localstorage, Utils, PlayerList) {
-    var run = function() {
-    	module("PlayerList tests - one player", {
-			setup: function() {
+  var run = function() {
+    module("PlayerList tests - one player", {
+      setup: function() {
 				this.playerList = new PlayerList();
-                this.playerList.localStorage = new Backbone.LocalStorage("test-player-players");
+        this.playerList.localStorage = new Backbone.LocalStorage("test-player-players");
 				this.playerList.fetch();
-                this.player = this.playerList.create({name: "tester"});
-                this.player.setCity('testCity');
-                this.player.setFaction('gremlins');
+        this.player = this.playerList.create({name: "tester"});
+        this.player.setCity('testCity');
+        this.player.setFaction('gremlins');
 			},
 			teardown: function() {
-                while(this.playerList.at(0)) {
-                    this.playerList.at(0).destroy();
-                }
+        while(this.playerList.at(0)) {
+          this.playerList.at(0).destroy();
+        }
 			}
 		});
         test('clearGames', function() {
@@ -98,6 +98,46 @@ define([
             equal(player.getTotalVp(), 15, '5+3+7');
             equal(player.getTotalTp(), 6, '3+3+0');
             equal(player.getVpDiff(), -1, '1-3+1');
+        });
+        test('bye and ringer', function() {
+          expect(15);
+          var bye = this.playerList.getByeRinger();
+
+          ok(bye.isBye(), 'The Bye is a Bye');
+          ok(!bye.isRinger(), 'The Bye is not a Ringer');
+          ok(bye.isNonCompeting(), 'The Bye is non competing');
+          equal(bye.getName(), 'Bye', 'Bye Name');
+
+          bye.setName('Bennie');
+
+          equal(bye.getName(), 'Bye', 'Bye Name unchanged');
+
+          bye.setRinger(true);
+
+          ok(!bye.isBye(), 'The Ringer is not a Bye');
+          ok(bye.isRinger(), 'The Ringer is a Ringer');
+          equal(bye.getName(), 'Bennie (Ringer)', 'Bennie is a Ringer');
+
+          bye.setName('');
+
+          equal(bye.getName(), 'Ringer', 'Ringer by name');
+
+          bye.setBye(true);
+
+          ok(bye.isBye(), 'The Bye is a Bye');
+          ok(!bye.isRinger(), 'The Bye is not a Ringer');
+
+          bye.setRinger(true);
+          bye.setCity('Stockholm');
+          bye.setFaction('Gremlins');
+
+          equal(bye.getCity(), '', 'No city for non competing');
+          equal(bye.getFaction(), '', 'No faction for non competing');
+
+          bye.setNonCompeting(false);
+
+          equal(bye.getCity(), 'Stockholm', 'Competing ringer city');
+          equal(bye.getFaction(), 'Gremlins', 'Competing ringer faction');
         });
 
         module("PlayerList tests - multiple players", {

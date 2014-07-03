@@ -35,8 +35,8 @@ define([
       getTables: function() {
         return parseInt(this.get('tables'));
       },
-      setTables: function(rounds) {
-        this.set('tables', rounds.toString());
+      setTables: function(tables) {
+        this.set('tables', tables.toString());
         this.save();
       },
       getBye: function() {
