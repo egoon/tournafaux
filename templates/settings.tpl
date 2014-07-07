@@ -75,5 +75,6 @@
   </table>
   <ul id="validation-errors" class="text-danger" style="display:none"></ul>
   <button type="button" id="generate-first-round" class="btn btn-primary">Generate round 1</button>
-  
+  <hr/>
+
 </form>

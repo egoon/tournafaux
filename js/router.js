@@ -15,6 +15,7 @@ define([
 	var Router = Backbone.Router.extend({
 	    routes: {
 	      "": "settings",
+        "#": "settings",
 	      "round/:number": "round",
 	    },
 
@@ -53,7 +54,8 @@ define([
 		var router = new Router();
 		router.on('route:settings', function() {
 			$('#page').html(new SettingsView(router.viewOptions).render().el);
-			var navigationView = new NavigationView({active: "settings", roundList: router.viewOptions.roundList});
+      router.viewOptions.active = "settings";
+			var navigationView = new NavigationView(router.viewOptions);
 			navigationView.render();
 			$('#navigation').html(navigationView.el);
 			new LastUpdatedView().render();
@@ -64,7 +66,8 @@ define([
       else {
           router.roundView = new RoundView(router.viewOptions).setRoundNumber(number).render();
       }
-			var navigationView = new NavigationView({active: number, roundList: router.viewOptions.roundList});
+      router.viewOptions.active = number;
+      var navigationView = new NavigationView(router.viewOptions);
 			$('#navigation').html(navigationView.render().el);
 			new LastUpdatedView().render();
 		});

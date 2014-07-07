@@ -130,7 +130,7 @@ define([
 			return false;
 		},
 
-		validate: function(e) {
+		validate: function() {
 			this.errors = [];
 			// rounds
 			if (isNaN(this.settings.getRounds())) {
