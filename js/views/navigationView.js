@@ -42,6 +42,7 @@ define([
         this.settings.destroy();
         this.router.navigate('/');
       }
+      return false;
     }
 	});
   	return NavigationView;
