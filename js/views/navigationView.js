@@ -40,9 +40,11 @@ define([
         while (this.playerList.length > 0)
           this.playerList.at(0).destroy();
         this.settings.destroy();
-        this.router.navigate('/');
+        if (this.active == 'settings')
+          window.location.reload();
+        else
+          this.router.navigate('/');
       }
-      return false;
     }
 	});
   	return NavigationView;

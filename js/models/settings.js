@@ -74,7 +74,7 @@ define([
       SWISS: 'swiss',
       GG14_SWISS: 'gg14-swiss',
 
-      localStorage: new Backbone.LocalStorage("tournafaux-settings"),
+      localStorage: new Backbone.LocalStorage("tournafaux-settings")
 
     });
   return Settings;
