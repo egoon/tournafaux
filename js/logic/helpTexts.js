@@ -8,6 +8,10 @@ define([
       "If you fill these fields, players from the same city, "+
       "or playing the same faction, will not face each other in the first game, if possible.",
 
+    gg14: "<h4>Gaining Grounds 2014</h4>" +
+      "Check this to disable all options that are not compatible with " +
+      "<a href='http://wyrd-games.net/community/files/file/52-gaining-grounds/'>Gaining Grounds 2014</a>",
+
     bye: "<h4>Bye</h4>" +
       "If you have an uneven amount of players, a Bye will be automatically generated. " +
       "In the first round a random player will be matched against the bye. In the next rounds the player with the " +

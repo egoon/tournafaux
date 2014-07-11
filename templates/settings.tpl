@@ -13,6 +13,12 @@
           <input class="form-control" id="tables" name="tables" type="number" title="Number of tables. Leave empty for players/2" value="<%- settings.get('tables') %>" placeholder=""/>
         </div>
       </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" name="gg14" value="gg14">
+          Gaining Grounds 2014  <a id="helpGG14">(?)</a>
+        </label>
+      </div>
     </div>
 
     <div class="col-md-4">

@@ -9,7 +9,7 @@ define([
   'text!../../templates/settings.tpl',
 ], function($, _, Backbone, GenerateRound, HelpTexts, PlayerView, settingsTemplate) {
 
-  	var SettingsView = Backbone.View.extend({
+  var SettingsView = Backbone.View.extend({
 		
 		tagName: 'div',
 
@@ -18,12 +18,14 @@ define([
 			"click #generate-first-round": "generateRound",
 			"change #rounds": "changeRounds",
 			"change #tables": "changeTables",
-			"click input[name=byes]": "changeBye",
+      "click input[name=gg14]": "toggleGG14",
+      "click input[name=byes]": "changeBye",
       "click input[name=tournamentType]": "changeTournamentType",
 			"click #helpCityFaction": "showHelpCityFaction",
       "click #helpBye": "showHelpBye",
       "click #helpRinger": "showHelpRinger",
-      "click #helpTournamentType": "showHelpTournamentType"
+      "click #helpTournamentType": "showHelpTournamentType",
+      "click #helpGG14": "showHelpGG14"
 		},
 		
 		initialize: function(options) {
@@ -48,19 +50,24 @@ define([
 		
 		render: function() {
 			var template = _.template(settingsTemplate, {settings: this.settings});
-        this.$el.html(template);
-        this.newPlayerInput = this.$("#new-player");
+      this.$el.html(template);
+      this.newPlayerInput = this.$("#new-player");
 
-        this.$('input[name="byes"]').filter('[value="' + this.settings.getBye() +'"]').prop('checked', true);
-        this.$('input[name="tournamentType"]').filter('[value="' + this.settings.getTournamentType() +'"]').prop('checked', true);
+      this.$('input[name="byes"]').filter('[value="' + this.settings.getBye() +'"]').prop('checked', true);
+      this.$('input[name="tournamentType"]').filter('[value="' + this.settings.getTournamentType() +'"]').prop('checked', true);
+      if(this.settings.isGG14()) {
+        this.$('input[name=gg14]').prop('checked', true);
+        this.$('input[name="byes"][value="average-bye"]').prop('disabled', true);
+        this.$('input[name="tournamentType"][value="swiss"]').prop('disabled', true);
+      }
 
-        var i = 0;
-        while(this.playerList.at(i)) {
-          this.addPlayerView(this.playerList.at(i));
-          ++i;
-        };
-        this.validate();
-        return this;
+      var i = 0;
+      while(this.playerList.at(i)) {
+        this.addPlayerView(this.playerList.at(i));
+        ++i;
+      };
+      this.validate();
+      return this;
 		},
 
 		addPlayerView: function(player) {
@@ -94,6 +101,22 @@ define([
 				this.$("#tables").val('');
 			this.settings.setTables(this.$("#tables").val());
 		},
+
+    toggleGG14: function() {
+      var isGG14 = this.$('input[name=gg14]').prop('checked');
+      this.settings.setGG14(isGG14);
+      if (isGG14 && this.settings.getBye() === this.settings.AVERAGE_BYE) {
+        this.settings.setBye(this.settings.GG14_BYE);
+        this.$('input[name="byes"][value="gg14-bye"]').prop('checked', true);
+      }
+      if (isGG14 && this.settings.getTournamentType() === this.settings.SWISS) {
+        this.settings.setTournamentType(this.settings.GG14_SWISS);
+        this.$('input[name="tournamentType"][value="gg14-swiss"]').prop('checked', true);
+      }
+      this.$('input[name="byes"][value="average-bye"]').prop('disabled', isGG14);
+      this.$('input[name="tournamentType"][value="swiss"]').prop('disabled', isGG14);
+
+    },
 
 		changeBye: function() {
 			this.settings.setBye(this.$('input[name="byes"]:checked').val());
@@ -160,7 +183,10 @@ define([
     },
     showHelpTournamentType: function() {
       HelpTexts.showHelpText("tournamentType,swiss,gg14-swiss");
+    },
+    showHelpGG14: function() {
+      HelpTexts.showHelpText("gg14");
     }
 	});
-  	return SettingsView;
+  return SettingsView;
 });

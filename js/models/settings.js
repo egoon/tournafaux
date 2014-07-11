@@ -39,6 +39,13 @@ define([
         this.set('tables', tables.toString());
         this.save();
       },
+      isGG14: function() {
+        return this.get('gg14') === 'true';
+      },
+      setGG14: function(gg14) {
+        this.set('gg14', (gg14 && gg14 != 'false').toString());
+        this.save();
+      },
       getBye: function() {
         var bye =  this.get('bye');
         if (bye === this.GG14_BYE) {
