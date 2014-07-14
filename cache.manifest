@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# Wed Jul  9 23:02:05 CEST 2014
+# Mon Jul 14 21:31:06 CEST 2014
 ./css/bootstrap-3.1.1-min.css
 ./img/btn_donate_SM.gif
 ./index.html
@@ -24,15 +24,9 @@ CACHE MANIFEST
 ./js/views/roundView.js
 ./js/views/settingsView.js
 ./js/views/standingsView.js
-./templates/lastUpdated.html
 ./templates/lastUpdated.tpl
-./templates/navigation.html
 ./templates/navigation.tpl
-./templates/player.html
 ./templates/player.tpl
-./templates/round.html
 ./templates/round.tpl
-./templates/settings.html
 ./templates/settings.tpl
-./templates/standings.html
 ./templates/standings.tpl
