@@ -9,7 +9,7 @@ define([
 
   	var RoundView = Backbone.View.extend({
 
-		el: '#page',
+		tagName: 'div',
 
 		initialize: function(options) {
 			this.playerList = options.playerList;
@@ -26,8 +26,8 @@ define([
 		},
 
     setRoundNumber: function(number) {
-        this.round = _.find(this.roundList.models, function(round){ return round.get("number") == number.toString()});
-        return this;
+      this.round = _.find(this.roundList.models, function(round){ return round.get("number") == number.toString()});
+      return this;
     },
 
 		events: {
@@ -37,7 +37,7 @@ define([
 
 		render: function() {
 			if (this.round) {
-				var noTables = parseInt(this.settings.get('tables'));
+				var noTables = this.settings.getTables();
 				
 				var tables = this.round.getTables(noTables, this.playerList);
 				

@@ -35,10 +35,7 @@ define([
     });
     test('basics', function() {
       expect(8);
-      var players = [];
-      for (var i = 0; i < 4; ++i) {
-        players[i] = this.playerList.create({name: String.fromCharCode(65 + i)});
-      }
+      Utils.createPlayers(this.playerList, 4);
       this.settings.set('tables', '2');
       var round = GenerateRound.generate(1, this.playerList, this.roundList, this.settings);
 
@@ -59,10 +56,7 @@ define([
       expect(5);
       this.settings.setTables(2);
       var bye = this.playerList.getByeRinger();
-      var players = [];
-      for (var i = 0; i < 5; ++i) {
-        players[i] = this.playerList.create({name: String.fromCharCode(65 + i)});
-      }
+      var players = Utils.createPlayers(this.playerList, 5);
       Utils.playGame(1, players[0], players[1], 10, 0, 1);
       Utils.playGame(1, players[2], players[3], 8, 5, 2);
       Utils.playGame(1, players[4], bye, "-", 0, "-");

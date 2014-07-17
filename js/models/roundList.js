@@ -2,7 +2,7 @@
 define([
   'backbone',
   'localstorage',
-], function(Backbone, localstorage){
+], function(Backbone, localstorage) {
 	var Round = Backbone.Model.extend({
       getTables: function(noTables, playerList) {
 			var tables = [];
@@ -41,7 +41,7 @@ define([
 
 		model: Round,
 
-		localStorage: new Backbone.LocalStorage("tournafaux-rounds"),
+		localStorage: new Backbone.LocalStorage("tournafaux-rounds")
 
 		
 	});

@@ -66,6 +66,7 @@ define([
       else {
           router.roundView = new RoundView(router.viewOptions).setRoundNumber(number).render();
       }
+      $('#page').html(router.roundView.el);
       router.viewOptions.active = number;
       var navigationView = new NavigationView(router.viewOptions);
 			$('#navigation').html(navigationView.render().el);

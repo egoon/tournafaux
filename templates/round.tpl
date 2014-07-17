@@ -1,9 +1,9 @@
  <div class="row">
   <div class="col-md-7">
     <table class="table table-striped">
-      <theader>
+      <tbody>
         <tr><th>Table</th><th>Player 1</th><th>VP</th><th>VP</th><th>Player 2</th></tr>
-      </theader>
+      </tbody>
       <tbody>
         <% _.each(tables, function(table) { %>
           <tr>
@@ -21,8 +21,8 @@
     </table>
     <ul id="validation-errors" class="text-danger" style="display:none"></ul>
     <div class="row">
-      <div class="col-md-4" <%- parseInt(settings.get('rounds')) <= parseInt(number) ? 'style="display:none"' : "" %> >
-        <button type="button" id="generate-next-round" class="btn btn-primary" <%= parseInt(settings.get('rounds')) <= parseInt(number) ? 'style="display:none"' : "" %> >Generate round <%- parseInt(number) + 1 %></button>
+      <div class="col-md-4" <%- settings.getRounds() <= parseInt(number) ? 'style="display:none"' : "" %> >
+        <button type="button" id="generate-next-round" class="btn btn-primary">Generate round <%- parseInt(number) + 1 %></button>
       </div>
       <div class="col-md-5">
         <select id="disqualify-select" class="form-control">

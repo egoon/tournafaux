@@ -25,12 +25,14 @@ require([
   'unitTests/navigationViewTest',
   'unitTests/settingsViewTest',
   'unitTests/generateRoundTest',
-],function(QUnit, playerListTest, navigationViewTest, settingsViewTest, generateRoundTest) {
+  'unitTests/roundViewTest',
+],function(QUnit, playerListTest, navigationViewTest, settingsViewTest, generateRoundTest, roundViewTest) {
   // run the tests.
   playerListTest.run();
   navigationViewTest.run();
   settingsViewTest.run();
   generateRoundTest.run();
+  roundViewTest.run();
 
   // start QUnit.
   QUnit.load();
