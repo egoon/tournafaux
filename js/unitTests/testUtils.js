@@ -44,9 +44,19 @@ define([
     },
     createSimpleFirstRound: function(playerList, roundList) {
       var round = roundList.create({number: '1'});
+      var tableNo = 0;
+      var tableName;
       for (var i = 0; i < playerList.length / 2; ++i) {
-        round.set('table'+(i+1)+'player1', playerList.at(2*i).id);
-        round.set('table'+(i+1)+'player2', playerList.at(2*i + 1).id);
+        var player1 = playerList.at(2*i);
+        var player2 = playerList.at(2*i + 1);
+        if (player1.isBye() || player2.isBye()) {
+          tableName = '-';
+        } else {
+          tableNo += 1;
+          tableName = tableNo;
+        }
+        round.set('table'+tableName+'player1', player1.id);
+        round.set('table'+tableName+'player2', player2.id);
       }
       round.save();
       return round;

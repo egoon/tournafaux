@@ -49,14 +49,14 @@ define([
 			}
 		});
     test('first round - 6 players', function() {
-      expect(4);
+      expect(17);
       Utils.createPlayers(this.playerList, 6);
       this.settings.setTables(3);
       var round = Utils.createSimpleFirstRound(this.playerList, this.roundList);
       var roundView = new RoundView({playerList: this.playerList, roundList: this.roundList, settings: this.settings, router: {}});
       roundView.setRoundNumber(1).render();
-
       $('#qunit-fixture').html(roundView.el);
+      
       var selectorRow1 = '#qunit-fixture tbody:nth-child(2) tr:nth-child(1) ';
       var selectorRow2 = '#qunit-fixture tbody:nth-child(2) tr:nth-child(2) ';
       var selectorRow3 = '#qunit-fixture tbody:nth-child(2) tr:nth-child(3) ';
@@ -66,7 +66,53 @@ define([
       equal($(selectorRow2 + 'td:nth-child(5)').html(), 'D', 'table 2 player 2 is D');
       equal($(selectorRow3 + 'td:nth-child(3) input').attr('id'), this.playerList.findWhere({name : 'E'}).id, 'input has same id as player E');
 
+      var playerB = this.playerList.findWhere({name : 'B'});
+      var playerA = this.playerList.findWhere({name : 'A'});
 
+      $(selectorRow1 + 'td:nth-child(4) input').val('3');
+      $('#'+playerB.id).trigger(jQuery.Event('change'));
+
+      equal(playerB.getVpForRound(1), 3, 'set VP for B');
+
+      equal(playerB.getTpForRound(1), 0, 'TP still unset for B');
+
+      $(selectorRow1 + 'td:nth-child(3) input').val('5');
+      $('#'+playerA.id).trigger(jQuery.Event('change'));
+
+      equal(playerA.getVpForRound(1), 5, 'set VP for A');
+      equal(playerA.getTpForRound(1), 3, 'TP 3 for A');
+      equal(playerB.getTpForRound(1), 0, 'TP 0 for B');
+      equal(playerA.getVpDiffForRound(1), 2, 'A at 2 diff');
+      equal(playerB.getVpDiffForRound(1), -2, 'B at -2 diff');
+
+      $(selectorRow1 + 'td:nth-child(4) input').val('9');
+      $('#'+playerB.id).trigger(jQuery.Event('change'));
+
+      equal(playerA.getVpForRound(1), 5, 'VP for A');
+      equal(playerB.getVpForRound(1), 9, 'VP for B');
+      equal(playerA.getTpForRound(1), 0, 'TP 0 for A');
+      equal(playerB.getTpForRound(1), 3, 'TP 3 for B');
+      equal(playerA.getVpDiffForRound(1), -4, 'A at -4 diff');
+      equal(playerB.getVpDiffForRound(1), 4, 'B at 4 diff');
+    });
+    test('first round - 5 players and bye', function() {
+      var bye = this.playerList.getByeRinger();
+      bye.setActive('true');
+      this.settings.setTables(2);
+      Utils.createPlayers(this.playerList, 5);
+      var round = Utils.createSimpleFirstRound(this.playerList, this.roundList);
+      var roundView = new RoundView({playerList: this.playerList, roundList: this.roundList, settings: this.settings, router: {}});
+      roundView.setRoundNumber(1).render();
+      $('#qunit-fixture').html(roundView.el);
+
+      var playerA = this.playerList.findWhere({name : 'A'});
+
+      ok(isNaN(playerA.getVpForRound(1)), 'no VP for A');
+      equal(playerA.getTotalTp(), 1, '1 TP for A');
+
+      console.log($('#'+playerA.id));
+      equal($('#'+playerA.id).attr('disabled'), 'disabled', 'A VP box disabled');
+      equal($('#'+bye.id).attr('disabled'), 'disabled', 'Bye VP box disabled');
     });
   };
   return {run: run};

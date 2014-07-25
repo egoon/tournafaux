@@ -59,7 +59,7 @@ define([
 	    			player.set('noncompeting', 'true'); 
 	    			player.set('bye', 'true');
 	    		});
-	    		options.settings.set('version', 1);
+	    		options.settings.set('version', '1');
 	    		options.settings.save();
 	    	}
 	    },

@@ -17,20 +17,20 @@ define([
   'jquery',
   'underscore',
   'backbone',
+  'logic/helpTexts',
   'text!../../templates/standings.tpl',
-], function($, _, Backbone, standingsTemplate) {
-  	var StandingsView = Backbone.View.extend({
+], function($, _, Backbone, HelpTexts, standingsTemplate) {
+  var StandingsView = Backbone.View.extend({
 
-		el: '.standings',
+		tagName: 'div',
 
 		initialize: function(options) {
 			this.playerList = options.playerList;
 			this.listenTo(this.playerList, 'change', this.render);
-
 		},
 
 		events: {
-			"click #helpBye": "showHelpBye",
+			"click #helpBye": "showHelpBye"
 		},
 
 		render: function() {
@@ -42,12 +42,13 @@ define([
 			players = players.reverse();
 
 			var template = _.template(standingsTemplate, {players: players});
-		    this.$el.html(template);
+      this.$el.html(template);
+      return this;
 		},
 
-		showHelpBye: function(e) {
-			showHelpBye();
-		},
+    showHelpBye: function() {
+      HelpTexts.showHelpText("bye,average-bye,gg14-bye");
+    }
 	});
-  	return StandingsView;
+  return StandingsView;
 });

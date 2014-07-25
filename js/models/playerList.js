@@ -117,12 +117,12 @@ define([
       return possibleOpps;
     },
 
-    getVpForRound: function(round) { return this.get('vp'+round);},
-    setVpForRound: function(round, vp) { return this.set('vp'+round, ""+vp);},
-    //getVpDiffForRound: function(round) { return this.get('vpdiff'+round);},
-    setVpDiffForRound: function(round, vpdiff) { return this.set('vpdiff'+round, ""+vpdiff);},
-    //getTpForRound: function(round) { return this.get('tp'+round);},
-    setTpForRound: function(round, tp) { return this.set('tp'+round, ""+tp);},
+    getVpForRound: function(round) { return parseInt(this.get('vp'+round));},
+    setVpForRound: function(round, vp) { return parseInt(this.set('vp'+round, ""+vp));},
+    getVpDiffForRound: function(round) { return parseInt(this.get('vpdiff'+round));},
+    setVpDiffForRound: function(round, vpdiff) { return parseInt(this.set('vpdiff'+round, ""+vpdiff));},
+    getTpForRound: function(round) { return parseInt(this.get('tp'+round));},
+    setTpForRound: function(round, tp) { return parseInt(this.set('tp'+round, ""+tp));},
     getOpponentForRound: function(round) { return this.get('opponent'+round);},
     setOpponentForRound: function(round, opponent) { return this.set('opponent'+round, ""+opponent);},
     //getTableForRound: function(round) { return this.get('table'+round);},

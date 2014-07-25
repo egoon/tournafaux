@@ -38,6 +38,9 @@ define([
             if (!this.get('tournamentType')) {
                 this.set('tournamentType', this.SWISS);
             }
+            if (!this.get('version')) {
+                this.set('version', '1');
+            }
         },
 
       getRounds: function() {

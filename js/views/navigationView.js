@@ -58,7 +58,7 @@ define([
         if (this.active == 'settings')
           window.location.reload();
         else
-          this.router.navigate('/');
+          this.router.navigate('#');
       }
     }
 	});

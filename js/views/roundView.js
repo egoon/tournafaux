@@ -47,7 +47,8 @@ define([
 
 		events: {
 			"click #generate-next-round": "generateRound",
-      "click #disqualify-button": "disqualifyPlayer"
+      "click #disqualify-button": "disqualifyPlayer",
+      "change td.vp input": "changeVP"
 		},
 
 		render: function() {
@@ -68,34 +69,33 @@ define([
 				});
 
 				var template = _.template(roundTemplate, {number: number, tables: tables, settings: this.settings, players: this.playerList.getCompetingPlayers()});
-		      	this.$el.html(template);
-		      	this.registerListeners();
-		      	new StandingsView({playerList: this.playerList}).render();
+        this.$el.html(template);
+
+        if (this.settings.getRounds() <= parseInt(number))
+          this.$('#generate-next-round').hide();
+        else
+          this.$('#generate-next-round').show();
+
+        this.$("#standings").html(new StandingsView({playerList: this.playerList}).render().el);
 			} else {
 				var template = _.template("<h4>Round <%-number %> does not exist</h4>Sorry!", {number: number});
-		      	this.$el.html(template);
+        this.$el.html(template);
 			}
 			return this;
 		},
 
-		registerListeners: function() {
-			var that = this;
-			var number = this.round.get('number');
-			if (this.round) {
-				_.each(this.playerList.models, function(player) {
-					this.$("#" + player.id).change(function(event) {
-						if (parseInt(event.currentTarget.value) >= 0) {
-							player.setVpForRound(number, event.currentTarget.value);
-						} else {
-							event.currentTarget.value = '0';
-							player.setVpForRound(number, '0');
-						}
-						player.save();
-						that.calculateTpAndVpDiff(that.round, player);
-					});
-				});
-			}
-		},
+    changeVP: function(event) {
+      var number = this.round.get('number');
+      var player = this.playerList.get(event.currentTarget.id);
+      if (parseInt(event.currentTarget.value) >= 0) {
+        player.setVpForRound(number, event.currentTarget.value);
+      } else {
+        event.currentTarget.value = '0';
+        player.setVpForRound(number, '0');
+      }
+      player.save();
+      this.calculateTpAndVpDiff(this.round, player);
+    },
 
 		calculateTpAndVpDiff: function(round, player) { //TODO: refactor to tableView
             var tables = round.getTables(this.settings.getTables(), this.playerList);
