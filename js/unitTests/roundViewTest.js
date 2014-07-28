@@ -96,8 +96,10 @@ define([
       equal(playerB.getVpDiffForRound(1), 4, 'B at 4 diff');
     });
     test('first round - 5 players and bye', function() {
+      expect(3);
       var bye = this.playerList.getByeRinger();
-      bye.setActive('true');
+      bye.setBye(true);
+      bye.setActive(true);
       this.settings.setTables(2);
       Utils.createPlayers(this.playerList, 5);
       var round = Utils.createSimpleFirstRound(this.playerList, this.roundList);
@@ -108,12 +110,31 @@ define([
       var playerA = this.playerList.findWhere({name : 'A'});
 
       ok(isNaN(playerA.getVpForRound(1)), 'no VP for A');
-      equal(playerA.getTotalTp(), 1, '1 TP for A');
-
-      console.log($('#'+playerA.id));
       equal($('#'+playerA.id).attr('disabled'), 'disabled', 'A VP box disabled');
       equal($('#'+bye.id).attr('disabled'), 'disabled', 'Bye VP box disabled');
     });
+    // test('disqualifications', function() {
+    //   expect(3);
+    //   Utils.createPlayers(this.playerList, 6);
+    //   this.settings.setTables(3);
+    //   var round = Utils.createSimpleFirstRound(this.playerList, this.roundList);
+    //   var roundView = new RoundView({playerList: this.playerList, roundList: this.roundList, settings: this.settings, router: {}});
+    //   roundView.setRoundNumber(1).render();
+    //   $('#qunit-fixture').html(roundView.el);
+
+    //   var playerC = this.playerList.findWhere({name : 'C'});
+
+    //   ok(playerC.isActive(), 'player C is active');
+
+    //   //TODO needs mock confirm
+    //   $('#qunit-fixture #disqualify-select').val(playerC.id);
+    //   $('#qunit-fixture #disqualify-button').click();
+
+    //   ok(!playerC.isActive(), 'player C is inactive');
+    //   console.log(this.playerList.getActivePlayers());
+    //   console.log(_.findWhere(this.playerList.getActivePlayers(), {id: playerC.id}));
+    //   ok(!_.findWhere(this.playerList.getActivePlayers(), {id: playerC.id}));
+    // });
   };
   return {run: run};
 });
