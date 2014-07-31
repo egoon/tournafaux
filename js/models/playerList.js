@@ -83,6 +83,10 @@ define([
       return this.countPointsWithBye('vpdiff', 0);
     },
 
+    getAchievements: function() {
+      return this.countPointsWithBye('achievements', 0);
+    },
+
     getBestMatches: function(players, swissThreshold) {
       var that = this;
 
@@ -123,6 +127,8 @@ define([
     setVpDiffForRound: function(round, vpdiff) { return parseInt(this.set('vpdiff'+round, ""+vpdiff));},
     getTpForRound: function(round) { return parseInt(this.get('tp'+round));},
     setTpForRound: function(round, tp) { return parseInt(this.set('tp'+round, ""+tp));},
+    getAchievementsForRound: function(round) { return parseInt(this.get('achievements'+round));},
+    setAchievementsForRound: function(round, tp) { return parseInt(this.set('achievements'+round, ""+tp));},
     getOpponentForRound: function(round) { return this.get('opponent'+round);},
     setOpponentForRound: function(round, opponent) { return this.set('opponent'+round, ""+opponent);},
     //getTableForRound: function(round) { return this.get('table'+round);},

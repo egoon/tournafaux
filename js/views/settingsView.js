@@ -20,8 +20,7 @@ define([
   'logic/generateRound',
   'logic/helpTexts',
   'views/playerView',
-
-  'text!../../templates/settings.tpl',
+  'text!../../templates/settings.tpl'
 ], function($, _, Backbone, GenerateRound, HelpTexts, PlayerView, settingsTemplate) {
 
 	var SettingsView = Backbone.View.extend({

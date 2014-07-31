@@ -62,9 +62,11 @@ define([
 				_.each(tables, function(table) {
 					table.player1name = table.player1.getName();
 					table.player1vp = table.player1.getVpForRound(number) ? table.player1.getVpForRound(number) : "";
+          table.player1achievements = table.player1.getAchievementsForRound(number) ? table.player1.getAchievementsForRound(number) : "";
 					table.player1id = table.player1.id;
 					table.player2name = table.player2.getName();
 					table.player2vp = table.player2.getVpForRound(number) ? table.player2.getVpForRound(number) : "";
+          table.player2achievements = table.player2.getAchievementsForRound(number) ? table.player2.getAchievementsForRound(number) : "";
 					table.player2id = table.player2.id;
 				});
 
