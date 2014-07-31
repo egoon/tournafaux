@@ -1,7 +1,7 @@
 <table class="table table-striped">
-  <theader>
+  <tbody>
     <tr><th>#</th><th>Player</th><th>TP</th><th>VP Diff</th><th>VP</th></tr>
-  </theader>
+  </tbody>
   <tbody>
     <% var i = 1;
     _.each(players, function(player) { %>

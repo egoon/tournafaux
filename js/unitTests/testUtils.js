@@ -32,8 +32,10 @@ define([
       }
       player1.setOpponentForRound(round, player2.id);
       player2.setOpponentForRound(round, player1.id);
-      player1.setTableForRound(round, table);
-      player2.setTableForRound(round, table);
+      if (table) {
+        player1.setTableForRound(round, table);
+        player2.setTableForRound(round, table);
+      }
     },
     createPlayers: function(playerList, numberOfPlayers) {
       var players = [];

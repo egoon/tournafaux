@@ -41,14 +41,15 @@ require([
   'unitTests/settingsViewTest',
   'unitTests/generateRoundTest',
   'unitTests/roundViewTest',
-],function(QUnit, playerListTest, navigationViewTest, settingsViewTest, generateRoundTest, roundViewTest) {
+  'unitTests/standingsViewTest'
+],function(QUnit, playerListTest, navigationViewTest, settingsViewTest, generateRoundTest, roundViewTest, standingsViewTest) {
   // run the tests.
   playerListTest.run();
   navigationViewTest.run();
   settingsViewTest.run();
   generateRoundTest.run();
   roundViewTest.run();
-
+  standingsViewTest.run();
   // start QUnit.
   QUnit.load();
   QUnit.start();

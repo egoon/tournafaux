@@ -24,47 +24,47 @@ define([
   'text!../../templates/settings.tpl',
 ], function($, _, Backbone, GenerateRound, HelpTexts, PlayerView, settingsTemplate) {
 
-  var SettingsView = Backbone.View.extend({
+	var SettingsView = Backbone.View.extend({
 		
-		tagName: 'div',
+  	tagName: 'div',
 
-		events: {
-			"keypress #new-player": "createOnEnter",
-			"click #generate-first-round": "generateRound",
-			"change #rounds": "changeRounds",
-			"change #tables": "changeTables",
+  	events: {
+  		"keypress #new-player": "createOnEnter",
+  		"click #generate-first-round": "generateRound",
+  		"change #rounds": "changeRounds",
+  		"change #tables": "changeTables",
       "click input[name=gg14]": "toggleGG14",
       "click input[name=byes]": "changeBye",
       "click input[name=tournamentType]": "changeTournamentType",
-			"click #helpCityFaction": "showHelpCityFaction",
+  		"click #helpCityFaction": "showHelpCityFaction",
       "click #helpBye": "showHelpBye",
       "click #helpRinger": "showHelpRinger",
       "click #helpTournamentType": "showHelpTournamentType",
       "click #helpGG14": "showHelpGG14"
-		},
-		
-		initialize: function(options) {
-			this.playerList = options.playerList;
-			this.playerList.fetch();
-			this.roundList = options.roundList;
-			this.roundList.fetch();
+  	},
+  		
+  	initialize: function(options) {
+  		this.playerList = options.playerList;
+  		this.playerList.fetch();
+  		this.roundList = options.roundList;
+  		this.roundList.fetch();
 
-			this.settings = options.settings;
-			this.settings.fetch();
+  		this.settings = options.settings;
+  		this.settings.fetch();
 
-			this.router = options.router;
-			
-			this.listenTo(this.playerList, 'add', this.validate);
-			this.listenTo(this.playerList, 'remove', this.validate);
-			this.listenTo(this.playerList, 'reset', this.validate);
-			this.listenTo(this.settings, 'change:rounds', this.validate);
-			this.listenTo(this.settings, 'change:tables', this.validate);
+  		this.router = options.router;
+  		
+  		this.listenTo(this.playerList, 'add', this.validate);
+  		this.listenTo(this.playerList, 'remove', this.validate);
+  		this.listenTo(this.playerList, 'reset', this.validate);
+  		this.listenTo(this.settings, 'change:rounds', this.validate);
+  		this.listenTo(this.settings, 'change:tables', this.validate);
 
       this.byeRinger = this.playerList.getByeRinger();
-		},
-		
-		render: function() {
-			var template = _.template(settingsTemplate, {settings: this.settings});
+  	},
+  		
+  	render: function() {
+  		var template = _.template(settingsTemplate, {settings: this.settings});
       this.$el.html(template);
       this.newPlayerInput = this.$("#new-player");
 
@@ -83,7 +83,7 @@ define([
       };
       this.validate();
       return this;
-		},
+  	},
 
 		addPlayerView: function(player) {
 			var playerView = new PlayerView({

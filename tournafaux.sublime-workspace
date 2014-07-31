@@ -1,0 +1,429 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"tableN",
+				"tableNo"
+			],
+			[
+				"sett",
+				"settings"
+			],
+			[
+				"mat",
+				"match_pattern"
+			],
+			[
+				"aft",
+				"aftonbladet"
+			],
+			[
+				"c",
+				"cube"
+			],
+			[
+				"api",
+				"apiKey"
+			],
+			[
+				"a",
+				"api"
+			],
+			[
+				"ind",
+				"indexOf"
+			],
+			[
+				"sub",
+				"substr"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"contents": "/*\n Copyright 2014 Bennie Lundmark\n\n Licensed under the Apache License, Version 2.0 (the \"License\");\n you may not use this file except in compliance with the License.\n You may obtain a copy of the License at\n\n http://www.apache.org/licenses/LICENSE-2.0\n\n Unless required by applicable law or agreed to in writing, software\n distributed under the License is distributed on an \"AS IS\" BASIS,\n WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n See the License for the specific language governing permissions and\n limitations under the License.\n */\n\"use strict\";\ndefine([\n	'jquery',\n  'underscore',\n  'backbone',\n  'localstorage',\n  '../models/roundList',\n  '../models/playerList',\n  '../models/settings',\n  '../views/roundView',\n  'unitTests/testUtils'\n], function($, _, Backbone, localstorage, RoundList, PlayerList, Settings, RoundView, Utils) {\n  var run = function() {\n    module(\"RoundView\", {\n			setup: function() {\n				this.roundList = new RoundList();\n        this.roundList.localStorage = new Backbone.LocalStorage(\"test-roundView-rounds\");\n				this.roundList.fetch();\n        this.playerList = new PlayerList();\n        this.playerList.localStorage = new Backbone.LocalStorage(\"test-roundView-players\");\n        this.playerList.fetch();\n        this.settings = new Settings();\n        this.settings.localstorage = new Backbone.LocalStorage(\"test-roundView-settings\");\n        this.settings.fetch();\n			},\n			teardown: function() {\n        while(this.roundList.at(0)) {\n          this.roundList.at(0).destroy();\n        }\n        while(this.playerList.at(0)) {\n          this.playerList.at(0).destroy();\n        }\n        this.settings.destroy();\n			}\n		});\n    test('first round - 6 players', function() {\n      expect(17);\n      Utils.createPlayers(this.playerList, 6);\n      this.settings.setTables(3);\n      var round = Utils.createSimpleFirstRound(this.playerList, this.roundList);\n      var roundView = new RoundView({playerList: this.playerList, roundList: this.roundList, settings: this.settings, router: {}});\n      roundView.setRoundNumber(1).render();\n      $('#qunit-fixture').html(roundView.el);\n      \n      var selectorRow1 = '#qunit-fixture tbody:nth-child(2) tr:nth-child(1) ';\n      var selectorRow2 = '#qunit-fixture tbody:nth-child(2) tr:nth-child(2) ';\n      var selectorRow3 = '#qunit-fixture tbody:nth-child(2) tr:nth-child(3) ';\n\n      equal($(selectorRow1 + 'td:nth-child(1)').html(), '1', 'first table name is \"1\"');\n      equal($(selectorRow1 + 'td:nth-child(2)').html(), 'A', 'table 1 player 1 is A');\n      equal($(selectorRow2 + 'td:nth-child(5)').html(), 'D', 'table 2 player 2 is D');\n      equal($(selectorRow3 + 'td:nth-child(3) input').attr('id'), this.playerList.findWhere({name : 'E'}).id, 'input has same id as player E');\n\n      var playerB = this.playerList.findWhere({name : 'B'});\n      var playerA = this.playerList.findWhere({name : 'A'});\n\n      $(selectorRow1 + 'td:nth-child(4) input').val('3');\n      $('#'+playerB.id).trigger(jQuery.Event('change'));\n\n      equal(playerB.getVpForRound(1), 3, 'set VP for B');\n\n      equal(playerB.getTpForRound(1), 0, 'TP still unset for B');\n\n      $(selectorRow1 + 'td:nth-child(3) input').val('5');\n      $('#'+playerA.id).trigger(jQuery.Event('change'));\n\n      equal(playerA.getVpForRound(1), 5, 'set VP for A');\n      equal(playerA.getTpForRound(1), 3, 'TP 3 for A');\n      equal(playerB.getTpForRound(1), 0, 'TP 0 for B');\n      equal(playerA.getVpDiffForRound(1), 2, 'A at 2 diff');\n      equal(playerB.getVpDiffForRound(1), -2, 'B at -2 diff');\n\n      $(selectorRow1 + 'td:nth-child(4) input').val('9');\n      $('#'+playerB.id).trigger(jQuery.Event('change'));\n\n      equal(playerA.getVpForRound(1), 5, 'VP for A');\n      equal(playerB.getVpForRound(1), 9, 'VP for B');\n      equal(playerA.getTpForRound(1), 0, 'TP 0 for A');\n      equal(playerB.getTpForRound(1), 3, 'TP 3 for B');\n      equal(playerA.getVpDiffForRound(1), -4, 'A at -4 diff');\n      equal(playerB.getVpDiffForRound(1), 4, 'B at 4 diff');\n    });\n    test('first round - 5 players and bye', function() {\n      expect(3);\n      var bye = this.playerList.getByeRinger();\n      bye.setBye(true);\n      bye.setActive(true);\n      this.settings.setTables(2);\n      Utils.createPlayers(this.playerList, 5);\n      var round = Utils.createSimpleFirstRound(this.playerList, this.roundList);\n      var roundView = new RoundView({playerList: this.playerList, roundList: this.roundList, settings: this.settings, router: {}});\n      roundView.setRoundNumber(1).render();\n      $('#qunit-fixture').html(roundView.el);\n\n      var playerA = this.playerList.findWhere({name : 'A'});\n\n      ok(isNaN(playerA.getVpForRound(1)), 'no VP for A');\n      equal($('#'+playerA.id).attr('disabled'), 'disabled', 'A VP box disabled');\n      equal($('#'+bye.id).attr('disabled'), 'disabled', 'Bye VP box disabled');\n    });\n    test('disqualifications', function() {\n      expect(6);\n      Utils.createPlayers(this.playerList, 6);\n      this.settings.setTables(3);\n      var round = Utils.createSimpleFirstRound(this.playerList, this.roundList);\n      var roundView = new RoundView({playerList: this.playerList, roundList: this.roundList, settings: this.settings, router: {}});\n      roundView.setRoundNumber(1).render();\n      $('#qunit-fixture').html(roundView.el);\n\n      var playerC = this.playerList.findWhere({name : 'C'});\n\n      \n    });\n  };\n  return {run: run};\n});",
+			"file": "js/unitTests/roundViewTest.js",
+			"file_size": 5411,
+			"file_write_time": 1406282451000000,
+			"settings":
+			{
+				"buffer_size": 5435,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "js/models/playerList.js",
+			"settings":
+			{
+				"buffer_size": 7095,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "js/views/roundView.js",
+			"settings":
+			{
+				"buffer_size": 5957,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "js/unitTests/testUtils.js",
+			"settings":
+			{
+				"buffer_size": 2401,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Volumes/Dev/tournafaux/js/models/settings.js",
+		"/Volumes/Dev/tournafaux/js/models/roundList.js",
+		"/Volumes/Dev/platform/release/deploy-test/remote/staging/staging.bundle",
+		"/Volumes/Dev/taskrunner-standard-service/pom.xml",
+		"/Volumes/Dev/taskrunner-standard-service/taskrunner-standard-service-local.yaml",
+		"/Volumes/Dev/platform/config/test-kubrick-a/kubrick-counter-node/start",
+		"/Volumes/Dev/platform/config/kubrick-counter-node/start",
+		"/Volumes/Dev/platform/config/test-kubrick-a/kubrick-reporting-service/start",
+		"/Users/bennie/Downloads/api_test.py",
+		"/Volumes/Dev/platform/release/deploy-test/local/karbon-core/conf/default.d/10-common",
+		"/Volumes/Dev/platform/release/deploy/contexts/core/package/tomcat6-core",
+		"/Volumes/Dev/platform/release/deploy/common/core",
+		"/Volumes/Dev/platform/release/deploy-test/remote/feature3-nexus/feature3.bundle",
+		"/Volumes/Dev/platform/release/deploy-test/remote/master-jenkins/master-jenkins.bundle",
+		"/Volumes/Dev/platform/release/deploy-test/remote/platform/platform.bundle",
+		"/Volumes/Dev/platform/release/deploy-test/remote/platform-multicore/platform-multicore.bundle",
+		"/Volumes/Dev/platform/release/deploy-test/remote/staging-forecast/staging-forecast.bundle",
+		"/Volumes/Dev/platform/release/deploy-test/remote/staging-krs/staging-krs.bundle",
+		"/Volumes/Dev/platform/release/deploy-test/remote/feature2/feature2.bundle",
+		"/Volumes/Dev/platform/release/deploy-test/remote/feature/feature.bundle",
+		"/Volumes/Dev/platform/release/deploy-test/remote/feature3/feature3.bundle",
+		"/Volumes/Dev/foos/utils.js",
+		"/Volumes/Dev/foos/stats.js",
+		"/Volumes/Dev/foos/stats.html",
+		"/Volumes/Dev/cube/scripts/regression_test",
+		"/Volumes/Dev/platform/config/test-kubrick-b/kubrick-reporting-service/start",
+		"/Volumes/Dev/platform/config/test-kubrick-b/kubrick-counter-node/live_agg.properties",
+		"/Applications/apache-tomcat-7.0.47/conf/web.xml",
+		"/Volumes/Dev/swagger-ui/src/main/html/index.html",
+		"/Volumes/Dev/platform/config/test-kubrick-b/kubrick-counter-node/start",
+		"/Volumes/Dev/platform/config/cassandra1.2.9/KubrickA.yaml",
+		"/Volumes/Dev/platform/config/cassandra1.2.9/cassandra.test.yaml",
+		"/Volumes/Dev/platform/config/kubrick-regression-test-variable/kubrick-reporting-service/start",
+		"/Volumes/Dev/platform/config/kubrick-regression-test-variable/kubrick-counter-node/start",
+		"/Volumes/Dev/log4j-bennie.properties",
+		"/Volumes/Dev/platform/config/kubrick-b/kubrick-reporting-service/start",
+		"/Volumes/Dev/platform/config/cassandra1.2.9/KubrickA-2disks.yaml",
+		"/Volumes/Dev/platform/release/deploy-test/deploy/fabfile.py",
+		"/Volumes/Dev/adserver/adserver-proxy/src/test/resources/siteupdate_m6.xml",
+		"/Volumes/Dev/swagger-core/samples/no-server/src/main/webapp/apidocs/service.json",
+		"/Volumes/Dev/swagger-core/samples/no-server/src/main/webapp/resources/samplehub/sample/insert",
+		"/Volumes/Dev/swagger-core/samples/no-server/src/main/webapp/index.html",
+		"/Volumes/Dev/swagger-core/samples/no-server/src/main/webapp/lib/swagger.js",
+		"/Volumes/Dev/swagger-core/samples/no-server/src/main/webapp/swagger-ui.js",
+		"/Volumes/Dev/swagger-core/samples/no-server/src/main/webapp/resources.json",
+		"/Volumes/Dev/swagger-core/samples/no-server/src/main/webapp/app",
+		"/Volumes/Dev/swagger-core/samples/no-server/src/main/webapp/api-docs",
+		"/Volumes/Dev/platform/config/kubrick-a/kubrick-counter-node/start"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"parseInt(return ",
+			"parseInt(return  ",
+			"4.12",
+			"Clean",
+			"Removing gen",
+			"Deleting",
+			"rabbit",
+			"cassandra_tokens",
+			"cassandra",
+			"PlayerList",
+			"PlayerListView",
+			"<table",
+			"input id=\"",
+			"fetchAndRender",
+			"getMode",
+			"fetchAndRender",
+			"seasons",
+			"k_setup_node",
+			"install_",
+			"install_node",
+			"k_install",
+			"FLUSHER_CONF2",
+			"install_serv",
+			"def.*java",
+			"sed ",
+			" in ",
+			"cat ",
+			"cd ",
+			".videoplaza.org:9160",
+			"PORT_OFFSET",
+			"rmi",
+			"stop_ser",
+			"agent",
+			"datac",
+			"install_cassa",
+			"setup_cassandra_jbod",
+			"parted",
+			"phi",
+			"setup_cassandra_jbod",
+			":9160",
+			"phi",
+			"dpkg",
+			"KubrickA",
+			"<<<<",
+			"=======",
+			"===",
+			"console.log(\"1 \");",
+			"update-swagger-ui",
+			"apiKey",
+			"api_key",
+			"Unable to read",
+			"basrUrl",
+			"apis",
+			"path",
+			"onLoadFailure",
+			"update-swagger-ui",
+			"baseUrl",
+			"test_kubrick_b",
+			"test-mq",
+			"keyspace",
+			"fab"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"return parseInt(",
+			"input value=\"",
+			"FLUSHER_CONF_LOMEM",
+			":9160",
+			".videoplaza.org:9160"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 2,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "js/unitTests/roundViewTest.js",
+					"settings":
+					{
+						"buffer_size": 5435,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5397,
+								5397
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 938.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "js/models/playerList.js",
+					"settings":
+					{
+						"buffer_size": 7095,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3413,
+								3413
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1721.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "js/views/roundView.js",
+					"settings":
+					{
+						"buffer_size": 5957,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3233,
+								3233
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 631.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "js/unitTests/testUtils.js",
+					"settings":
+					{
+						"buffer_size": 2401,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2261,
+								2261
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 15.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 294.0,
+	"status_bar_visible": true
+}

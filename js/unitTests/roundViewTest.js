@@ -135,6 +135,17 @@ define([
     //   console.log(_.findWhere(this.playerList.getActivePlayers(), {id: playerC.id}));
     //   ok(!_.findWhere(this.playerList.getActivePlayers(), {id: playerC.id}));
     // });
+    test('standings view renders', function() {
+      expect(1);
+      Utils.createPlayers(this.playerList, 6);
+      this.settings.setTables(3);
+      var round = Utils.createSimpleFirstRound(this.playerList, this.roundList);
+      var roundView = new RoundView({playerList: this.playerList, roundList: this.roundList, settings: this.settings, router: {}});
+      roundView.setRoundNumber(1).render();
+      $('#qunit-fixture').html(roundView.el);
+
+      equal($('#qunit-fixture #standings tbody:nth-child(2) tr').length, 6, 'six rows in standings view');
+    });
   };
   return {run: run};
 });
