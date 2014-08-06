@@ -93,6 +93,7 @@ define([
 						player.clearGames(that.roundList.length);
 						player.save();
 					});
+          this.changeFirstOpponent({currentTarget: {value: undefined}});
 					this.player.destroy();
 					while(this.roundList.at(0)) {
 						this.roundList.at(0).destroy();
@@ -101,6 +102,7 @@ define([
 					
 				}
 			} else {
+        this.changeFirstOpponent({currentTarget: {value: undefined}});
 				this.player.destroy();
 				this.$el.hide(function() {that.remove()});
 			}

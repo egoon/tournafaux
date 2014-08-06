@@ -109,7 +109,6 @@ define([
       if (this.getFirstOpponent()) {
         return [_.find(players, function(player) {return player.id === that.getFirstOpponent();})];
       }
-      
 
       var possibleOpps = _.filter(players, function(player) {
         if (that.id == player.id) return false;
