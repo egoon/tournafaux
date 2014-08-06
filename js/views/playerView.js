@@ -42,7 +42,7 @@ define([
 
 		render: function() {
       var that = this;
-      var opponents = _.filter(this.playerList.getActivePlayers(), function(player) {return player.id !== that.player.id});
+      var opponents = _.filter(this.playerList.getActivePlayers(), function(player) {return player.id !== that.player.id && !player.isBye()});
 			var template =_.template(playerTemplate, {player: this.player, opponents: opponents});
       
 			this.$el.html(template);

@@ -8,7 +8,7 @@ value="<%- player.getFaction() %>"/></td>
 	<select class="form-control chooseFirstOpponent" name="chooseFirstOpponent" id="chooseFirstOpponent" value="<%- player.getFirstOpponent() %>">
     <option>Random</option>
     <% _.each(opponents, function(opp) { %>
-      <option value="<%- opp.id %>"><%- opp.get('name') %></option>
+      <option value="<%- opp.id %>"><%- opp.getName() %></option>
     <% }); %>
   </select>
 </td>
