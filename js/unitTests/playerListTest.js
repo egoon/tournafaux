@@ -170,19 +170,19 @@ define([
                 }
             }
         });
-        test('getDissimilarPlayers - simple setup', function() {
+        test('getPossibleFirstRoundOpponents - simple setup', function() {
             expect(4);
             var player;
             for (var i = 1; i <= 4; ++i) {
                 player = this.playerList.create({name: 'player' + i});
             }
             
-            equal(player.getDissimilarPlayers(this.playerList.models).length, 3, 'all players are dissimilar');
-            _.each(player.getDissimilarPlayers(this.playerList.models), function(other) {
+            equal(player.getPossibleFirstRoundOpponents(this.playerList.models).length, 3, 'all players are dissimilar');
+            _.each(player.getPossibleFirstRoundOpponents(this.playerList.models), function(other) {
                 notEqual(other.getName(), player.getName(), 'the player should not be in her own list');
             });
         });
-        test('getDissimilarPlayers - complex setup', function() {
+        test('getPossibleFirstRoundOpponents - complex setup', function() {
             expect(5);
             var player = this.playerList.create({name: 'rezSthlm', city: 'Sthlm', faction: 'rez'});
             this.playerList.create({name: 'outSthlm', city: 'Sthlm', faction: 'out'});
@@ -191,9 +191,9 @@ define([
             
             var models = this.playerList.models;
             _.each(models, function(p) {
-                equal(player.getDissimilarPlayers(models).length, 1, p.getName() + ' only has one dissimilar player');
+                equal(player.getPossibleFirstRoundOpponents(models).length, 1, p.getName() + ' only has one dissimilar player');
             });
-            equal(player.getDissimilarPlayers(models).pop().getName(), 'outGbg', 'rezSthlm should be unlike outGbg only');
+            equal(player.getPossibleFirstRoundOpponents(models).pop().getName(), 'outGbg', 'rezSthlm should be unlike outGbg only');
         });
 
         test('getBestMatches - A vs B: 6-4, C vs D: 9-1, E vs F: 7-3', function() {

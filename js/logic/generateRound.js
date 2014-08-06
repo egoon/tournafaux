@@ -61,7 +61,7 @@ define([
 
 		if (number == 1 || number == "1") {
 			_.each(players, function(player) {
-				possibleMatches.push({player: player, matches: player.getDissimilarPlayers(players)});
+				possibleMatches.push({player: player, matches: player.getPossibleFirstRoundOpponents(players)});
 			});
 		} else {
 			_.each(players, function(player) {
