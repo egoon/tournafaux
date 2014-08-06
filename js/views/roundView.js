@@ -98,10 +98,10 @@ define([
     },
 
 		calculateTpAndVpDiff: function(round, player) { //TODO: refactor to tableView
-            var tables = round.getTables(this.settings.getTables(), this.playerList);
-            var number = round.get('number');
-            for (var i = 0; i < tables.length; ++i) {
-                var table = tables[i];
+      var tables = round.getTables(this.settings.getTables(), this.playerList);
+      var number = round.get('number');
+      for (var i = 0; i < tables.length; ++i) {
+          var table = tables[i];
 				var player1 = table.player1;
 				var player2 = table.player2;
 				if (player1.id === player.id || player2.id === player.id) {

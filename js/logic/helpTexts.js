@@ -27,6 +27,9 @@ define([
       "Check this to disable all options that are not compatible with " +
       "<a href='http://wyrd-games.net/community/files/file/52-gaining-grounds/'>Gaining Grounds 2014</a>",
 
+    chooseFirstOpponent: "<h4>Choose First Opponent</h4>" +
+      "Check this if you wish to choose opponents for some or all players.",
+
     bye: "<h4>Bye</h4>" +
       "If you have an uneven amount of players, a Bye will be automatically generated. " +
       "In the first round a random player will be matched against the bye. In the next rounds the player with the " +

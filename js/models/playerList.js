@@ -214,6 +214,15 @@ define([
 
     setFaction: function(faction) {
       this.set('faction', faction);
+    },
+
+    getFirstOpponent: function() {
+      return this.get('firstOpponent');
+    },
+
+    setFirstOpponent: function(firstOpponent) {
+      this.set('firstOpponent', firstOpponent);
+      this.save();
     }
 
   });

@@ -29,19 +29,27 @@ define([
 			this.roundList = options.roundList;
       this.listenTo(this.player, 'change:ringer', this.render);
       this.listenTo(this.player, 'change:nonCompeting', this.render);
-
+      this.listenTo(this.player, 'change:firstOpponent', this.render);
+      this.listenTo(this.playerList, 'add', this.render);
+      this.listenTo(this.playerList, 'remove', this.render);
 		},
 
 		events: {
 			"click button.removePlayer": "removePlayer",
-      "change input": "updateProperty"
+      "change input": "updateProperty",
+      "change select.chooseFirstOpponent": "changeFirstOpponent"
 		},
 
 		render: function() {
-			var template =_.template(playerTemplate, {player: this.player});
+      var that = this;
+      var opponents = _.filter(this.playerList.getActivePlayers(), function(player) {return player.id !== that.player.id});
+			var template =_.template(playerTemplate, {player: this.player, opponents: opponents});
+      
 			this.$el.html(template);
 			this.$el.attr('id', this.player.id);
       this.validate();
+      if (this.player.getFirstOpponent())
+        this.$('select.chooseFirstOpponent').val(this.player.getFirstOpponent());
 		},
 
     updateProperty: function(e) {
@@ -50,6 +58,29 @@ define([
       if (e.currentTarget.name === 'name')
         e.currentTarget.value = this.player.getName();
       return false;
+    },
+
+    changeFirstOpponent: function(e) {
+      // clear previously selected opponent
+      var oldOpponent = this.playerList.get(this.player.getFirstOpponent());
+      if (oldOpponent) {        
+        oldOpponent.setFirstOpponent(undefined);
+      }
+
+      // set first opponent
+      if (this.playerList.get(e.currentTarget.value)) {
+        this.player.setFirstOpponent(e.currentTarget.value);
+      
+        var newOpponent = this.playerList.get(this.player.getFirstOpponent());
+        if (newOpponent && newOpponent.getFirstOpponent()) {
+          // change opponent's opponent
+          oldOpponent = this.playerList.get(newOpponent.getFirstOpponent());
+          oldOpponent.setFirstOpponent(undefined);
+        }
+
+        newOpponent.setFirstOpponent(this.player.id);
+      } else
+        this.player.setFirstOpponent(undefined);
     },
 
 		removePlayer: function() {

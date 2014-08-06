@@ -34,13 +34,15 @@ define([
   		"change #rounds": "changeRounds",
   		"change #tables": "changeTables",
       "click input[name=gg14]": "toggleGG14",
+      "click input[name=chooseFirstOpponent]": "toggleChooseFirstOpponent",
       "click input[name=byes]": "changeBye",
       "click input[name=tournamentType]": "changeTournamentType",
   		"click #helpCityFaction": "showHelpCityFaction",
       "click #helpBye": "showHelpBye",
       "click #helpRinger": "showHelpRinger",
       "click #helpTournamentType": "showHelpTournamentType",
-      "click #helpGG14": "showHelpGG14"
+      "click #helpGG14": "showHelpGG14",
+      "click #helpChooseFirstOpponent": "showHelpChooseFirstOpponent"
   	},
   		
   	initialize: function(options) {
@@ -75,12 +77,13 @@ define([
         this.$('input[name="byes"][value="average-bye"]').prop('disabled', true);
         this.$('input[name="tournamentType"][value="swiss"]').prop('disabled', true);
       }
-
       var i = 0;
       while(this.playerList.at(i)) {
         this.addPlayerView(this.playerList.at(i));
         ++i;
       };
+      if (this.settings.isChooseFirstOpponent())
+        this.$('input[name=chooseFirstOpponent]').prop('checked', true);
       this.validate();
       return this;
   	},
@@ -93,6 +96,8 @@ define([
 			});
 			playerView.render();
 			this.$("#new-player-row").before(playerView.el);
+      if (!this.settings.isChooseFirstOpponent())
+        this.$('.chooseFirstOpponent').hide();
 		},
 
 		createOnEnter: function(e) {
@@ -130,7 +135,15 @@ define([
       }
       this.$('input[name="byes"][value="average-bye"]').prop('disabled', isGG14);
       this.$('input[name="tournamentType"][value="swiss"]').prop('disabled', isGG14);
+    },
 
+    toggleChooseFirstOpponent: function() {
+      var isChooseFirstOpponent = this.$('input[name=chooseFirstOpponent]').prop('checked');
+      this.settings.setChooseFirstOpponent(isChooseFirstOpponent);
+      if (isChooseFirstOpponent)
+        this.$('.chooseFirstOpponent').show();
+      else 
+        this.$('.chooseFirstOpponent').hide();
     },
 
 		changeBye: function() {
@@ -201,6 +214,9 @@ define([
     },
     showHelpGG14: function() {
       HelpTexts.showHelpText("gg14");
+    },
+    showHelpChooseFirstOpponent: function() {
+      HelpTexts.showHelpText("chooseFirstOpponent");
     }
 	});
   return SettingsView;

@@ -16,8 +16,14 @@
       <div class="checkbox">
         <label>
           <input type="checkbox" name="gg14" value="gg14">
-          Gaining Grounds 2014  <a id="helpGG14">(?)</a>
-        </label>
+          Gaining Grounds 2014
+        </label> <a id="helpGG14">(?)</a>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" name="chooseFirstOpponent" value="chooseFirstOpponent">
+          Choose First Opponent 
+        </label> <a id="helpChooseFirstOpponent">(?)</a>
       </div>
     </div>
 
@@ -68,9 +74,15 @@
   </div>
   <hr/>
   <table class="table table-striped">
-    <thead>
-      <tr><th>Player name</th><th>City/Club <a id="helpCityFaction">(?)</a></th><th>Faction <a id="helpCityFaction">(?)</a></th><th>Remove</th</tr>
-    </thead>
+    <tbody>
+      <tr>
+        <th>Player name</th>
+        <th>City/Club <a id="helpCityFaction">(?)</a></th>
+        <th>Faction <a id="helpCityFaction">(?)</a></th>
+        <th class="chooseFirstOpponent">Opponent</th>
+        <th>Remove</th>
+      </tr>
+    </tbody>
     <tbody id="player-table">
 
       <tr id="new-player-row">

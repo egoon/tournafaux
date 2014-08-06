@@ -64,6 +64,13 @@ define([
         this.set('gg14', (gg14 && gg14 != 'false').toString());
         this.save();
       },
+      isChooseFirstOpponent: function() {
+        return this.get('chooseFirstOpponent') === 'true';
+      },
+      setChooseFirstOpponent: function(choose) {
+        this.set('chooseFirstOpponent', (choose && choose != 'false').toString());
+        this.save();
+      },
       getBye: function() {
         var bye =  this.get('bye');
         if (bye === this.GG14_BYE) {
