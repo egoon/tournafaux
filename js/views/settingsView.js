@@ -142,8 +142,10 @@ define([
       this.settings.setChooseFirstOpponent(isChooseFirstOpponent);
       if (isChooseFirstOpponent)
         this.$('.chooseFirstOpponent').show();
-      else 
+      else {
+        this.playerList.each(function(player) {player.setFirstOpponent(undefined);});
         this.$('.chooseFirstOpponent').hide();
+      }
     },
 
 		changeBye: function() {

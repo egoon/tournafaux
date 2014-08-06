@@ -74,7 +74,7 @@ define([
         console.log(tagArray[i]);
         text += this[tagArray[i]];
       }
-      $("#help").html(text + "<hr/>");
+      $("#help").html(text);
     }
 
   };
