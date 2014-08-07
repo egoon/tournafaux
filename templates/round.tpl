@@ -20,9 +20,10 @@
       <tbody>
     </table>
     <ul id="validation-errors" class="text-danger" style="display:none"></ul>
-    <div class="row" <%- settings.getRounds() <= parseInt(number) ? 'style="display:none"' : "" %> >
+    <div class="row">
       <div class="col-md-5">
         <button type="button" id="generate-next-round" class="btn btn-primary">Generate round <%- parseInt(number) + 1 %></button>
+        <button type="button" id="show-results" class="btn btn-primary">Show Results</button>
       </div>
     </div>
     <hr/>

@@ -47,6 +47,7 @@ define([
 
 		events: {
 			"click #generate-next-round": "generateRound",
+      "click #show-results": "showResultsPage",
       "click #disqualify-button": "disqualifyPlayer",
       "change td.vp input": "changeVP"
 		},
@@ -71,10 +72,13 @@ define([
 				var template = _.template(roundTemplate, {number: number, tables: tables, settings: this.settings, players: this.playerList.getCompetingPlayers()});
         this.$el.html(template);
 
-        if (this.settings.getRounds() <= parseInt(number))
+        if (this.settings.getRounds() <= parseInt(number)) {
           this.$('#generate-next-round').hide();
-        else
+          this.$('#show-results').show();
+        } else {
           this.$('#generate-next-round').show();
+          this.$('#show-results').hide();
+        }
 
         this.$("#standings").html(new StandingsView({playerList: this.playerList}).render().el);
 			} else {
@@ -161,6 +165,16 @@ define([
 			}
 			return false;
 		},
+
+    showResultsPage: function() {
+      this.validate();
+      if (this.errors.length > 0) {
+        this.$('#validation-errors').show();
+      } else {
+        this.router.navigate("#/results");
+      }
+      return false;
+    },
 
     disqualifyPlayer: function() {
       var player = this.playerList.get(this.$('#disqualify-select').val());

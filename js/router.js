@@ -25,13 +25,15 @@ define([
   'views/navigationView',
   'views/roundView',
   'views/lastUpdatedView',
-], function($, _, Backbone, localstorage, PlayerList, RoundList, Settings, SettingsView, NavigationView, RoundView, LastUpdatedView) {
+  'views/resultsView'
+], function($, _, Backbone, localstorage, PlayerList, RoundList, Settings, SettingsView, NavigationView, RoundView, LastUpdatedView, ResultsView) {
   	
 	var Router = Backbone.Router.extend({
 	    routes: {
 	      "": "settings",
         "#": "settings",
 	      "round/:number": "round",
+        "results": "results"
 	    },
 
 	    initialize: function() {
@@ -87,8 +89,20 @@ define([
 			$('#navigation').html(navigationView.render().el);
 			new LastUpdatedView().render();
 		});
+    router.on('route:results', function() {
+      if (router.resultsView)
+          router.resultsView.render();
+      else {
+          router.resultsView = new ResultsView(router.viewOptions).render();
+      }
+      $('#page').html(router.resultsView.el);
+      router.viewOptions.active = 'results';
+      var navigationView = new NavigationView(router.viewOptions);
+      $('#navigation').html(navigationView.render().el);
+      new LastUpdatedView().render();
+    });
 
-	    Backbone.history.start();
+    Backbone.history.start();
 	};
   
 	return { initialize: initialize };
