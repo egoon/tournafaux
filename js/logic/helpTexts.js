@@ -67,6 +67,10 @@ define([
       "if they have played at least two rounds against other opponents. "+
       "So a player may face the same person in round 1 and round 4.",
 
+    disqualify: "<h5>Forfeits and Disqualifications</h5>" + 
+      "A player that is disqualified or forfeits will be removed from the standings table, and will not take part in future rounds. " +
+      "This will cause a bye or ringer to join or leave the tournament depending on the remaining amount of players.",
+
     showHelpText: function(tags) {
       var text = "";
       var tagArray = tags.split(',');

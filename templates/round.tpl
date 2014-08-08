@@ -35,8 +35,8 @@
           <% }); %>
         </select>
       </div>
-      <div class="col-md-3">
-        <button id="disqualify-button" class="btn btn-danger">Remove</button>
+      <div class="col-md-4">
+        <button id="disqualify-button" class="btn btn-danger">Remove</button> <a id="helpDisqualify">(?)</a>
       </div>
     </div>
   </div>

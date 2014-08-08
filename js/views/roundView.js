@@ -18,9 +18,10 @@ define([
   'underscore',
   'backbone',
   'logic/generateRound',
+  'logic/helpTexts',
   'views/standingsView',
   'text!../../templates/round.tpl'
-], function($, _, Backbone, GenerateRound, StandingsView, roundTemplate) {
+], function($, _, Backbone, GenerateRound, HelpTexts, StandingsView, roundTemplate) {
 
   	var RoundView = Backbone.View.extend({
 
@@ -48,7 +49,8 @@ define([
 		events: {
 			"click #generate-next-round": "generateRound",
       "click #disqualify-button": "disqualifyPlayer",
-      "change td.vp input": "changeVP"
+      "change td.vp input": "changeVP",
+      "click #helpDisqualify": "showHelpDisqualify"
 		},
 
 		render: function() {
@@ -172,8 +174,11 @@ define([
           player.save();
         }
       }
+    },
 
-    }
+    showHelpDisqualify: function() {
+      HelpTexts.showHelpText("disqualify");
+    },
 
 	});
   	return RoundView;
