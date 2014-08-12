@@ -53,8 +53,8 @@ define([
       Utils.createPlayers(this.playerList, 6);
       this.settings.setTables(3);
       var round = Utils.createSimpleFirstRound(this.playerList, this.roundList);
-      var roundView = new RoundView({playerList: this.playerList, roundList: this.roundList, settings: this.settings, router: {}});
-      roundView.setRoundNumber(1).render();
+      var roundView = new RoundView({playerList: this.playerList, roundList: this.roundList, settings: this.settings, router: {}, active: '1'});
+      roundView.render();
       $('#qunit-fixture').html(roundView.el);
       
       var selectorRow1 = '#qunit-fixture tbody:nth-child(2) tr:nth-child(1) ';
@@ -103,8 +103,8 @@ define([
       this.settings.setTables(2);
       Utils.createPlayers(this.playerList, 5);
       var round = Utils.createSimpleFirstRound(this.playerList, this.roundList);
-      var roundView = new RoundView({playerList: this.playerList, roundList: this.roundList, settings: this.settings, router: {}});
-      roundView.setRoundNumber(1).render();
+      var roundView = new RoundView({playerList: this.playerList, roundList: this.roundList, settings: this.settings, router: {}, active: '1'});
+      roundView.render();
       $('#qunit-fixture').html(roundView.el);
 
       var playerA = this.playerList.findWhere({name : 'A'});
@@ -118,8 +118,8 @@ define([
     //   Utils.createPlayers(this.playerList, 6);
     //   this.settings.setTables(3);
     //   var round = Utils.createSimpleFirstRound(this.playerList, this.roundList);
-    //   var roundView = new RoundView({playerList: this.playerList, roundList: this.roundList, settings: this.settings, router: {}});
-    //   roundView.setRoundNumber(1).render();
+    //   var roundView = new RoundView({playerList: this.playerList, roundList: this.roundList, settings: this.settings, router: {}, active: '1'});
+    //   roundView.render();
     //   $('#qunit-fixture').html(roundView.el);
 
     //   var playerC = this.playerList.findWhere({name : 'C'});
@@ -140,8 +140,8 @@ define([
       Utils.createPlayers(this.playerList, 6);
       this.settings.setTables(3);
       var round = Utils.createSimpleFirstRound(this.playerList, this.roundList);
-      var roundView = new RoundView({playerList: this.playerList, roundList: this.roundList, settings: this.settings, router: {}});
-      roundView.setRoundNumber(1).render();
+      var roundView = new RoundView({playerList: this.playerList, roundList: this.roundList, settings: this.settings, router: {}, active: '1'});
+      roundView.render();
       $('#qunit-fixture').html(roundView.el);
 
       equal($('#qunit-fixture #standings tbody:nth-child(2) tr').length, 6, 'six rows in standings view');

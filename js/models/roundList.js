@@ -49,8 +49,12 @@ define([
 		},
 		setPlayer2ForTable: function(table, player) {
 			this.set('table' + table + 'player2', player.id);
+		},
+
+		getNumber: function() {
+			return parseInt(this.get('number'));
 		}
-  	});
+	});
 
 	var RoundList = Backbone.Collection.extend({
 

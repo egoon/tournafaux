@@ -79,12 +79,12 @@ define([
 		});
 		router.on('route:round', function(number) {
       if (router.roundView)
-          router.roundView.setRoundNumber(number).render();
-      else {
-          router.roundView = new RoundView(router.viewOptions).setRoundNumber(number).render();
-      }
-      $('#page').html(router.roundView.el);
+          router.roundView.remove();
       router.viewOptions.active = number;
+      router.roundView = new RoundView(router.viewOptions).render();
+      
+      $('#page').html(router.roundView.el);
+      
       var navigationView = new NavigationView(router.viewOptions);
 			$('#navigation').html(navigationView.render().el);
 			new LastUpdatedView().render();

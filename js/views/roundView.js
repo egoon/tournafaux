@@ -38,13 +38,10 @@ define([
 
 			this.router = options.router;
 
+      this.round = _.find(this.roundList.models, function(round){ return round.get("number") === options.active.toString()});
+
 			this.listenTo(this.playerList, 'change', this.validate);
 		},
-
-    setRoundNumber: function(number) {
-      this.round = _.find(this.roundList.models, function(round){ return round.get("number") == number.toString()});
-      return this;
-    },
 
 		events: {
 			"click #generate-next-round": "generateRound",
@@ -157,6 +154,7 @@ define([
 		},
 
 		generateRound: function() {
+      console.log('generate round ' + (this.round.getNumber() + 1));
 			this.validate();
 			if (this.errors.length > 0) {
 				this.$('#validation-errors').show();
