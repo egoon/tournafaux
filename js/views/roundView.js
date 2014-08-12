@@ -73,9 +73,7 @@ define([
 
         if (this.settings.getRounds() <= parseInt(number)) {
           this.$('#generate-next-round').hide();
-          this.$('#show-results').show();
         } else {
-          this.$('#generate-next-round').show();
           this.$('#show-results').hide();
         }
 

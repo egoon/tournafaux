@@ -59,6 +59,8 @@ define([
           window.location.reload();
         else {
           this.router.navigate('#/');
+          //strage bug prevents saving data unless window is reloaded
+          window.location.reload();
         }
       }
     }
