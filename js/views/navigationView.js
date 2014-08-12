@@ -55,10 +55,11 @@ define([
         while (this.playerList.length > 0)
           this.playerList.at(0).destroy();
         this.settings.destroy();
-        if (this.active == 'settings')
+        if (this.active === 'settings')
           window.location.reload();
-        else
-          this.router.navigate('#');
+        else {
+          this.router.navigate('#/');
+        }
       }
     }
 	});
