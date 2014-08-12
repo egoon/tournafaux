@@ -137,11 +137,11 @@ define([
 
 			for(var i = 0; i < tables.length; ++i) {
 				var vp = tables[i].player1.getVpForRound(this.round.get('number'))
-				if (!vp || vp == '') {
+				if (isNaN(vp)) {
 					this.errors.push(tables[i].player1.getName() + ' has no registered victory points');	
 				}
 				vp = tables[i].player2.getVpForRound(this.round.get('number'))
-				if (!vp || vp == '') {
+				if (isNaN(vp)) {
 					this.errors.push(tables[i].player2.getName() + ' has no registered victory points');	
 				}
 			}
