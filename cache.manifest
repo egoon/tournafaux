@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# Mon Aug 11 08:11:04 CEST 2014
+# Mon Aug 11 08:17:30 CEST 2014
 ./css/bootstrap-3.1.1-min.css
 ./img/btn_donate_SM.gif
 ./index.html
@@ -30,5 +30,3 @@ CACHE MANIFEST
 ./templates/round.tpl
 ./templates/settings.tpl
 ./templates/standings.tpl
-./tournafaux.sublime-project
-./tournafaux.sublime-workspace
