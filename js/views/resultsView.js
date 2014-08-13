@@ -19,8 +19,9 @@ define([
   'underscore',
   'backbone',
   'views/standingsView',
+  'views/playerStatisticsView',
   'text!../../templates/results.tpl'
-], function($, _, Backbone, StandingsView, resultsTemplate) {
+], function($, _, Backbone, StandingsView, PlayerStatisticsView, resultsTemplate) {
 
   var ResultsView = Backbone.View.extend({
 
@@ -39,8 +40,21 @@ define([
     render: function() {
       var template = _.template(resultsTemplate, {settings: this.settings, players: this.playerList.getCompetingPlayers()});
       this.$el.html(template);
-    
-      this.$("#standings").html(new StandingsView({playerList: this.playerList}).render().el);
+      
+      var standingsView = new StandingsView({playerList: this.playerList}).render();
+
+      this.$("#standings").html(standingsView.el);
+
+      var that = this;
+
+      _.each(this.playerList.getCompetingPlayers(), function(player) {
+        var playerStatisticsView = new PlayerStatisticsView({
+          player: player, 
+          playerList: that.playerList
+        });
+        playerStatisticsView.render();
+        that.$("#playerResults").before(playerStatisticsView.el);
+      });
       
       return this;
     },
