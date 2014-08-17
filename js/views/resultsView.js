@@ -38,10 +38,17 @@ define([
     },
 
     render: function() {
-      var template = _.template(resultsTemplate, {settings: this.settings, players: this.playerList.getCompetingPlayers()});
+      var standingsView = new StandingsView({playerList: this.playerList}).render();
+
+      var template = _.template(resultsTemplate, {
+        settings: this.settings, 
+        players: this.playerList.getCompetingPlayers(),
+        subject: "Results from [tournament]",
+        body: "Test %0D%0A a %09 50 %0D%0A abcdefghijklmnop %09 30 %0D%0A"
+      });
       this.$el.html(template);
       
-      var standingsView = new StandingsView({playerList: this.playerList}).render();
+      
 
       this.$("#standings").html(standingsView.el);
 

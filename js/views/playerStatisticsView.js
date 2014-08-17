@@ -33,9 +33,8 @@ define([
 
     render: function() {
       var rounds = [];
-      var i = 0;
-      while (this.player.getOpponentForRound(i)) {
-        var opp = playerList.get(player.getOpponentForRound(i));
+      for (var i = 1; this.player.getOpponentForRound(i); ++i) {
+        var opp = this.playerList.get(this.player.getOpponentForRound(i));
         rounds.push({
           number: i,
           opponent: opp.getName(),
@@ -44,7 +43,7 @@ define([
           diff: this.player.getVpDiffForRound(i)
         });
       }
-
+      console.log(rounds);
       var template = _.template(playerStatisticsTemplate, {player: this.player, rounds: rounds});
       this.$el.html(template);
       return this;

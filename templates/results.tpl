@@ -2,7 +2,8 @@
   
     <div id="standings"></div>
 
-    <a class="btn btn-primary" href="mailto:bennie.lundmark@gmail.com">Mail results to Malifauxrankings</a>
+    <a class="btn btn-primary" target='_blank' href='mailto:bennie.lundmark@gmail.com?subject=<%-subject%>&body=<%= body %>'>Mail results to Malifauxrankings</a>
+    <p/>
 
     <div id="playerResults"></div>
 
