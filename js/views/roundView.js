@@ -135,14 +135,16 @@ define([
 			var tables = this.round.getTables(this.settings.get('tables'), this.playerList);
 
 			for(var i = 0; i < tables.length; ++i) {
-				var vp = tables[i].player1.getVpForRound(this.round.get('number'))
-				if (isNaN(vp)) {
-					this.errors.push(tables[i].player1.getName() + ' has no registered victory points');	
-				}
-				vp = tables[i].player2.getVpForRound(this.round.get('number'))
-				if (isNaN(vp)) {
-					this.errors.push(tables[i].player2.getName() + ' has no registered victory points');	
-				}
+        if (!tables[i].player1.isBye() && !tables[i].player2.isBye()) {
+          var vp = tables[i].player1.getVpForRound(this.round.get('number'))
+          if (isNaN(vp)) {
+            this.errors.push(tables[i].player1.getName() + ' has no registered victory points');
+          }
+          vp = tables[i].player2.getVpForRound(this.round.get('number'))
+          if (isNaN(vp)) {
+            this.errors.push(tables[i].player2.getName() + ' has no registered victory points');
+          }
+        }
 			}
 
 			this.$('#validation-errors').html('');
@@ -188,7 +190,7 @@ define([
 
     showHelpDisqualify: function() {
       HelpTexts.showHelpText("disqualify");
-    },
+    }
 
 	});
   	return RoundView;
