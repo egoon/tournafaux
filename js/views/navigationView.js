@@ -45,7 +45,10 @@ define([
 			var rounds = _.sortBy(this.roundList.models, function(round) { return parseInt(round.get('number'));});
 			var template = _.template(navigationTemplate, {rounds: rounds, active: this.active});
 		    this.$el.html(template);
-		    return this;
+      if (rounds.length === 0) {
+        this.$('#results').hide();
+      }
+		  return this;
 		},
 
     newTournament: function() {

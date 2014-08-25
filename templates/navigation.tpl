@@ -5,6 +5,7 @@
       <% _.each(rounds, function(round) { %>
       <li <%= active == round.get('number') ? 'class="active"' : '' %> ><a href='#/round/<%- round.get("number") %>'>Round <%- round.get("number") %></a></li>
       <% }); %>
+      <li id="results" <%= active == "results" ? 'class="active"' : '' %> ><a href="#/results">Results</a></li>
     </ul>
   </div>
   <div class="col-md-3">
