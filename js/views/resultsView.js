@@ -40,11 +40,15 @@ define([
     render: function() {
       var standingsView = new StandingsView({playerList: this.playerList}).render();
 
+      var restultTableString = standingsView.textTable();
+
       var template = _.template(resultsTemplate, {
         settings: this.settings, 
         players: this.playerList.getCompetingPlayers(),
         subject: "Results from [tournament]",
-        body: "Test %0D%0A a %09 50 %0D%0A abcdefghijklmnop %09 30 %0D%0A"
+        body: "Hello Malifaux rankings!%0D%0A%0D%0A" + 
+          "These are the results from [tournament], [YYYY-mmm-dd], in [city, country].%0D%0A%0D%0A" +
+          restultTableString + "%0D%0ARegards%0D%0A[Tournament organiser]"
       });
       this.$el.html(template);
       

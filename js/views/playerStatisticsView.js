@@ -43,7 +43,6 @@ define([
           diff: this.player.getVpDiffForRound(i)
         });
       }
-      console.log(rounds);
       var template = _.template(playerStatisticsTemplate, {player: this.player, rounds: rounds});
       this.$el.html(template);
       return this;
