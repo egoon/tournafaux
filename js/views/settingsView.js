@@ -161,6 +161,7 @@ define([
           this.byeRinger.setNonCompeting(true);
       }
       this.byeRinger.save();
+      this.toggleChooseFirstOpponent(); // to make sure chooseOpponent is hidden
 		},
 
     changeTournamentType: function() {
