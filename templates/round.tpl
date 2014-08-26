@@ -23,7 +23,7 @@
     <div class="row">
       <div class="col-md-5">
         <button type="button" id="generate-next-round" class="btn btn-primary">Generate round <%- parseInt(number) + 1 %></button>
-        <button type="button" id="show-results" class="btn btn-primary">Show Results</button>
+        <button type="button" id="end-tournament" class="btn btn-primary">End Tournament</button>
       </div>
     </div>
     <hr/>

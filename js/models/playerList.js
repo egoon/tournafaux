@@ -13,87 +13,90 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-"use strict";
+/*global define*/
 define([
   'underscore',
   'backbone',
   'localstorage'
-], function(_, Backbone, localstorage) {
+], function (_, Backbone) {
+  "use strict";
   var BYE_SCORE = "-";
   var Player = Backbone.Model.extend({
 
-    initialize: function() {
-
+    initialize: function () {
+      this.setActive(false);
     },
 
-    getPreviousOpponents: function(number) {
+    getPreviousOpponents: function (number) {
       var i = 1;
       var opponents = [];
-      while (this.get("opponent"+i)) {
-        opponents.push(this.get("opponent"+i))
+      while (this.get("opponent" + i)) {
+        opponents.push(this.get("opponent" + i));
         i++;
       }
       return _.last(opponents, number);
     },
 
-    getPlayedTables: function() {
+    getPlayedTables: function () {
       var i = 1;
       var tables = [];
-      while (this.get("table"+i)) {
-        tables.push(this.get("table"+i))
+      while (this.get("table" + i)) {
+        tables.push(this.get("table" + i));
         i++;
       }
       return tables;
     },
 
-    countPointsWithBye: function(pointType, byeScore) {
-      if (this.isNonCompeting()) //the bye or non-competing ringer
+    countPointsWithBye: function (pointType, byeScore) {
+      if (this.isNonCompeting()) { //the bye or non-competing ringer
         return -1000000;
+      }
       var i = 1;
       var total = 0;
       var bye = false;
       var realGames = 0;
-      while(this.get(pointType+i)) {
-        if (this.get(pointType+i) === BYE_SCORE) {
+      while (this.get(pointType + i)) {
+        if (this.get(pointType + i) === BYE_SCORE) {
           bye = true;
         } else {
-          total += parseInt(this.get(pointType+i));
+          total += parseInt(this.get(pointType + i), 10);
           realGames += 1;
         }
         i++;
       }
       if (bye) {
-        if (realGames == 0)
+        if (realGames === 0) {
           total = byeScore;
-        else
+        } else {
           total += (total / realGames);
+        }
       }
-      return Math.round(total*10)/10;
+      return Math.round(total * 10) / 10;
     },
 
-    getTotalTp: function() {
+    getTotalTp: function () {
       return this.countPointsWithBye('tp', 1);
     },
 
-    getTotalVp: function() {
+    getTotalVp: function () {
       return this.countPointsWithBye('vp', 0);
     },
 
-    getVpDiff: function() {
+    getVpDiff: function () {
       return this.countPointsWithBye('vpdiff', 0);
     },
 
-    getBestMatches: function(players, swissThreshold) {
+    getBestMatches: function (players, swissThreshold) {
       var that = this;
 
       var prevOpps = this.getPreviousOpponents(swissThreshold);
 
-      var possibleOpps = _.filter(players, function(player) {
-        if (that.id == player.id) return false;
-        return _.indexOf(prevOpps, player.id) == -1;
+      var possibleOpps = _.filter(players, function (player) {
+        if (that.id === player.id) { return false; }
+        return _.indexOf(prevOpps, player.id) === -1;
       });
 
-      var bestMatches = _.sortBy(possibleOpps, function(opp) {
+      var bestMatches = _.sortBy(possibleOpps, function (opp) {
         var scoreForSorting =
           (Math.abs(that.getTotalTp() - opp.getTotalTp()) * 10000) +
           (Math.abs(that.getVpDiff() - opp.getVpDiff()) * 100) +
@@ -104,164 +107,187 @@ define([
       return bestMatches;
     },
 
-    getPossibleFirstRoundOpponents: function(players) {
+    getPossibleFirstRoundOpponents: function (players) {
       var that = this;
       if (this.getFirstOpponent()) {
-        return [_.find(players, function(player) {return player.id === that.getFirstOpponent();})];
+        return [_.find(players, function (player) {
+          return player.id === that.getFirstOpponent();
+        })];
       }
 
-      var possibleOpps = _.filter(players, function(player) {
-        if (that.id == player.id) return false;
-        if (that.getCity() != '' && that.getCity() == player.getCity()) return false;
-        if (that.getFaction() != '' && that.getFaction() == player.getFaction()) return false;
+      var possibleOpps = _.filter(players, function (player) {
+        if (that.id === player.id) { return false; }
+        if (that.getCity() !== '' && that.getCity() === player.getCity()) { return false; }
+        if (that.getFaction() !== '' && that.getFaction() === player.getFaction()) { return false; }
         return true;
       });
 
       return possibleOpps;
     },
 
-    getVpForRound: function(round) { return parseInt(this.get('vp'+round));},
-    setVpForRound: function(round, vp) { return parseInt(this.set('vp'+round, ""+vp));},
-    getVpDiffForRound: function(round) { return parseInt(this.get('vpdiff'+round));},
-    setVpDiffForRound: function(round, vpdiff) { return parseInt(this.set('vpdiff'+round, ""+vpdiff));},
-    getTpForRound: function(round) { return parseInt(this.get('tp'+round));},
-    setTpForRound: function(round, tp) { return parseInt(this.set('tp'+round, ""+tp));},
-    getOpponentForRound: function(round) { return this.get('opponent'+round);},
-    setOpponentForRound: function(round, opponent) { return this.set('opponent'+round, ""+opponent);},
+    getVpForRound: function (round) {
+      return parseInt(this.get('vp' + round), 10);
+    },
+    setVpForRound: function (round, vp) {
+      return parseInt(this.set('vp' + round, vp.toString()), 10);
+    },
+    getVpDiffForRound: function (round) {
+      return parseInt(this.get('vpdiff' + round), 10);
+    },
+    setVpDiffForRound: function (round, vpdiff) {
+      return parseInt(this.set('vpdiff' + round, vpdiff.toString()), 10);
+    },
+    getTpForRound: function (round) {
+      return parseInt(this.get('tp' + round), 10);
+    },
+    setTpForRound: function (round, tp) {
+      return parseInt(this.set('tp' + round, tp.toString()), 10);
+    },
+    getOpponentForRound: function (round) {
+      return this.get('opponent' + round);
+    },
+    setOpponentForRound: function (round, opponent) {
+      return this.set('opponent' + round, opponent);
+    },
     //getTableForRound: function(round) { return this.get('table'+round);},
-    setTableForRound: function(round, table) { return this.set('table'+round, ""+table);},
+    setTableForRound: function (round, table) {
+      return this.set('table' + round, table.toString());
+    },
 
-    setVpTpAndDiffForRound: function(round, vp, tp, diff) {
+    setVpTpAndDiffForRound: function (round, vp, tp, diff) {
       this.setVpForRound(round, vp);
       this.setTpForRound(round, tp);
       this.setVpDiffForRound(round, diff);
     },
 
-    clearGames: function(number) {
-      for(var i = 1; i <= number; ++i) {
-        this.unset('vp'+i);
-        this.unset('vpdiff'+i);
-        this.unset('tp'+i);
-        this.unset('opponent'+i);
-        this.unset('table'+i);
+    clearGames: function (number) {
+      var i;
+      for (i = 1; i <= number; ++i) {
+        this.unset('vp' + i);
+        this.unset('vpdiff' + i);
+        this.unset('tp' + i);
+        this.unset('opponent' + i);
+        this.unset('table' + i);
       }
       this.unset('active');
     },
 
-    isBye: function() {
-      return this.get('bye') == 'true';
+    isBye: function () {
+      return this.get('bye') === 'true';
     },
 
-    isRinger: function() {
-      return this.get('ringer') == 'true';
+    isRinger: function () {
+      return this.get('ringer') === 'true';
     },
 
-    setBye: function(isBye) {
+    setBye: function (isBye) {
       if (isBye) {
         this.set('ringer', 'false');
       }
       this.set('bye', isBye.toString());
     },
 
-    setRinger: function(isRinger) {
+    setRinger: function (isRinger) {
       if (isRinger) {
         this.set('bye', 'false');
       }
       this.set('ringer', isRinger.toString());
     },
 
-    isNonCompeting: function() {
-      return this.get('nonCompeting') == 'true';
+    isNonCompeting: function () {
+      return this.get('nonCompeting') === 'true';
     },
 
-    setNonCompeting: function(nonCompeting) {
+    setNonCompeting: function (nonCompeting) {
       this.set('nonCompeting', nonCompeting.toString());
     },
 
-    isActive: function() {
-      return this.get('active') != 'false';
+    isActive: function () {
+      return this.get('active') !== 'false';
     },
 
-    setActive: function(active) {
+    setActive: function (active) {
       this.set('active', active.toString());
     },
 
-    getName: function() {
+    getName: function () {
       var name = this.get('name');
-      if (this.isBye()) return 'Bye';
-      if (this.isRinger() && !name) return 'Ringer';
-      if (this.isRinger()) return name + ' (Ringer)';
-      if (!this.get('name')) return '[No Name]';
+      if (this.isBye()) { return 'Bye'; }
+      if (this.isRinger() && !name) { return 'Ringer'; }
+      if (this.isRinger()) { return name + ' (Ringer)'; }
+      if (!this.get('name')) { return '[No Name]'; }
       return this.get('name');
     },
 
-    setName: function(name) {
+    setName: function (name) {
       this.set('name', name);
     },
 
-    getCity: function() {
-      if (this.isNonCompeting()) return '';
-      if (!this.get('city')) return '';
+    getCity: function () {
+      if (this.isNonCompeting()) { return ''; }
+      if (!this.get('city')) { return ''; }
       return this.get('city');
     },
 
-    setCity: function(city) {
+    setCity: function (city) {
       this.set('city', city);
     },
 
-    getFaction: function() {
-      if (this.isNonCompeting()) return '';
-      if (!this.get('faction')) return '';
+    getFaction: function () {
+      if (this.isNonCompeting()) { return ''; }
+      if (!this.get('faction')) { return ''; }
       return this.get('faction');
     },
 
-    setFaction: function(faction) {
+    setFaction: function (faction) {
       this.set('faction', faction);
     },
 
-    getFirstOpponent: function() {
+    getFirstOpponent: function () {
       return this.get('firstOpponent');
     },
 
-    setFirstOpponent: function(firstOpponent) {
+    setFirstOpponent: function (firstOpponent) {
       this.set('firstOpponent', firstOpponent);
       this.save();
     }
 
   });
 
-	var PlayerList = Backbone.Collection.extend({
+  var PlayerList = Backbone.Collection.extend({
 
-		model: Player,
+    model: Player,
 
-    initialize: function(options) {
+    localStorage: new Backbone.LocalStorage("tournafaux-players"),
 
-    },
-	
-		localStorage: new Backbone.LocalStorage("tournafaux-players"),
-
-    getAllPlayers: function() {
+    getAllPlayers: function () {
       return this.models;
     },
 
-    getActivePlayers: function() {
-      var players = this.filter(function(player) { return player.isActive(); });
+    getActivePlayers: function () {
+      var players = this.filter(function (player) {
+        return player.isActive();
+      });
       return players;
     },
 
-    getCompetingPlayers: function() {
-      var players = this.filter(function(player) { return player.isActive() && !player.isNonCompeting(); });
+    getCompetingPlayers: function () {
+      var players = this.filter(function (player) {
+        return player.isActive() && !player.isNonCompeting();
+      });
       return players;
     },
 
-    getByeRinger: function() {
-      var ringer = this.find(function(player) { return player.isBye() || player.isRinger(); });
-      if (!ringer)
+    getByeRinger: function () {
+      var ringer = this.find(function (player) {
+        return player.isBye() || player.isRinger();
+      });
+      if (!ringer) {
         return this.create({name: 'Ringer', nonCompeting: 'true', bye: 'true', active: 'false'});
-      else
-        return ringer;
+      }
+      return ringer;
     }
 
-	});
+  });
   return PlayerList;
 });

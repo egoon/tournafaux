@@ -45,7 +45,7 @@ define([
 
 		events: {
 			"click #generate-next-round": "generateRound",
-      "click #show-results": "showResultsPage",
+      "click #end-tournament": "showResultsPage",
       "click #disqualify-button": "disqualifyPlayer",
       "change td.vp input": "changeVP",
       "click #helpDisqualify": "showHelpDisqualify"
@@ -74,7 +74,7 @@ define([
         if (this.settings.getRounds() <= parseInt(number)) {
           this.$('#generate-next-round').hide();
         } else {
-          this.$('#show-results').hide();
+          this.$('#end-tournament').hide();
         }
 
         this.$("#standings").html(new StandingsView({playerList: this.playerList}).render().el);
