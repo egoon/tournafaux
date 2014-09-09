@@ -18,18 +18,14 @@ define([
 ], function(_) {
 	var BYE_SCORE = "-";
 
-	var setScoresForBye = function(bye, opp, number, type) {
-		if (type == "average-bye") {
-			bye.setVpForRound(number, 0);
-			opp.setVpForRound(number, BYE_SCORE);
-			opp.setVpDiffForRound(number, BYE_SCORE);
-			opp.setTpForRound(number, BYE_SCORE);
-		} else if (type == "gg14-bye") {
-			bye.setVpForRound(number, 5);
-			opp.setVpForRound(number, 10);
-			opp.setVpDiffForRound(number, 5);
-			opp.setTpForRound(number, 3);
-		}
+	var setScoresForBye = function(bye, opp, number) {
+
+    bye.setVpForRound(number, 0);
+    opp.setVpForRound(number, BYE_SCORE);
+    opp.setVpDiffForRound(number, BYE_SCORE);
+    opp.setTpForRound(number, BYE_SCORE);
+
+
 	};
 
   	var generate = function(number, playerList, roundList, settings) {
@@ -37,18 +33,18 @@ define([
 		roundList.fetch();
 		playerList.fetch();
 
-		var round = _.find(roundList.models, function(round){ return round.get("number") == ""+number});
+		var round = _.find(roundList.models, function(round){ return round.get("number") === number.toString(); });
 		if (round) {
       round.destroy();
       //TODO: clear players
       //TODO: destroy later turns
     }
 
-		round = roundList.create({number: ""+number});
+		round = roundList.create({number: number.toString()});
 
 		// Toggle active bye/ringer as needed
     var byeRinger = playerList.getByeRinger();
-		if (playerList.getActivePlayers().length % 2 == 1) {
+		if (playerList.getActivePlayers().length % 2 === 1) {
       byeRinger.setActive(!byeRinger.isActive());
       //TODO: set non competing?
       byeRinger.save();
@@ -57,18 +53,23 @@ define([
 		// find possible opponents for each player
 
 		var players = playerList.getActivePlayers();
-		var possibleMatches = [];
+      console.log(players);
+      console.log(playerList.getAllPlayers());
 
-		if (number == 1 || number == "1") {
+		var possibleMatches = [];
+		if (number === 1 || number === "1") {
 			_.each(players, function(player) {
 				possibleMatches.push({player: player, matches: player.getPossibleFirstRoundOpponents(players)});
 			});
 		} else {
 			_.each(players, function(player) {
-        var swissThreshold = settings.getTournamentType() === settings.GG14_SWISS ? 2 : settings.getRounds();
+        var swissThreshold = settings.getTournamentType() === settings.GG14_SWISS && !player.isBye() ? 2 : settings.getRounds();
 				possibleMatches.push({player: player, matches: player.getBestMatches(players, swissThreshold)});
+        if (player.isBye()) {
+        }
 			});
 		}
+
 
 		// assign opponents
 
@@ -96,7 +97,6 @@ define([
 			// if no match can be found, just take the next player
 			if (!player2) {
 				player2 = possibleMatches.pop().player;
-				console.log("bad match!");
 			}
 //			console.log(player1.getName() + " vs " + player2.getName());
 			// remove player2 from possibleMatches
@@ -113,9 +113,9 @@ define([
 			player1.set("opponent" + number, player2.id);
 			player2.set("opponent" + number, player1.id);
 			if (player1.isBye())
-				setScoresForBye(player1, player2, number, settings.getBye());
+				setScoresForBye(player1, player2, number);
 			if (player2.isBye())
-				setScoresForBye(player2, player1, number, settings.getBye());
+				setScoresForBye(player2, player1, number);
 
 			matchedPlayers.push({
 				player1: player1, 

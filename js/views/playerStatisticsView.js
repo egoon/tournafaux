@@ -13,13 +13,14 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-"use strict";
+/*globals define*/
 define([
   'jquery',
   'underscore',
   'backbone',
   'text!../../templates/playerStatistics.tpl'
 ], function($, _, Backbone, playerStatisticsTemplate) {
+  "use strict";
   var PlayerStatisticsView = Backbone.View.extend({
 
     tagName: 'div',
@@ -33,20 +34,24 @@ define([
 
     render: function() {
       var rounds = [];
-      for (var i = 1; this.player.getOpponentForRound(i); ++i) {
-        var opp = this.playerList.get(this.player.getOpponentForRound(i));
+      var i, opp, score, diff, oppScore;
+      for (i = 1; this.player.getOpponentForRound(i); ++i) {
+        opp = this.playerList.get(this.player.getOpponentForRound(i));
+        score = this.player.getVpForRound(i);
+        diff = this.player.getVpDiffForRound(i);
+        oppScore = score - diff;
         rounds.push({
           number: i,
           opponent: opp.getName(),
           tp: this.player.getTpForRound(i),
-          score: this.player.getVpForRound(i) + " - " + opp.getVpForRound(i),
-          diff: this.player.getVpDiffForRound(i)
+          score: score + " - " + oppScore,
+          diff: diff
         });
       }
       var template = _.template(playerStatisticsTemplate, {player: this.player, rounds: rounds});
       this.$el.html(template);
       return this;
-    },
+    }
 
   });
   

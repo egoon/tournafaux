@@ -30,12 +30,12 @@ define([
 				this.roundList = new RoundList();
                 this.roundList.localStorage = new Backbone.LocalStorage("test-settingsView-rounds");
 				this.roundList.fetch();
-                this.playerList = new PlayerList();
-                this.playerList.localStorage = new Backbone.LocalStorage("test-settingsView-players");
-                this.playerList.fetch();
                 this.settings = new Settings();
                 this.settings.localstorage = new Backbone.LocalStorage("test-settingsView-settings");
                 this.settings.fetch();
+                this.playerList = new PlayerList({settings: this.settings});
+                this.playerList.localStorage = new Backbone.LocalStorage("test-settingsView-players");
+                this.playerList.fetch();
 			},
 			teardown: function() {
                 while(this.roundList.at(0)) {

@@ -108,7 +108,7 @@ define([
       if (!this.newPlayerInput.val()) { return; }
 
       var player = this.playerList.create({name: this.newPlayerInput.val(), city: '', faction: ''});
-
+      console.log(player);
       this.newPlayerInput.val('');
       this.addPlayerView(player);
     },
@@ -187,7 +187,9 @@ define([
         }
         this.playerList.each(function (player) {
           player.setActive(true);
+          player.save();
         });
+        console.log(this.playerList.getActivePlayers());
         GenerateRound.generate(1, this.playerList, this.roundList, this.settings);
         this.router.navigate("#/round/1");
         this.remove();

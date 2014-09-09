@@ -13,42 +13,43 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-"use strict";
+/*globals define, module, test, expect, ok, equal, deepequal*/
 define([
-	'jquery',
+  'jquery',
   'underscore',
   'backbone',
   'localstorage',
-	'../models/roundList',
+  '../models/roundList',
   '../models/playerList',
   '../models/settings',
   '../logic/generateRound',
   'unitTests/testUtils'
-], function($, _, Backbone, localstorage, RoundList, PlayerList, Settings, GenerateRound, Utils) {
-  var run = function() {
+], function ($, _, Backbone, localstorage, RoundList, PlayerList, Settings, GenerateRound, Utils) {
+  "use strict";
+  var run = function () {
     module('GenerateRound', {
-      setup: function() {
-        this.roundList = new RoundList();
-        this.roundList.localStorage = new Backbone.LocalStorage("test-rounds");
-        this.roundList.fetch();
-        this.playerList = new PlayerList();
-        this.playerList.localStorage = new Backbone.LocalStorage("test-players");
-        this.playerList.fetch();
+      setup: function () {
         this.settings = new Settings();
         this.settings.localstorage = new Backbone.LocalStorage("test-settings");
         this.settings.fetch();
+        this.roundList = new RoundList();
+        this.roundList.localStorage = new Backbone.LocalStorage("test-rounds");
+        this.roundList.fetch();
+        this.playerList = new PlayerList({settings: this.settings});
+        this.playerList.localStorage = new Backbone.LocalStorage("test-players");
+        this.playerList.fetch();
       },
-      teardown: function() {
-        while(this.roundList.at(0)) {
+      teardown: function () {
+        while (this.roundList.at(0)) {
           this.roundList.at(0).destroy();
         }
-        while(this.playerList.at(0)) {
+        while (this.playerList.at(0)) {
           this.playerList.at(0).destroy();
         }
         this.settings.destroy();
       }
     });
-    test('basics', function() {
+    test('basics', function () {
       expect(8);
       Utils.createPlayers(this.playerList, 4);
       this.settings.set('tables', '2');
@@ -67,10 +68,11 @@ define([
         equal(_.indexOf(playerIds, pId), -1, 'unique player');
       }
     });
-    test('5 players and a bye, round 2', function() {
+    test('5 players and a bye, round 2', function () {
       expect(5);
       this.settings.setTables(2);
       var bye = this.playerList.getByeRinger();
+
       var players = Utils.createPlayers(this.playerList, 5);
       Utils.playGame(1, players[0], players[1], 10, 0, 1);
       Utils.playGame(1, players[2], players[3], 8, 5, 2);

@@ -13,6 +13,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
+/*globals define */
 define([
   'jquery',
   'underscore',
@@ -21,74 +22,81 @@ define([
   'logic/helpTexts',
   'views/standingsView',
   'text!../../templates/round.tpl'
-], function($, _, Backbone, GenerateRound, HelpTexts, StandingsView, roundTemplate) {
+], function ($, _, Backbone, GenerateRound, HelpTexts, StandingsView, roundTemplate) {
+  "use strict";
+  var RoundView = Backbone.View.extend({
 
-  	var RoundView = Backbone.View.extend({
+    tagName: 'div',
 
-		tagName: 'div',
+    initialize: function (options) {
+      this.playerList = options.playerList;
+      this.playerList.fetch();
+      this.roundList = options.roundList;
+      this.roundList.fetch();
 
-		initialize: function(options) {
-			this.playerList = options.playerList;
-			this.playerList.fetch();
-			this.roundList = options.roundList;
-			this.roundList.fetch();
+      this.settings = options.settings;
+      this.settings.fetch();
 
-			this.settings = options.settings;
-			this.settings.fetch();
+      this.router = options.router;
 
-			this.router = options.router;
+      this.round = _.find(this.roundList.models, function (round) {
+        return round.get("number") === options.active.toString();
+      });
 
-      this.round = _.find(this.roundList.models, function(round){ return round.get("number") === options.active.toString()});
+      this.listenTo(this.playerList, 'change', this.validate);
+    },
 
-			this.listenTo(this.playerList, 'change', this.validate);
-		},
-
-		events: {
-			"click #generate-next-round": "generateRound",
+    events: {
+      "click #generate-next-round": "generateRound",
       "click #end-tournament": "showResultsPage",
       "click #disqualify-button": "disqualifyPlayer",
       "change td.vp input": "changeVP",
       "click #helpDisqualify": "showHelpDisqualify"
-		},
+    },
 
-		render: function() {
-			if (this.round) {
-				var noTables = this.settings.getTables();
-				
-				var tables = this.round.getTables(noTables, this.playerList);
-				
-				var number = this.round.get('number');
+    render: function () {
+      if (this.round) {
+        var noTables = this.settings.getTables();
 
-				_.each(tables, function(table) {
-					table.player1name = table.player1.getName();
-					table.player1vp = table.player1.getVpForRound(number) ? table.player1.getVpForRound(number) : "";
-					table.player1id = table.player1.id;
-					table.player2name = table.player2.getName();
-					table.player2vp = table.player2.getVpForRound(number) ? table.player2.getVpForRound(number) : "";
-					table.player2id = table.player2.id;
-				});
+        var tables = this.round.getTables(noTables, this.playerList);
 
-				var template = _.template(roundTemplate, {number: number, tables: tables, settings: this.settings, players: this.playerList.getCompetingPlayers()});
+        var number = this.round.get('number');
+
+        _.each(tables, function (table) {
+          table.player1name = table.player1.getName();
+          table.player2name = table.player2.getName();
+          table.player1id = table.player1.id;
+          table.player2id = table.player2.id;
+          if (table.player1.isBye() || table.player2.isBye()) {
+            table.player1vp = '';
+            table.player2vp = '';
+          } else {
+            table.player1vp = table.player1.getVpForRound(number) || "";
+            table.player2vp = table.player2.getVpForRound(number) || "";
+          }
+        });
+
+        console.log(tables);
+        var template = _.template(roundTemplate, {number: number, tables: tables, settings: this.settings, players: this.playerList.getCompetingPlayers()});
         this.$el.html(template);
 
-        if (this.settings.getRounds() <= parseInt(number)) {
+        if (this.settings.getRounds() <= parseInt(number, 10)) {
           this.$('#generate-next-round').hide();
         } else {
           this.$('#end-tournament').hide();
         }
 
         this.$("#standings").html(new StandingsView({playerList: this.playerList}).render().el);
-			} else {
-				var template = _.template("<h4>Round <%-number %> does not exist</h4>Sorry!", {number: number});
-        this.$el.html(template);
-			}
-			return this;
-		},
+      } else {
+        this.$el.html(_.template("<h4>Round does not exist</h4>Sorry!"));
+      }
+      return this;
+    },
 
-    changeVP: function(event) {
+    changeVP: function (event) {
       var number = this.round.get('number');
       var player = this.playerList.get(event.currentTarget.id);
-      if (parseInt(event.currentTarget.value) >= 0) {
+      if (parseInt(event.currentTarget.value, 10) >= 0) {
         player.setVpForRound(number, event.currentTarget.value);
       } else {
         event.currentTarget.value = '0';
@@ -98,43 +106,44 @@ define([
       this.calculateTpAndVpDiff(this.round, player);
     },
 
-		calculateTpAndVpDiff: function(round, player) { //TODO: refactor to tableView
+    calculateTpAndVpDiff: function (round, player) { //TODO: refactor to tableView
       var tables = round.getTables(this.settings.getTables(), this.playerList);
       var number = round.get('number');
+      var i, table, player1, player2, player1vp, player2vp, diff;
+      for (i = 0; i < tables.length; ++i) {
+        table = tables[i];
+        player1 = table.player1;
+        player2 = table.player2;
+        if (player1.id === player.id || player2.id === player.id) {
+          player1vp = parseInt(player1.getVpForRound(number) ,10);
+          player2vp = parseInt(player2.getVpForRound(number), 10);
+          if (player1vp >= 0 && player2vp >= 0) {
+            diff = player1vp - player2vp;
+            player1.setVpDiffForRound(number, diff);
+            player2.setVpDiffForRound(number, -diff);
+            player1.setTpForRound(number, diff > 0 ? 3 : diff < 0 ? 0 : 1);
+            player2.setTpForRound(number, diff < 0 ? 3 : diff > 0 ? 0 : 1);
+            player1.save();
+            player2.save();
+          } else {
+            player1.setVpDiffForRound(number, 0);
+            player2.setVpDiffForRound(number, 0);
+            player1.setTpForRound(number, 0);
+            player2.setTpForRound(number, 0);
+            player1.save();
+            player2.save();
+          }
+        }
+      }
+    },
+
+    validate: function (e) {
+      var that = this;
+      this.errors = [];
+
+      var tables = this.round.getTables(this.settings.get('tables'), this.playerList);
+
       for (var i = 0; i < tables.length; ++i) {
-          var table = tables[i];
-				var player1 = table.player1;
-				var player2 = table.player2;
-				if (player1.id === player.id || player2.id === player.id) {
-					var player1vp = parseInt(player1.getVpForRound(number));
-					var player2vp = parseInt(player2.getVpForRound(number));
-					if (player1vp >= 0 && player2vp >= 0) {
-						var diff = player1vp - player2vp;
-						player1.setVpDiffForRound(number, diff);
-						player2.setVpDiffForRound(number, -diff);
-						player1.setTpForRound(number, diff > 0 ? 3 : diff < 0 ? 0: 1);
-						player2.setTpForRound(number, diff < 0 ? 3 : diff > 0 ? 0: 1);
-						player1.save();
-						player2.save();
-					} else {
-						player1.setVpDiffForRound(number, 0);
-						player2.setVpDiffForRound(number, 0);
-						player1.setTpForRound(number, 0);
-						player2.setTpForRound(number, 0);
-						player1.save();
-						player2.save();
-					}
-				}
-			}
-		},
-
-		validate: function(e) {
-			var that = this;
-			this.errors = [];
-
-			var tables = this.round.getTables(this.settings.get('tables'), this.playerList);
-
-			for(var i = 0; i < tables.length; ++i) {
         if (!tables[i].player1.isBye() && !tables[i].player2.isBye()) {
           var vp = tables[i].player1.getVpForRound(this.round.get('number'))
           if (isNaN(vp)) {
@@ -145,28 +154,28 @@ define([
             this.errors.push(tables[i].player2.getName() + ' has no registered victory points');
           }
         }
-			}
+      }
 
-			this.$('#validation-errors').html('');
-			for(var i = 0; i < this.errors.length; ++i) {
-				this.$('#validation-errors').append('<li>'+this.errors[i]+'</li>');
-			}
-		},
+      this.$('#validation-errors').html('');
+      for (var i = 0; i < this.errors.length; ++i) {
+        this.$('#validation-errors').append('<li>' + this.errors[i] + '</li>');
+      }
+    },
 
-		generateRound: function() {
+    generateRound: function () {
       console.log('generate round ' + (this.round.getNumber() + 1));
-			this.validate();
-			if (this.errors.length > 0) {
-				this.$('#validation-errors').show();
-			} else {
-				var number = parseInt(this.round.get('number')) + 1;
-				GenerateRound.generate(number, this.playerList, this.roundList, this.settings);
-				this.router.navigate("#/round/"+ number);
-			}
-			return false;
-		},
+      this.validate();
+      if (this.errors.length > 0) {
+        this.$('#validation-errors').show();
+      } else {
+        var number = parseInt(this.round.get('number')) + 1;
+        GenerateRound.generate(number, this.playerList, this.roundList, this.settings);
+        this.router.navigate("#/round/" + number);
+      }
+      return false;
+    },
 
-    showResultsPage: function() {
+    showResultsPage: function () {
       this.validate();
       if (this.errors.length > 0) {
         this.$('#validation-errors').show();
@@ -176,7 +185,7 @@ define([
       return false;
     },
 
-    disqualifyPlayer: function() {
+    disqualifyPlayer: function () {
       var player = this.playerList.get(this.$('#disqualify-select').val());
       if (player.isRinger()) {
         alert("Removing ringer not supported. Yet.");
@@ -188,10 +197,10 @@ define([
       }
     },
 
-    showHelpDisqualify: function() {
+    showHelpDisqualify: function () {
       HelpTexts.showHelpText("disqualify");
     }
 
-	});
-  	return RoundView;
+  });
+  return RoundView;
 });

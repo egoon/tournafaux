@@ -38,9 +38,10 @@ define([
 
 	    initialize: function() {
         var settings = new Settings();
+        var playerList = new PlayerList({settings: settings});
 	    	this.viewOptions = {
-	    		playerList: new PlayerList({settings: settings}),
-				  roundList: new RoundList(),
+	    		playerList: playerList,
+				  roundList: new RoundList({settings: settings, playerList: playerList}),
 				  settings: settings,
 				router: this,
 	    	};

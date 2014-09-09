@@ -28,15 +28,15 @@ define([
   var run = function() {
     module("RoundView", {
 			setup: function() {
-				this.roundList = new RoundList();
-        this.roundList.localStorage = new Backbone.LocalStorage("test-roundView-rounds");
-				this.roundList.fetch();
-        this.playerList = new PlayerList();
-        this.playerList.localStorage = new Backbone.LocalStorage("test-roundView-players");
-        this.playerList.fetch();
         this.settings = new Settings();
         this.settings.localstorage = new Backbone.LocalStorage("test-roundView-settings");
         this.settings.fetch();
+				this.roundList = new RoundList();
+        this.roundList.localStorage = new Backbone.LocalStorage("test-roundView-rounds");
+				this.roundList.fetch();
+        this.playerList = new PlayerList({settings: this.settings});
+        this.playerList.localStorage = new Backbone.LocalStorage("test-roundView-players");
+        this.playerList.fetch();
 			},
 			teardown: function() {
         while(this.roundList.at(0)) {

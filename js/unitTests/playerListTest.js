@@ -13,18 +13,20 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-"use strict";
+/*global define, module, test, expect, ok, equal, deepEqual*/
 define([
   'underscore',
   'backbone',
   'localstorage',
   'unitTests/testUtils',
-	'../../js/models/playerList'
-], function(_, Backbone, localstorage, Utils, PlayerList) {
+  '../../js/models/playerList',
+  '../../js/models/settings'
+], function(_, Backbone, localstorage, Utils, PlayerList, Settings) {
+  "use strict";
   var run = function() {
     module("PlayerList tests - one player", {
       setup: function() {
-				this.playerList = new PlayerList();
+				this.playerList = new PlayerList({settings: new Settings()});
         this.playerList.localStorage = new Backbone.LocalStorage("test-player-players");
 				this.playerList.fetch();
         this.player = this.playerList.create({name: "tester"});
@@ -157,7 +159,7 @@ define([
 
         module("PlayerList tests - multiple players", {
             setup: function() {
-                this.playerList = new PlayerList();
+                this.playerList = new PlayerList({settings: new Settings()});
                 this.playerList.localStorage = new Backbone.LocalStorage("test-playerlist-players");
                 this.playerList.fetch();
                 while(this.playerList.at(0)) {

@@ -41,6 +41,8 @@ define([
       var players = [];
       for (var i = 0; i < numberOfPlayers; ++i) {
         players[i] = playerList.create({name: String.fromCharCode(65 + i)});
+        players[i].setActive(true);
+        players[i].save();
       }
       return players;
     },

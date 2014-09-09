@@ -23,7 +23,8 @@ define([
   var BYE_SCORE = "-";
   var Player = Backbone.Model.extend({
 
-    initialize: function () {
+    initialize: function (options) {
+      this.settings = options.settings;
       this.setActive(false);
     },
 
@@ -47,43 +48,31 @@ define([
       return tables;
     },
 
-    countPointsWithBye: function (pointType, byeScore) {
-      if (this.isNonCompeting()) { //the bye or non-competing ringer
-        return -1000000;
-      }
-      var i = 1;
-      var total = 0;
-      var bye = false;
-      var realGames = 0;
-      while (this.get(pointType + i)) {
-        if (this.get(pointType + i) === BYE_SCORE) {
-          bye = true;
-        } else {
-          total += parseInt(this.get(pointType + i), 10);
-          realGames += 1;
-        }
-        i++;
-      }
-      if (bye) {
-        if (realGames === 0) {
-          total = byeScore;
-        } else {
-          total += (total / realGames);
-        }
-      }
-      return Math.round(total * 10) / 10;
-    },
-
     getTotalTp: function () {
-      return this.countPointsWithBye('tp', 1);
+      var round;
+      var total = 0;
+      for (round = 1; this.get('tp'+round); ++round) {
+        total += this.getTpForRound(round);
+      }
+      return total;
     },
 
     getTotalVp: function () {
-      return this.countPointsWithBye('vp', 0);
+      var round;
+      var total = 0;
+      for (round = 1; this.get('vp'+round); ++round) {
+        total += this.getVpForRound(round);
+      }
+      return total;
     },
 
     getVpDiff: function () {
-      return this.countPointsWithBye('vpdiff', 0);
+      var round;
+      var total = 0;
+      for (round = 1; this.get('vpdiff'+round); ++round) {
+        total += this.getVpDiffForRound(round);
+      }
+      return total;
     },
 
     getBestMatches: function (players, swissThreshold) {
@@ -103,7 +92,6 @@ define([
           (Math.abs(that.getTotalVp() - opp.getTotalVp()));
         return -scoreForSorting;
       });
-
       return bestMatches;
     },
 
@@ -125,20 +113,70 @@ define([
       return possibleOpps;
     },
 
+    getValueForRound: function (valueType, round) {
+
+      if (this.isNonCompeting()) {
+        return -10000000;
+      }
+      var value = this.get(valueType + round);
+      var that = this;
+      round = parseInt(round, 10);
+      var rounds = round;
+      while(this.get(valueType + (rounds + 1))) {rounds++; }
+      if (value !== BYE_SCORE) {
+        return parseInt(value, 10);
+      }
+      var settings = this.collection.settings;
+
+      if (settings.getBye() === settings.GG14_BYE) {
+        switch (valueType) {
+        case 'tp':
+          return 3;
+        case 'vp':
+          return 10;
+        case 'vpdiff':
+          return 5;
+        default:
+          return NaN;
+        }
+      }
+      if (settings.getBye() === settings.AVERAGE_BYE) {
+        if (rounds === 1) {
+          switch (valueType) {
+          case 'tp':
+            return 1;
+          case 'vp':
+            return 0;
+          case 'vpdiff':
+            return 0;
+          default:
+            return NaN;
+          }
+        }
+        return _.reduce(_.range(1, rounds + 1), function (memo, num) {
+          if (isNaN(that.get(valueType + num))) {
+            return memo;
+          }
+          return memo + parseInt(that.get(valueType + num), 10);
+        }, 0) / (rounds - 1);
+      }
+
+    },
+
     getVpForRound: function (round) {
-      return parseInt(this.get('vp' + round), 10);
+      return this.getValueForRound('vp', round);
     },
     setVpForRound: function (round, vp) {
       return parseInt(this.set('vp' + round, vp.toString()), 10);
     },
     getVpDiffForRound: function (round) {
-      return parseInt(this.get('vpdiff' + round), 10);
+      return this.getValueForRound('vpdiff', round);
     },
     setVpDiffForRound: function (round, vpdiff) {
       return parseInt(this.set('vpdiff' + round, vpdiff.toString()), 10);
     },
     getTpForRound: function (round) {
-      return parseInt(this.get('tp' + round), 10);
+      return this.getValueForRound('tp', round);
     },
     setTpForRound: function (round, tp) {
       return parseInt(this.set('tp' + round, tp.toString()), 10);
@@ -259,6 +297,10 @@ define([
     model: Player,
 
     localStorage: new Backbone.LocalStorage("tournafaux-players"),
+
+    initialize: function(options) {
+      this.settings = options.settings;
+    },
 
     getAllPlayers: function () {
       return this.models;
