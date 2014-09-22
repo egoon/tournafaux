@@ -1,6 +1,6 @@
  <div class="row">
   <div class="col-md-7">
-    <table class="table table-striped">
+    <table id="round-scoring" class="table table-striped">
       <tbody>
         <tr><th>Table</th><th>Player 1</th><th>VP</th><th>VP</th><th>Player 2</th></tr>
       </tbody>

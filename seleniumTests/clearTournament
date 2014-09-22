@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://localhost/" />
+<title>basicTest</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">basicTest</td></tr>
+</thead><tbody>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=new-tournament</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertConfirmation</td>
+	<td>This will remove all settings, players and rounds</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=new-player</td>
+	<td>Anna</td>
+</tr>
+<tr>
+	<td>sendKeys</td>
+	<td>id=new-player</td>
+	<td>${KEY_ENTER}</td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//tr[2]/td[5]/button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=new-player</td>
+	<td>Bertil</td>
+</tr>
+<tr>
+	<td>sendKeys</td>
+	<td>id=new-player</td>
+	<td>${KEY_ENTER}</td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//tr[3]/td[3]/input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=new-player</td>
+	<td>Cecilia</td>
+</tr>
+<tr>
+	<td>sendKeys</td>
+	<td>id=new-player</td>
+	<td>${KEY_ENTER}</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=new-player</td>
+	<td>David</td>
+</tr>
+<tr>
+	<td>sendKeys</td>
+	<td>id=new-player</td>
+	<td>${KEY_ENTER}</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=generate-first-round</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>//table[@id='round-scoring']/tbody[2]/tr/td[2]</td>
+	<td>player1Name</td>
+</tr>
+<tr>
+	<td>storeAttribute</td>
+	<td>xpath=//table[@id='round-scoring']/tbody[2]/tr/td[3]/input@id</td>
+	<td>player1Id</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>//table[@id='round-scoring']/tbody[2]/tr/td[5]</td>
+	<td>player2Name</td>
+</tr>
+<tr>
+	<td>storeAttribute</td>
+	<td>xpath=//table[@id='round-scoring']/tbody[2]/tr/td[4]/input@id</td>
+	<td>player2Id</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>//table[@id='round-scoring']/tbody[2]/tr[2]/td[2]</td>
+	<td>player3Name</td>
+</tr>
+<tr>
+	<td>storeAttribute</td>
+	<td>xpath=//table[@id='round-scoring']/tbody[2]/tr[2]/td[3]/input@id</td>
+	<td>player3Id</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>//table[@id='round-scoring']/tbody[2]/tr[2]/td[5]</td>
+	<td>player4Name</td>
+</tr>
+<tr>
+	<td>storeAttribute</td>
+	<td>xpath=//table[@id='round-scoring']/tbody[2]/tr[2]/td[4]/input@id</td>
+	<td>player4Id</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>//input[@id='${player1Id}']</td>
+	<td>8</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>//input[@id='${player2Id}']</td>
+	<td>5</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>//input[@id='${player3Id}']</td>
+	<td>0</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>//input[@id='${player4Id}']</td>
+	<td>6</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='standings']/div/table/tbody[2]/tr/td[2]</td>
+	<td>${player4Name}</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='standings']/div/table/tbody[2]/tr[2]/td[2]</td>
+	<td>${player1Name}</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='standings']/div/table/tbody[2]/tr[3]/td[2]</td>
+	<td>${player2Name}</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='standings']/div/table/tbody[2]/tr[4]/td[2]</td>
+	<td>${player3Name}</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='standings']/div/table/tbody[2]/tr[1]/td[3]</td>
+	<td>3</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='standings']/div/table/tbody[2]/tr[2]/td[5]</td>
+	<td>8</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='standings']/div/table/tbody[2]/tr[3]/td[4]</td>
+	<td>-3</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='standings']/div/table/tbody[2]/tr[4]/td[5]</td>
+	<td>0</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=generate-next-round</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementNotPresent</td>
+	<td>//ul[@id='validation-errors']/li[4]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=generate-next-round</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//ul[@id='validation-errors']/li[4]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>//input[@id='${player1Id}']</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>
