@@ -317,6 +317,9 @@ define([
       var players = this.filter(function (player) {
         return player.isActive() && !player.isNonCompeting();
       });
+      players = _.sortBy(players, function(p) {return -p.getTotalVp();});
+      players = _.sortBy(players, function(p) {return -p.getVpDiff();});
+      players = _.sortBy(players, function(p) {return -p.getTotalTp();});
       return players;
     },
 

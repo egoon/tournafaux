@@ -33,18 +33,8 @@ define([
       "click #helpBye": "showHelpBye"
     },
 
-    getSortedPlayers: function() {
-      var players = this.playerList.getCompetingPlayers();
-      players = _.reject(players, function(p) {return p.isNonCompeting()});
-      players = _.sortBy(players, function(p) {return p.getTotalVp()});
-      players = _.sortBy(players, function(p) {return p.getVpDiff()});
-      players = _.sortBy(players, function(p) {return p.getTotalTp()});
-      players = players.reverse();
-      return players;
-    },
-
     render: function() {
-      var players = this.getSortedPlayers();
+      var players = this.playerList.getCompetingPlayers();
 
       var template = _.template(standingsTemplate, {players: players});
       this.$el.html(template);
@@ -52,7 +42,7 @@ define([
     },
 
     textTable: function() {
-      var players = this.getSortedPlayers();
+      var players = this.playerList.getCompetingPlayers()
 
 
       var nameCol = _.reduce(players, function(maxlen, p) {return Math.max(p.getName().length, maxlen)}, "players".length);
