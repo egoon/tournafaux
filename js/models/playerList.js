@@ -115,7 +115,7 @@ define([
 
     getValueForRound: function (valueType, round) {
 
-      if (this.isNonCompeting()) {
+      if (this.isBye()) {
         return -10000000;
       }
       var value = this.get(valueType + round);
