@@ -13,7 +13,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-"use strict";
+/*globals define, module, test, equal, ok, notEqual, expect, jQuery*/
 define([
 	'jquery',
     'underscore',
@@ -22,8 +22,10 @@ define([
 	'../models/roundList',
     '../models/playerList',
     '../models/settings',
-	'../views/settingsView'
-], function($, _, Backbone, localstorage, RoundList, PlayerList, Settings, SettingsView) {
+	'../views/settingsView',
+  'unitTests/testUtils'
+], function($, _, Backbone, localstorage, RoundList, PlayerList, Settings, SettingsView, Utils) {
+  "use strict";
     var run = function() {
     	module("SettingsView", {
 			setup: function() {
@@ -175,6 +177,28 @@ define([
 
             notEqual($('#qunit-fixture #validation-errors').html(), '', 'there are validation errors');
         });
+      test('toggle choose opponents after creating players', function() {
+        expect(3);
+        var settingsView = new SettingsView({playerList: this.playerList, roundList: this.roundList, settings: this.settings});
+        $('#qunit-fixture').html(settingsView.render().el);
+
+        addPlayer('A');
+        addPlayer('B');
+        addPlayer('C');
+
+        var player = getPlayer(this.playerList, 'A');
+
+        this.settings.setChooseFirstOpponent(true);
+
+        //this.$('#' + player.id + ' td.chooseFirestOpponent')
+
+        equal($('#qunit-fixture #' + player.id + ' select.chooseFirstOpponent option').length, 3, 'possible opponents not rendered');
+        equal($('#qunit-fixture #' + player.id + ' select.chooseFirstOpponent option:nth-child(2)').html(), 'B', 'B should be first opponent in list');
+
+        addPlayer('D');
+
+        equal($('#qunit-fixture #' + player.id + ' select.chooseFirstOpponent option').length, 4, 'possible opponents not rendered');
+      });
     };
     return {run: run};
 });

@@ -42,21 +42,23 @@ define([
 
 		render: function() {
       var that = this;
-      var opponents = _.filter(this.playerList.getActivePlayers(), function(player) {return player.id !== that.player.id && !player.isBye()});
+      var opponents = _.filter(this.playerList.getAllPlayers(), function(player) {return player.id !== that.player.id && !player.isBye(); });
 			var template =_.template(playerTemplate, {player: this.player, opponents: opponents});
       
 			this.$el.html(template);
 			this.$el.attr('id', this.player.id);
       this.validate();
-      if (this.player.getFirstOpponent())
+      if (this.player.getFirstOpponent()) {
         this.$('select.chooseFirstOpponent').val(this.player.getFirstOpponent());
+      }
 		},
 
     updateProperty: function(e) {
       this.player.set(e.currentTarget.name, e.currentTarget.value);
       this.player.save();
-      if (e.currentTarget.name === 'name')
+      if (e.currentTarget.name === 'name') {
         e.currentTarget.value = this.player.getName();
+      }
       return false;
     },
 

@@ -13,25 +13,23 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
+/*globals define*/
 define([
-  'jquery',
-  'underscore',
-  'backbone',
-  'router',
-], function($, _, Backbone, Router) {
+  'router'
+], function(Router) {
+  "use strict";
+  var initialize = function() {
+  window.applicationCache.addEventListener('updateready', function() {
+      if (window.applicationCache.status === window.applicationCache.UPDATEREADY) {
+          // Browser downloaded a new app cache.
+          if (confirm('A new version of this site is available. Load it?')) {
+            window.location.reload();
+          }
+      }
+    }, false);
 
-  	var initialize = function() {
-		window.applicationCache.addEventListener('updateready', function(e) {
-	    	if (window.applicationCache.status == window.applicationCache.UPDATEREADY) {
-	      		// Browser downloaded a new app cache.
-	      		if (confirm('A new version of this site is available. Load it?')) {
-	        		window.location.reload();
-	      		}
-	    	} 
-	  	}, false);
-
-	  	Router.initialize();
-  	};
+    Router.initialize();
+  };
 
 	return { initialize: initialize };
 });
