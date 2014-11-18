@@ -72,7 +72,16 @@
     </div>
 
   </div>
+
   <hr/>
+
+
+  <div id="round-settings" class="row"></div>
+
+  <a id="toggle-round-settings">Show/hide round settings</a>
+
+  <hr/>
+
   <table class="table table-striped">
     <tbody>
       <tr>

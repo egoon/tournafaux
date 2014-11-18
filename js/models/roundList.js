@@ -19,7 +19,8 @@ define([
   'localstorage',
 ], function(Backbone, localstorage) {
 	var Round = Backbone.Model.extend({
-      getTables: function(noTables, playerList) {
+
+		getTables: function(noTables, playerList) {
 			var tables = [];
 			for (var i = 1; i <= noTables; ++i) {
 				if (this.get('table' + i + 'player1')) {
@@ -54,6 +55,7 @@ define([
 		getNumber: function() {
 			return parseInt(this.get('number'));
 		}
+
 	});
 
 	var RoundList = Backbone.Collection.extend({

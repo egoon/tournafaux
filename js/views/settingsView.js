@@ -20,9 +20,9 @@ define([
   'logic/generateRound',
   'logic/helpTexts',
   'views/playerView',
-
+  'views/roundSettingsView',
   'text!../../templates/settings.tpl'
-], function (_, Backbone, GenerateRound, HelpTexts, PlayerView, settingsTemplate) {
+], function (_, Backbone, GenerateRound, HelpTexts, PlayerView, RoundSettingsView, settingsTemplate) {
   "use strict";
   var SettingsView = Backbone.View.extend({
 
@@ -42,7 +42,8 @@ define([
       "click #helpRinger": "showHelpRinger",
       "click #helpTournamentType": "showHelpTournamentType",
       "click #helpGG14": "showHelpGG14",
-      "click #helpChooseFirstOpponent": "showHelpChooseFirstOpponent"
+      "click #helpChooseFirstOpponent": "showHelpChooseFirstOpponent",
+      "click #toggle-round-settings": "toggleRoundsVisibility"
     },
 
     initialize: function (options) {
@@ -83,6 +84,11 @@ define([
         ++i;
       }
 
+      this.changeRounds(); // create rounds if needed
+      _.each(this.roundList.models, function(round) {
+        this.addRoundSettingsView(round);
+      }, this);
+
       if (this.settings.isChooseFirstOpponent()) {
         this.$('input[name=chooseFirstOpponent]').prop('checked', true);
       }
@@ -103,12 +109,19 @@ define([
       }
     },
 
+    addRoundSettingsView: function (round) {
+      console.log('create round view ' + round.number);
+
+      var roundSettingsView = new RoundSettingsView({round: round});
+      roundSettingsView.render();
+      this.$("#round-settings").append(roundSettingsView.el);
+    },
+
     createOnEnter: function (e) {
       if (e.keyCode !== 13 && e.keyCode !== 9) { return; }
       if (!this.newPlayerInput.val()) { return; }
 
       var player = this.playerList.create({name: this.newPlayerInput.val(), city: '', faction: ''});
-      console.log(player);
       this.newPlayerInput.val('');
       this.addPlayerView(player);
     },
@@ -118,6 +131,20 @@ define([
         this.$("#rounds").val('');
       }
       this.settings.setRounds(this.$("#rounds").val());
+      while (this.settings.getRounds() > this.roundList.length) {
+        var number = this.roundList.length + 1;
+        console.log(number);
+        this.roundList.create({number: number.toString()});
+      }
+      var len = this.roundList.length;
+      while (this.settings.getRounds() < this.roundList.length) {
+        this.roundList.at(this.settings.getRounds()).destroy();
+
+        if (len === this.roundList.length) {
+          console.log('not working');
+          break;
+        }
+      }
     },
 
     changeTables: function () {
@@ -189,7 +216,6 @@ define([
           player.setActive(true);
           player.save();
         });
-        console.log(this.playerList.getActivePlayers());
         GenerateRound.generate(1, this.playerList, this.roundList, this.settings);
         this.router.navigate("#/round/1");
         this.remove();
@@ -215,6 +241,10 @@ define([
       for (i = 0; i < this.errors.length; ++i) {
         this.$('#validation-errors').append('<li>' + this.errors[i] + '</li>');
       }
+    },
+
+    toggleRoundsVisibility: function() {
+      this.$('#round-settings').toggle();
     },
 
     showHelpCityFaction: function () {

@@ -76,7 +76,6 @@ define([
           }
         });
 
-        console.log(tables);
         var template = _.template(roundTemplate, {number: number, tables: tables, settings: this.settings, players: this.playerList.getCompetingPlayers()});
         this.$el.html(template);
 

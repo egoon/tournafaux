@@ -13,13 +13,14 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-"use strict";
+/*global define*/
 define([
   'underscore',
   'backbone',
-  'text!../../templates/navigation.tpl',
+  'text!../../templates/navigation.tpl'
 ], function(_, Backbone, navigationTemplate) {
-  	var NavigationView = Backbone.View.extend({
+  "use strict";
+  var NavigationView = Backbone.View.extend({
 		tagName: 'div',
 
 		initialize: function(options) {
@@ -31,10 +32,7 @@ define([
       this.settings.fetch();
 			this.active = options.active;
       this.router = options.router;
-			
-			this.listenTo(this.roundList, 'remove', this.render);
-			this.listenTo(this.roundList, 'reset', this.render);
-			this.listenTo(this.roundList, 'add', this.render);
+
 		},
 
     events: {
@@ -42,7 +40,10 @@ define([
     },
 
 		render: function() {
-			var rounds = _.sortBy(this.roundList.models, function(round) { return parseInt(round.get('number'));});
+      this.roundList.fetch();
+			var rounds = _.sortBy(this.roundList.models, function(round) { return parseInt(round.get('number'), 10);});
+      console.log(rounds);
+      rounds = _.filter(rounds, function(round) { return round.getTables(3).length > 0;});
 			var template = _.template(navigationTemplate, {rounds: rounds, active: this.active});
 		    this.$el.html(template);
       if (rounds.length === 0) {
@@ -62,11 +63,11 @@ define([
           window.location.reload();
         else {
           this.router.navigate('#/');
-          //strage bug prevents saving data unless window is reloaded
+          //strange bug prevents saving data unless window is reloaded
           window.location.reload();
         }
       }
     }
 	});
-  	return NavigationView;
+  return NavigationView;
 });

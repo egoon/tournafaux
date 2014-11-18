@@ -13,13 +13,13 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-"use strict";
+/*global define*/
 define([
   'jquery',
   'underscore',
   'backbone',
-  'localstorage',
+  'localstorage'
 ], function($, _, Backbone, localstorage) {
-  
-  	return {};
+  "use strict";
+  return {};
 });

@@ -16,6 +16,7 @@
 define([
   'underscore',
 ], function(_) {
+  "use strict";
 	var BYE_SCORE = "-";
 
 	var setScoresForBye = function(bye, opp, number) {
@@ -35,12 +36,14 @@ define([
 
 		var round = _.find(roundList.models, function(round){ return round.get("number") === number.toString(); });
 		if (round) {
-      round.destroy();
-      //TODO: clear players
-      //TODO: destroy later turns
+      playerList.each(function(player) {
+        player.clearGame(number);
+      });
+      // TODO: clear the tables
+    } else {
+		  round = roundList.create({number: number.toString()});
     }
 
-		round = roundList.create({number: number.toString()});
 
 		// Toggle active bye/ringer as needed
     var byeRinger = playerList.getByeRinger();
