@@ -76,13 +76,12 @@
   <hr/>
 
 
-  <div id="round-settings" class="row"></div>
+  <div id="round-settings" class="row round-settings"></div>
 
   <a id="toggle-round-settings">Show/hide round settings</a>
 
-  <hr/>
 
-  <table class="table table-striped">
+  <table class="table table-striped player-settings">
     <tbody>
       <tr>
         <th>Player name</th>
@@ -102,6 +101,6 @@
   </table>
   <ul id="validation-errors" class="text-danger" style="display:none"></ul>
   <button type="button" id="generate-first-round" class="btn btn-primary">Generate round 1</button>
-  <hr/>
+
 
 </form>

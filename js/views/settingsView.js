@@ -93,6 +93,8 @@ define([
         this.$('input[name=chooseFirstOpponent]').prop('checked', true);
       }
       this.validate();
+
+      this.$('#round-settings').hide();
       return this;
     },
 
@@ -112,7 +114,7 @@ define([
     addRoundSettingsView: function (round) {
       console.log('create round view ' + round.number);
 
-      var roundSettingsView = new RoundSettingsView({round: round});
+      var roundSettingsView = new RoundSettingsView({round: round, settings: this.settings});
       roundSettingsView.render();
       this.$("#round-settings").append(roundSettingsView.el);
     },
@@ -145,6 +147,7 @@ define([
           break;
         }
       }
+
     },
 
     changeTables: function () {

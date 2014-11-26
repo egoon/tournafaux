@@ -54,6 +54,52 @@ define([
 
 		getNumber: function() {
 			return parseInt(this.get('number'));
+		},
+
+		getDeployment: function() {
+			return this.get('deployment');
+		},
+
+		setDeployment: function(deployment) {
+			this.set('deployment', deployment);
+			this.save();
+		},
+
+		getStrategy: function() {
+			return this.get('strategy');
+		},
+
+		setStrategy: function(strategy) {
+			this.set('strategy', strategy);
+			this.save();
+		},
+
+		getSchemes: function() {
+			var schemes = this.get('schemes');
+			return schemes ? schemes.split(',') : [];
+		},
+
+		setSchemes: function(schemes) {
+			if (schemes && schemes.length > 0) {
+				this.set('schemes', schemes.join(','));
+			} else {
+				this.unset('schemes');
+			}
+			this.save();
+		},
+
+		addScheme: function(scheme) {
+			var schemes = this.get('schemes');
+			if (schemes) {
+				this.set('schemes', schemes + ',' + scheme);
+			} else {
+				this.set('schemes', scheme);
+			}
+			this.save();
+		},
+
+		removeScheme: function(scheme) {
+			this.setSchemes(_.filter(this.getSchemes(), function(s) { return s !== scheme; }));
 		}
 
 	});
