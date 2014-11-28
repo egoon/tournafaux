@@ -44,6 +44,8 @@ define([
       });
 
       this.listenTo(this.playerList, 'change', this.validate);
+
+
     },
 
     events: {
@@ -89,6 +91,7 @@ define([
       } else {
         this.$el.html(_.template("<h4>Round does not exist</h4>Sorry!"));
       }
+
       return this;
     },
 
@@ -170,6 +173,7 @@ define([
         var number = parseInt(this.round.get('number')) + 1;
         GenerateRound.generate(number, this.playerList, this.roundList, this.settings);
         this.router.navigate("#/round/" + number);
+        $('#changeRoundTriggerElement').change(); // trigger the roundInfoView to change round
       }
       return false;
     },

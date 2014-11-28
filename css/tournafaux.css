@@ -9,3 +9,15 @@
 table.player-settings {
     margin-top: 15px;
 }
+
+#roundInfoPage {
+    font-size: 250%;
+}
+
+#roundInfoPage table {
+    font-size: 70%;
+}
+
+#roundInfoPage h1 {
+    font-size: 200%;
+}

@@ -37,7 +37,7 @@ define([
       this.round = options.round;
     },
 
-    render: function () {
+    render: function() {
       var that = this;
       var template = _.template(roundSettingsTemplate, {round: this.round});
       this.$el.html(template);
@@ -71,7 +71,7 @@ define([
       if (schemes.length >= 5) {
         this.$('select.scheme-select').hide();
       }
-
+      $('#changeRoundTriggerElement').change();
       return this;
     },
 

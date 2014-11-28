@@ -15,6 +15,7 @@
  */
 /*global define*/
 define([
+  'jquery',
   'underscore',
   'backbone',
   'logic/generateRound',
@@ -22,7 +23,7 @@ define([
   'views/playerView',
   'views/roundSettingsView',
   'text!../../templates/settings.tpl'
-], function (_, Backbone, GenerateRound, HelpTexts, PlayerView, RoundSettingsView, settingsTemplate) {
+], function ($, _, Backbone, GenerateRound, HelpTexts, PlayerView, RoundSettingsView, settingsTemplate) {
   "use strict";
   var SettingsView = Backbone.View.extend({
 
@@ -112,8 +113,6 @@ define([
     },
 
     addRoundSettingsView: function (round) {
-      console.log('create round view ' + round.number);
-
       var roundSettingsView = new RoundSettingsView({round: round, settings: this.settings});
       roundSettingsView.render();
       this.$("#round-settings").append(roundSettingsView.el);
@@ -124,6 +123,7 @@ define([
       if (!this.newPlayerInput.val()) { return; }
 
       var player = this.playerList.create({name: this.newPlayerInput.val(), city: '', faction: ''});
+      player.save();
       this.newPlayerInput.val('');
       this.addPlayerView(player);
     },
@@ -221,6 +221,7 @@ define([
         });
         GenerateRound.generate(1, this.playerList, this.roundList, this.settings);
         this.router.navigate("#/round/1");
+        this.settings.roundInfoWindow && this.settings.roundInfoWindow.close();
         this.remove();
       }
       return false;

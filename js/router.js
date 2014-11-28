@@ -25,15 +25,17 @@ define([
   'views/navigationView',
   'views/roundView',
   'views/lastUpdatedView',
-  'views/resultsView'
-], function($, _, Backbone, localstorage, PlayerList, RoundList, Settings, SettingsView, NavigationView, RoundView, LastUpdatedView, ResultsView) {
-  	
+  'views/resultsView',
+	'views/roundInfoView'
+], function($, _, Backbone, localstorage, PlayerList, RoundList, Settings, SettingsView, NavigationView, RoundView, LastUpdatedView, ResultsView, RoundInfoView) {
+  "use strict";
 	var Router = Backbone.Router.extend({
 	    routes: {
 	      "": "settings",
         "#": "settings",
 	      "round/:number": "round",
-        "results": "results"
+        "results": "results",
+				"roundInfo": "roundInfo"
 	    },
 
 	    initialize: function() {
@@ -65,7 +67,7 @@ define([
 	    		options.settings.set('version', '1');
 	    		options.settings.save();
 	    	}
-	    },
+	    }
 	});
 
 	var initialize = function() {
@@ -80,7 +82,7 @@ define([
 		});
 		router.on('route:round', function(number) {
       if (router.roundView)
-          router.roundView.remove();
+				router.roundView.remove();
       router.viewOptions.active = number;
       router.roundView = new RoundView(router.viewOptions).render();
       
@@ -102,6 +104,21 @@ define([
       $('#navigation').html(navigationView.render().el);
       new LastUpdatedView().render();
     });
+		router.on('route:roundInfo', function() {
+			$('#mainSite').hide();
+			if (router.roundInfoView)
+				router.roundInfoView.render();
+			else {
+				router.viewOptions.roundList.fetch();
+				router.viewOptions.playerList.fetch();
+				router.viewOptions.settings.fetch();
+				router.roundInfoView = new RoundInfoView(router.viewOptions).render();
+			}
+			$('#roundInfoPage').html(router.roundInfoView.el);
+
+			router.viewOptions.active = '';
+
+		});
 
     Backbone.history.start();
 	};
