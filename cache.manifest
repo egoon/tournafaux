@@ -1,6 +1,7 @@
 CACHE MANIFEST
-# Mon Oct 27 07:57:53 CET 2014
+# Fri Nov 28 14:37:34 CET 2014
 ./css/bootstrap-3.1.1-min.css
+./css/tournafaux.css
 ./img/btn_donate_SM.gif
 ./index.html
 ./js/app.js
@@ -23,6 +24,8 @@ CACHE MANIFEST
 ./js/views/playerStatisticsView.js
 ./js/views/playerView.js
 ./js/views/resultsView.js
+./js/views/roundInfoView.js
+./js/views/roundSettingsView.js
 ./js/views/roundView.js
 ./js/views/settingsView.js
 ./js/views/standingsView.js
@@ -32,5 +35,7 @@ CACHE MANIFEST
 ./templates/playerStatistics.tpl
 ./templates/results.tpl
 ./templates/round.tpl
+./templates/roundInfo.tpl
+./templates/roundSettings.tpl
 ./templates/settings.tpl
 ./templates/standings.tpl
