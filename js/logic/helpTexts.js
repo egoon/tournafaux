@@ -35,11 +35,11 @@ define([
       "In the first round a random player will be matched against the bye. In the next rounds the player with the " +
       "lowest score, that has not already received a bye, will get the bye.",
 
-    "average-bye": "<h5>Average Bye</h5>" +
+    "average-bye": "<h4>Average Bye</h4>" +
       "Scoring against this bye will be an average of the other games by the player that was matched against the bye. " +
       "The first round (when there is no average), the player will get a temporary 0-0 draw.",
 
-    "gg14-bye": "<h5>Gaining Grounds 2014 Bye</h5>" +
+    "gg14-bye": "<h4>Gaining Grounds 2014 Bye</h4>" +
       "A player that receives the bye will score 3 TP, 10 VP and +5 VP diff.",
 
     ringer: "<h4>Ringer</h4>" +
@@ -67,9 +67,14 @@ define([
       "if they have played at least two rounds against other opponents. "+
       "So a player may face the same person in round 1 and round 4.",
 
-    disqualify: "<h5>Forfeits and Disqualifications</h5>" + 
+    disqualify: "<h4>Forfeits and Disqualifications</h4>" + 
       "A player that is disqualified or forfeits will be removed from the standings table, and will not take part in future rounds. " +
       "This will cause a bye or ringer to join or leave the tournament depending on the remaining amount of players.",
+
+    roundSettings: "<h4>Round Settings</h4>" +
+      "If you have a large screen or projector, you can add some information about the turns, that will be displayed in a separate window. " +
+      "After generating the first round, a <strong>Round Info</strong> link will appear in the meny bar. " +
+      "Click it to open the round info window, and move it to the player facing screen",
 
     showHelpText: function(tags) {
       var text = "";

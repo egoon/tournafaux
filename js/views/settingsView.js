@@ -39,11 +39,14 @@ define([
       "click input[name=byes]": "changeBye",
       "click input[name=tournamentType]": "changeTournamentType",
       "click #helpCityFaction": "showHelpCityFaction",
+      "focus input.city": "showHelpCityFaction",
+      "focus input.faction": "showHelpCityFaction",
       "click #helpBye": "showHelpBye",
       "click #helpRinger": "showHelpRinger",
       "click #helpTournamentType": "showHelpTournamentType",
       "click #helpGG14": "showHelpGG14",
       "click #helpChooseFirstOpponent": "showHelpChooseFirstOpponent",
+      "click #helpRoundSettings": "showHelpRoundSettings",
       "click #toggle-round-settings": "toggleRoundsVisibility"
     },
 
@@ -170,6 +173,7 @@ define([
       }
       this.$('input[name="byes"][value="average-bye"]').prop('disabled', isGG14);
       this.$('input[name="tournamentType"][value="swiss"]').prop('disabled', isGG14);
+      this.showHelpGG14();
     },
 
     toggleChooseFirstOpponent: function () {
@@ -183,6 +187,7 @@ define([
         });
         this.$('.chooseFirstOpponent').hide();
       }
+      this.showHelpChooseFirstOpponent();
     },
 
     changeBye: function () {
@@ -200,10 +205,12 @@ define([
       }
       this.byeRinger.save();
       this.toggleChooseFirstOpponent(); // to make sure chooseOpponent is hidden
+      this.showHelpBye();
     },
 
     changeTournamentType: function () {
       this.settings.setTournamentType(this.$('input[name="tournamentType"]:checked').val());
+      this.showHelpTournamentType();
     },
 
     generateRound: function () {
@@ -249,6 +256,7 @@ define([
 
     toggleRoundsVisibility: function() {
       this.$('#round-settings').toggle();
+      this.showHelpRoundSettings();
     },
 
     showHelpCityFaction: function () {
@@ -268,6 +276,9 @@ define([
     },
     showHelpChooseFirstOpponent: function () {
       HelpTexts.showHelpText("chooseFirstOpponent");
+    },
+    showHelpRoundSettings: function () {
+      HelpTexts.showHelpText("roundSettings");
     }
   });
   return SettingsView;

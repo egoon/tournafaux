@@ -78,7 +78,7 @@
 
   <div id="round-settings" class="row round-settings"></div>
 
-  <a id="toggle-round-settings">Show/hide round settings</a>
+  <a id="toggle-round-settings">Show/hide round settings</a> </label> <a id="helpRoundSettings">(?)</a>
 
 
   <table class="table table-striped player-settings">
