@@ -201,13 +201,17 @@ define([
     clearGames: function (number) {
       var i;
       for (i = 1; i <= number; ++i) {
-        this.unset('vp' + i);
-        this.unset('vpdiff' + i);
-        this.unset('tp' + i);
-        this.unset('opponent' + i);
-        this.unset('table' + i);
+        this.clearGame(i);
       }
       this.unset('active');
+    },
+
+    clearGame: function (roundNumber) {
+      this.unset('vp' + roundNumber);
+      this.unset('vpdiff' + roundNumber);
+      this.unset('tp' + roundNumber);
+      this.unset('opponent' + roundNumber);
+      this.unset('table' + roundNumber);
     },
 
     isBye: function () {

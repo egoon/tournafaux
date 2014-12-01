@@ -99,6 +99,7 @@ define([
           this.set('tournamentType', tournamentType);
           this.save();
       },
+
       AVERAGE_BYE: 'average-bye',
       GG14_BYE: 'gg14-bye',
       COMPETING_RINGER: 'competing-ringer',
@@ -107,6 +108,7 @@ define([
       GG14_SWISS: 'gg14-swiss',
 
       localStorage: new Backbone.LocalStorage("tournafaux-settings")
+
 
     });
   return Settings;

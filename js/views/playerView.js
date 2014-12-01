@@ -13,12 +13,13 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
+/*global define*/
 define([
-  'jquery',
   'underscore',
   'backbone',
   'text!../../templates/player.tpl'
-], function($, _, Backbone, playerTemplate) {
+], function(_, Backbone, playerTemplate) {
+  "use strict";
 
 	var PlayerView = Backbone.View.extend({
 		tagName: "tr",
@@ -81,8 +82,9 @@ define([
         }
 
         newOpponent.setFirstOpponent(this.player.id);
-      } else
+      } else {
         this.player.setFirstOpponent(undefined);
+      }
     },
 
 		removePlayer: function() {
@@ -100,13 +102,13 @@ define([
 					while(this.roundList.at(0)) {
 						this.roundList.at(0).destroy();
 					}
-					this.$el.hide(function() {that.remove()});
+					this.$el.hide(function() {that.remove();});
 					
 				}
 			} else {
         this.changeFirstOpponent({currentTarget: {value: undefined}});
 				this.player.destroy();
-				this.$el.hide(function() {that.remove()});
+				this.$el.hide(function() {that.remove();});
 			}
 
 			return false;

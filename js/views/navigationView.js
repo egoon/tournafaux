@@ -13,13 +13,14 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-"use strict";
+/*global define*/
 define([
   'underscore',
   'backbone',
-  'text!../../templates/navigation.tpl',
+  'text!../../templates/navigation.tpl'
 ], function(_, Backbone, navigationTemplate) {
-  	var NavigationView = Backbone.View.extend({
+  "use strict";
+  var NavigationView = Backbone.View.extend({
 		tagName: 'div',
 
 		initialize: function(options) {
@@ -31,22 +32,24 @@ define([
       this.settings.fetch();
 			this.active = options.active;
       this.router = options.router;
-			
-			this.listenTo(this.roundList, 'remove', this.render);
-			this.listenTo(this.roundList, 'reset', this.render);
-			this.listenTo(this.roundList, 'add', this.render);
+
 		},
 
     events: {
-      "click #new-tournament": "newTournament"
+      "click #new-tournament": "newTournament",
+      "click #roundInfoLink": "openRoundInfoWindow"
     },
 
 		render: function() {
-			var rounds = _.sortBy(this.roundList.models, function(round) { return parseInt(round.get('number'));});
+      this.roundList.fetch();
+			var rounds = _.sortBy(this.roundList.models, function(round) { return parseInt(round.get('number'), 10);});
+      //TODO: use a isStarted method or something
+      rounds = _.filter(rounds, function(round) { return round.getTables(3).length > 0;});
 			var template = _.template(navigationTemplate, {rounds: rounds, active: this.active});
 		    this.$el.html(template);
       if (rounds.length === 0) {
         this.$('#results').hide();
+        this.$('#roundInfo').hide();
       }
 		  return this;
 		},
@@ -57,16 +60,34 @@ define([
           this.roundList.at(0).destroy();
         while (this.playerList.length > 0)
           this.playerList.at(0).destroy();
+        this.settings.roundInfoWindow && this.settings.roundInfoWindow.close();
         this.settings.destroy();
         if (this.active === 'settings')
           window.location.reload();
         else {
           this.router.navigate('#/');
-          //strage bug prevents saving data unless window is reloaded
+          //strange bug prevents saving data unless window is reloaded
           window.location.reload();
         }
       }
+    },
+
+    openRoundInfoWindow: function() {
+      var that = this;
+      if (this.settings.roundInfoWindow) {
+        this.settings.roundInfoWindow.close();
+      }
+      this.settings.roundInfoWindow = window.open("#/roundInfo", "_blank", "menubar=0,scrollbars=0,status=0,titlebar=0");
+      $(window).unload(function() {
+        alert('unload');
+        if (that.settings.roundInfoWindow) {
+          that.settings.roundInfoWindow.close();
+          that.settings.roundInfoWindow = undefined;
+        }
+      });
+      $(window).bind('beforeunload', (function() {return 'This will close the round info window';}));
+
     }
 	});
-  	return NavigationView;
+  return NavigationView;
 });

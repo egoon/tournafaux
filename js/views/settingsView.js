@@ -15,14 +15,15 @@
  */
 /*global define*/
 define([
+  'jquery',
   'underscore',
   'backbone',
   'logic/generateRound',
   'logic/helpTexts',
   'views/playerView',
-
+  'views/roundSettingsView',
   'text!../../templates/settings.tpl'
-], function (_, Backbone, GenerateRound, HelpTexts, PlayerView, settingsTemplate) {
+], function ($, _, Backbone, GenerateRound, HelpTexts, PlayerView, RoundSettingsView, settingsTemplate) {
   "use strict";
   var SettingsView = Backbone.View.extend({
 
@@ -38,11 +39,15 @@ define([
       "click input[name=byes]": "changeBye",
       "click input[name=tournamentType]": "changeTournamentType",
       "click #helpCityFaction": "showHelpCityFaction",
+      "focus input.city": "showHelpCityFaction",
+      "focus input.faction": "showHelpCityFaction",
       "click #helpBye": "showHelpBye",
       "click #helpRinger": "showHelpRinger",
       "click #helpTournamentType": "showHelpTournamentType",
       "click #helpGG14": "showHelpGG14",
-      "click #helpChooseFirstOpponent": "showHelpChooseFirstOpponent"
+      "click #helpChooseFirstOpponent": "showHelpChooseFirstOpponent",
+      "click #helpRoundSettings": "showHelpRoundSettings",
+      "click #toggle-round-settings": "toggleRoundsVisibility"
     },
 
     initialize: function (options) {
@@ -83,10 +88,17 @@ define([
         ++i;
       }
 
+      this.changeRounds(); // create rounds if needed
+      _.each(this.roundList.models, function(round) {
+        this.addRoundSettingsView(round);
+      }, this);
+
       if (this.settings.isChooseFirstOpponent()) {
         this.$('input[name=chooseFirstOpponent]').prop('checked', true);
       }
       this.validate();
+
+      this.$('#round-settings').hide();
       return this;
     },
 
@@ -103,12 +115,18 @@ define([
       }
     },
 
+    addRoundSettingsView: function (round) {
+      var roundSettingsView = new RoundSettingsView({round: round, settings: this.settings});
+      roundSettingsView.render();
+      this.$("#round-settings").append(roundSettingsView.el);
+    },
+
     createOnEnter: function (e) {
       if (e.keyCode !== 13 && e.keyCode !== 9) { return; }
       if (!this.newPlayerInput.val()) { return; }
 
       var player = this.playerList.create({name: this.newPlayerInput.val(), city: '', faction: ''});
-      console.log(player);
+      player.save();
       this.newPlayerInput.val('');
       this.addPlayerView(player);
     },
@@ -118,6 +136,21 @@ define([
         this.$("#rounds").val('');
       }
       this.settings.setRounds(this.$("#rounds").val());
+      while (this.settings.getRounds() > this.roundList.length) {
+        var number = this.roundList.length + 1;
+        console.log(number);
+        this.roundList.create({number: number.toString()});
+      }
+      var len = this.roundList.length;
+      while (this.settings.getRounds() < this.roundList.length) {
+        this.roundList.at(this.settings.getRounds()).destroy();
+
+        if (len === this.roundList.length) {
+          console.log('not working');
+          break;
+        }
+      }
+
     },
 
     changeTables: function () {
@@ -140,6 +173,7 @@ define([
       }
       this.$('input[name="byes"][value="average-bye"]').prop('disabled', isGG14);
       this.$('input[name="tournamentType"][value="swiss"]').prop('disabled', isGG14);
+      this.showHelpGG14();
     },
 
     toggleChooseFirstOpponent: function () {
@@ -153,6 +187,7 @@ define([
         });
         this.$('.chooseFirstOpponent').hide();
       }
+      this.showHelpChooseFirstOpponent();
     },
 
     changeBye: function () {
@@ -170,10 +205,12 @@ define([
       }
       this.byeRinger.save();
       this.toggleChooseFirstOpponent(); // to make sure chooseOpponent is hidden
+      this.showHelpBye();
     },
 
     changeTournamentType: function () {
       this.settings.setTournamentType(this.$('input[name="tournamentType"]:checked').val());
+      this.showHelpTournamentType();
     },
 
     generateRound: function () {
@@ -189,9 +226,9 @@ define([
           player.setActive(true);
           player.save();
         });
-        console.log(this.playerList.getActivePlayers());
         GenerateRound.generate(1, this.playerList, this.roundList, this.settings);
         this.router.navigate("#/round/1");
+        this.settings.roundInfoWindow && this.settings.roundInfoWindow.close();
         this.remove();
       }
       return false;
@@ -217,6 +254,11 @@ define([
       }
     },
 
+    toggleRoundsVisibility: function() {
+      this.$('#round-settings').toggle();
+      this.showHelpRoundSettings();
+    },
+
     showHelpCityFaction: function () {
       HelpTexts.showHelpText("cityFaction");
     },
@@ -234,6 +276,9 @@ define([
     },
     showHelpChooseFirstOpponent: function () {
       HelpTexts.showHelpText("chooseFirstOpponent");
+    },
+    showHelpRoundSettings: function () {
+      HelpTexts.showHelpText("roundSettings");
     }
   });
   return SettingsView;
