@@ -166,12 +166,13 @@ define([
         "Breakthrough (Mask)","Assassinate (Crow)","Protect Territory (Tome)","Bodyguard (Ram)",
         "Cursed Object (1)","Outflank (2)","Plant Evidence (3)","Entourage (4)","Vendetta (5)",
         "Plant Explosives (6)","Make them Suffer (7)","Deliver a Message (8)","Take Prisoner (9)",
-        "Spring the Trap (10)","Murder Protégé (11)","Frame for Murder (12)","Power Ritual (13))");
+        "Spring the Trap (10)","Murder Protégé (11)","Frame for Murder (12)","Power Ritual (13)");
       return schemes;
     },
     getAvailableStrategies: function() {
       var strategies = [];
-      strategies.push("Turf War (Ram)", "Reckoning (Crow)", "Reconnoiter (Mask)", "Squatter's Rights (Tome)", "Stake a Claim (Joker)");
+      strategies.push("Turf War (Ram)", "Reckoning (Crow)", "Reconnoiter (Mask)", "Squatter's Rights (Tome)", "Stake a Claim (Joker)",
+        "Extraction (Ram)", "Guard the Stash (Crow)", "Interference (Mask)", "Headhunter (Tome)", "Collect the Bounty (Joker)");
       return strategies;
     },
     getAvailableDeployments: function() {
