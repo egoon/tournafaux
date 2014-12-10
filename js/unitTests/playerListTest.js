@@ -198,29 +198,6 @@ define([
             equal(player.getPossibleFirstRoundOpponents(models).pop().getName(), 'outGbg', 'rezSthlm should be unlike outGbg only');
         });
 
-        test('getBestMatches - A vs B: 6-4, C vs D: 9-1, E vs F: 7-3', function() {
-            expect(8);
-            var players = [];
-            for (var i = 0; i < 6; ++i) {
-                players[i] = this.playerList.create({name: String.fromCharCode(65 + i)});
-            }
-            Utils.playGame(1, players[0], players[1], 6, 4);
-            Utils.playGame(1, players[2], players[3], 9, 1);
-            Utils.playGame(1, players[4], players[5], 7, 3);
-
-            for (var i = 0; i < 6; ++i) {
-                var bestMatches = players[i].getBestMatches(players, 3);
-                equal(bestMatches.length, 4, 'player ' + players[i].getName() + ' should have four possible matches');
-            }
-
-            deepEqual(
-                _.map(players[0].getBestMatches(players, 3), function(p) {return p.getName()}),
-                ['D', 'F', 'C', 'E'], 'preferred opponents for player A');
-
-            deepEqual(
-                _.map(players[5].getBestMatches(players, 3), function(p) {return p.getName()}),
-                ['C', 'A', 'D', 'B'], 'preferred opponents for player F');
-        });
     };
     return {run: run};
 });

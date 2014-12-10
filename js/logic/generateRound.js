@@ -46,8 +46,26 @@ define([
 		return false;
 	};
 
-	var generate = function(number, playerList, roundList, settings) {
+	var matchPlayersFirstRound = function(players, matchedPlayers) {
+		if (players.length === 0) {
+			return matchedPlayers;
+		}
+		var i, player, matched;
+		player = players[0];
+		players = _.without(players, player);
+		for (i = 0; i < players.length; ++i) {
+			if (player.isPossibleFirstOpponent(players[i])) {
+				matched = matchPlayersFirstRound(
+					_.without(players, players[i]),
+					matchedPlayers.concat([{player1: player, player2: players[i]}]));
+				if (matched) { return matched; }
+			}
+		}
+		return false;
+	};
 
+	var generate = function(number, playerList, roundList, settings) {
+		var i;
 		roundList.fetch();
 		playerList.fetch();
 
@@ -75,28 +93,38 @@ define([
 
 		var matchedPlayers = [];
 
-		// match the worst player without a previous bye to the bye
-		if (byeRinger.isActive() && byeRinger.isNonCompeting()) {
-			for (var i = players.length - 1; i >= 0 ; --i) {
-				if (!players[i].isPreviousOpponent(byeRinger, settings.getRounds())) {
-					matchedPlayers.push({player2: byeRinger, player1: players[i]});
-					if (byeRinger.isBye()) { setScoresForBye(byeRinger, players[i], number); }
-					players = _.without(players, players[i]);
-					break;
+		if (number > 1) {
+			// match the worst player without a previous bye to the bye
+			if (byeRinger.isActive() && byeRinger.isNonCompeting()) {
+				for (i = players.length - 1; i >= 0; --i) {
+					if (!players[i].isPreviousOpponent(byeRinger, settings.getRounds())) {
+						matchedPlayers.push({player2: byeRinger, player1: players[i]});
+						if (byeRinger.isBye()) {
+							setScoresForBye(byeRinger, players[i], number);
+						}
+						players = _.without(players, players[i]);
+						break;
+					}
 				}
 			}
-		}
 
-		// match remaining players
-		matchedPlayers = matchPlayers(players, matchedPlayers, settings.getRoundLookBack());
+			// match remaining players
+			matchedPlayers = matchPlayers(players, matchedPlayers, settings.getRoundLookBack());
+
+		} else {
+			players = _.shuffle(players);
+
+			matchedPlayers = matchPlayersFirstRound(players, matchedPlayers);
+		}
 
 
 
 		var availableTables = [];
 		var noTables = settings.getTables();
 
-		for (var i = noTables; i > 0; --i)
+		for (i = noTables; i > 0; --i) {
 			availableTables.push(i.toString());
+		}
 
 		//unplayed tables
 		_.each(matchedPlayers, function(m) {

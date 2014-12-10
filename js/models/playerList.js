@@ -80,27 +80,24 @@ define([
       return total;
     },
 
-    getBestMatches: function (players, swissThreshold) {
-      var that = this;
-
-      var prevOpps = this.getPreviousOpponents(swissThreshold);
-
-      var possibleOpps = _.filter(players, function (player) {
-        if (that.id === player.id) { return false; }
-        return _.indexOf(prevOpps, player.id) === -1;
-      });
-
-      var bestMatches = _.sortBy(possibleOpps, function (opp) {
-        var scoreForSorting =
-          (Math.abs(that.getTotalTp() - opp.getTotalTp()) * 10000) +
-          (Math.abs(that.getVpDiff() - opp.getVpDiff()) * 100) +
-          (Math.abs(that.getTotalVp() - opp.getTotalVp()));
-        return -scoreForSorting;
-      });
-      return bestMatches;
+    isPossibleFirstOpponent: function(player) {
+      if (this.getFirstOpponent()) {
+        if (this.getFirstOpponent() === player.id) {
+          return true;
+        }
+        return false;
+      }
+      if (this.getFaction() !== '' && this.getFaction() === player.getFaction()) {
+        return false;
+      }
+      if (this.getCity() !== '' && this.getCity() === player.getCity()) {
+        return false;
+      }
+      return true;
     },
 
-    getPossibleFirstRoundOpponents: function (players) {
+
+      getPossibleFirstRoundOpponents: function (players) {
       var that = this;
       if (this.getFirstOpponent()) {
         return [_.find(players, function (player) {
