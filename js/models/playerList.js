@@ -38,6 +38,11 @@ define([
       return _.last(opponents, number);
     },
 
+    isPreviousOpponent: function(player, roundLookBack) {
+      var pid = typeof player === 'string' ? player : player.id;
+      return _.any(this.getPreviousOpponents(roundLookBack), function(oppid) { return oppid === pid; });
+    },
+
     getPlayedTables: function () {
       var i = 1;
       var tables = [];
@@ -185,6 +190,8 @@ define([
       return this.get('opponent' + round);
     },
     setOpponentForRound: function (round, opponent) {
+      if (typeof opponent !== 'string')
+        throw "opponent should be an id";
       return this.set('opponent' + round, opponent);
     },
     //getTableForRound: function(round) { return this.get('table'+round);},

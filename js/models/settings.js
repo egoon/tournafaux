@@ -13,12 +13,13 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
+/*globals define*/
 define([
-  'jquery',
   'underscore',
   'backbone',
-  'localstorage',
-], function($, _, Backbone, localstorage){
+  'localstorage'
+], function(_, Backbone) {
+  "use strict";
     var Settings = Backbone.Model.extend({
 
         initialize: function() {
@@ -44,14 +45,14 @@ define([
         },
 
       getRounds: function() {
-        return parseInt(this.get('rounds'));
+        return parseInt(this.get('rounds'), 10);
       },
       setRounds: function(rounds) {
         this.set('rounds', rounds.toString());
         this.save();
       },
       getTables: function() {
-        return parseInt(this.get('tables'));
+        return parseInt(this.get('tables'), 10);
       },
       setTables: function(tables) {
         this.set('tables', tables.toString());
@@ -61,43 +62,50 @@ define([
         return this.get('gg14') === 'true';
       },
       setGG14: function(gg14) {
-        this.set('gg14', (gg14 && gg14 != 'false').toString());
+        this.set('gg14', (gg14 && gg14 !== 'false').toString());
         this.save();
       },
       isChooseFirstOpponent: function() {
         return this.get('chooseFirstOpponent') === 'true';
       },
       setChooseFirstOpponent: function(choose) {
-        this.set('chooseFirstOpponent', (choose && choose != 'false').toString());
+        this.set('chooseFirstOpponent', (choose && choose !== 'false').toString());
         this.save();
       },
       getBye: function() {
         var bye =  this.get('bye');
         if (bye === this.GG14_BYE) {
           return this.GG14_BYE;
-        } else if (bye === this.COMPETING_RINGER) {
-            return this.COMPETING_RINGER;
-        } else if (bye === this.NON_COMPETING_RINGER) {
-            return this.NON_COMPETING_RINGER;
-        } else {
-          return this.AVERAGE_BYE;
         }
+        if (bye === this.COMPETING_RINGER) {
+          return this.COMPETING_RINGER;
+        }
+        if (bye === this.NON_COMPETING_RINGER) {
+          return this.NON_COMPETING_RINGER;
+        }
+        return this.AVERAGE_BYE;
       },
       setBye: function(bye) {
         this.set('bye', bye);
         this.save();
       },
       getTournamentType: function() {
-          var tournamentType =  this.get('tournamentType');
-          if (tournamentType === this.GG14_SWISS) {
-              return this.GG14_SWISS;
-          } else {
-              return this.SWISS;
-          }
+        var tournamentType =  this.get('tournamentType');
+        if (tournamentType === this.GG14_SWISS) {
+          return this.GG14_SWISS;
+        }
+        return this.SWISS;
       },
       setTournamentType: function(tournamentType) {
           this.set('tournamentType', tournamentType);
           this.save();
+      },
+
+      getRoundLookBack: function() {
+        if (this.getTournamentType() === this.GG14_SWISS) {
+          return 2;
+        }
+        return this.getRounds();
       },
 
       AVERAGE_BYE: 'average-bye',

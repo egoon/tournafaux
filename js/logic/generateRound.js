@@ -13,23 +13,40 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
+/*globals define*/
 define([
-  'underscore',
+  'underscore'
 ], function(_) {
   "use strict";
 	var BYE_SCORE = "-";
 
 	var setScoresForBye = function(bye, opp, number) {
-
     bye.setVpForRound(number, 0);
     opp.setVpForRound(number, BYE_SCORE);
     opp.setVpDiffForRound(number, BYE_SCORE);
     opp.setTpForRound(number, BYE_SCORE);
-
-
 	};
 
-  	var generate = function(number, playerList, roundList, settings) {
+	var matchPlayers = function(players, matchedPlayers, roundLookBack) {
+		if (players.length === 0) {
+			return matchedPlayers;
+		}
+		var i, player, matched;
+		player = players[0];
+		players = _.without(players, player);
+		for (i = 0; i < players.length; ++i) {
+			if (!player.isPreviousOpponent(players[i], roundLookBack)) {
+				matched = matchPlayers(
+					_.without(players, players[i]),
+					matchedPlayers.concat([{player1: player, player2: players[i]}]),
+					roundLookBack);
+				if (matched) { return matched; }
+			}
+		}
+		return false;
+	};
+
+	var generate = function(number, playerList, roundList, settings) {
 
 		roundList.fetch();
 		playerList.fetch();
@@ -53,90 +70,42 @@ define([
       byeRinger.save();
     }
 
-		// find possible opponents for each player
 
-		var players = playerList.getActivePlayers();
-      console.log(players);
-      console.log(playerList.getAllPlayers());
-
-		var possibleMatches = [];
-		if (number === 1 || number === "1") {
-			_.each(players, function(player) {
-				possibleMatches.push({player: player, matches: player.getPossibleFirstRoundOpponents(players)});
-			});
-		} else {
-			_.each(players, function(player) {
-        var swissThreshold = settings.getTournamentType() === settings.GG14_SWISS && !player.isBye() ? 2 : settings.getRounds();
-				possibleMatches.push({player: player, matches: player.getBestMatches(players, swissThreshold)});
-        if (player.isBye()) {
-        }
-			});
-		}
-
-
-		// assign opponents
+		var players = playerList.getCompetingPlayers();
 
 		var matchedPlayers = [];
-		while (possibleMatches.length > 0) {
 
-			possibleMatches = _.shuffle(possibleMatches);
-			possibleMatches = _.sortBy(possibleMatches, function(match) {return -match.player.getTotalVp()});
-			possibleMatches = _.sortBy(possibleMatches, function(match) {return -match.player.getVpDiff()});
-			possibleMatches = _.sortBy(possibleMatches, function(match) {return -match.player.getTotalTp()});
-			possibleMatches = _.sortBy(possibleMatches, function(match) {return match.matches.length > 0 ? -match.matches.length : -100000});
-//			console.log("matching");
-      // console.log(_.reduce(possibleMatches, function(memo, match) { return memo + match.player.getName() + " " + match.matches.length + ", "}, ""));
-
-      var match = _.find(possibleMatches, function(match) { return match.player.isNonCompeting()});
-      // match bye or non-competing ringer first
-      if (match) {
-        possibleMatches = _.reject(possibleMatches, function(match) { return match.player.isNonCompeting()});
-      } else {
-        match = possibleMatches.pop();
-      }
-
-			var player1 = match.player;
-			var player2 = match.matches.pop();
-			// if no match can be found, just take the next player
-			if (!player2) {
-				player2 = possibleMatches.pop().player;
+		// match the worst player without a previous bye to the bye
+		if (byeRinger.isActive() && byeRinger.isNonCompeting()) {
+			for (var i = players.length - 1; i >= 0 ; --i) {
+				if (!players[i].isPreviousOpponent(byeRinger, settings.getRounds())) {
+					matchedPlayers.push({player2: byeRinger, player1: players[i]});
+					if (byeRinger.isBye()) { setScoresForBye(byeRinger, players[i], number); }
+					players = _.without(players, players[i]);
+					break;
+				}
 			}
-//			console.log(player1.getName() + " vs " + player2.getName());
-			// remove player2 from possibleMatches
-			possibleMatches = _.reject(possibleMatches, function(m) {return m.player.id == player2.id});
-
-			// remove player1 and player2 form remaining players matches
-			_.each(possibleMatches, function(match) {
-				match.matches = _.reject(match.matches, function(m) { 
-					return m.id == player1.id || m.id == player2.id; 
-				});
-//				console.log(_.reduce(match.matches, function(memo, m) { return memo + m.getName() +", "},  match.player.getName() + ": "));
-			});
-
-			player1.set("opponent" + number, player2.id);
-			player2.set("opponent" + number, player1.id);
-			if (player1.isBye())
-				setScoresForBye(player1, player2, number);
-			if (player2.isBye())
-				setScoresForBye(player2, player1, number);
-
-			matchedPlayers.push({
-				player1: player1, 
-				player2: player2, 
-				playedTables: _.union(player1.getPlayedTables(), player2.getPlayedTables())
-			});
 		}
 
-		// assign tables
-		var tablesNumbers = [];
+		// match remaining players
+		matchedPlayers = matchPlayers(players, matchedPlayers, settings.getRoundLookBack());
+
+
+
+		var availableTables = [];
 		var noTables = settings.getTables();
 
-		for (var i = noTables; i > 0; --i) 
-			tablesNumbers.push(i.toString());
+		for (var i = noTables; i > 0; --i)
+			availableTables.push(i.toString());
 
-    _.each(matchedPlayers, function(players) {
-      players.unplayedTables = _.filter(tablesNumbers, function(number) {return !_.contains(players.playedTables, number)});
-    });
+		//unplayed tables
+		_.each(matchedPlayers, function(m) {
+			if (m.player2.isBye()) {
+				m.unplayedTables = ['-'];
+			} else {
+				m.unplayedTables = _.difference(availableTables, m.player1.getPlayedTables(), m.player2.getPlayedTables());
+			}
+		});
 	
 		while (matchedPlayers.length > 0) {
 //			console.log("tables");
@@ -144,25 +113,25 @@ define([
 				return players.unplayedTables.length > 0 ? -players.unplayedTables.length : -1000;
 			});
 //			console.log(matchedPlayers);
-			match = matchedPlayers.pop();
+			var match = matchedPlayers.pop();
 //			console.log(match.player1.getName() +", " + match.player2.getName() + ": "+ match.unplayedTables.toString());
 //			console.log(match.unplayedTables);
 			var selectedTable;
-			if (match.player1.isBye() || match.player2.isBye()) {
-				selectedTable = '-';
+
+			if (match.unplayedTables.length > 0) {
+				selectedTable = match.unplayedTables.pop();
 			} else {
-				if (match.unplayedTables.length > 0) {
-					selectedTable = match.unplayedTables.pop();
-				} else {
-          selectedTable = tablesNumbers.pop();
-        }
-        tablesNumbers = _.without(tablesNumbers, selectedTable);
-				_.each(matchedPlayers, function(players) {players.unplayedTables = _.without(players.unplayedTables, selectedTable)});
+				selectedTable = availableTables.pop();
 			}
+			availableTables = _.without(availableTables, selectedTable);
+			_.each(matchedPlayers, function(players) {players.unplayedTables = _.without(players.unplayedTables, selectedTable)});
+
 
 //			console.log(selectedTable);
 			match.player1.set('table'+number, selectedTable);
 			match.player2.set('table'+number, selectedTable);
+			match.player1.setOpponentForRound(number, match.player2.id);
+			match.player2.setOpponentForRound(number, match.player1.id);
 			match.player1.save();
 			match.player2.save();
 			round.set('table'+selectedTable+'player1', match.player1.id);
@@ -174,5 +143,8 @@ define([
 		return round;
 
 	};
-  	return {generate: generate};
+
+
+
+	return {generate: generate};
 });

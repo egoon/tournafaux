@@ -1,9 +1,10 @@
 CACHE MANIFEST
-# Fri Nov 28 14:37:34 CET 2014
+# Wed Dec 10 14:56:00 CET 2014
 ./css/bootstrap-3.1.1-min.css
 ./css/tournafaux.css
 ./img/btn_donate_SM.gif
 ./index.html
+./index.php
 ./js/app.js
 ./js/libs/backbone-1.1.2.js
 ./js/libs/backbone.localStorage-1.1.7.js

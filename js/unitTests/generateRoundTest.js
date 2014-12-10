@@ -81,7 +81,7 @@ define([
       var round = GenerateRound.generate(2, this.playerList, this.roundList, this.settings);
       var byeTable = round.getTable('-', this.playerList);
 
-      equal(byeTable.player2.getName(), 'B', 'Lowest scoring player got the Bye');
+      equal(byeTable.player1.getName(), 'B', 'Lowest scoring player got the Bye');
 
       var table1 = round.getTable(1, this.playerList);
       var table2 = round.getTable(2, this.playerList);
@@ -90,6 +90,36 @@ define([
       ok(table1.player1.getName() === 'D' || table1.player2.getName() === 'D', 'D plays on table 1');
       ok(table2.player1.getName() === 'A' || table2.player2.getName() === 'A', 'A plays on table 2');
       ok(table2.player1.getName() === 'C' || table2.player2.getName() === 'C', 'C plays on table 2');
+    });
+
+    test('5 players and a bye, round 3', function () {
+      expect(5);
+      this.settings.setTables(2);
+      var bye = this.playerList.getByeRinger();
+
+      var players = Utils.createPlayers(this.playerList, 5);
+      Utils.playGame(1, players[0], players[1], 10, 0, 2);
+      Utils.playGame(1, players[2], players[3], 4, 5, 1);
+      Utils.playGame(1, players[4], bye, "-", 0, "-");
+
+      Utils.playGame(2, players[0], players[3], 7, 7, 2);
+      Utils.playGame(2, players[4], players[2], 9, 9, 1);
+      Utils.playGame(2, players[1], bye, "-", 0, "-");
+
+
+
+      var round = GenerateRound.generate(2, this.playerList, this.roundList, this.settings);
+      var byeTable = round.getTable('-', this.playerList);
+
+      equal(byeTable.player1.getName(), 'C', 'Lowest scoring player got the Bye');
+
+      var table1 = round.getTable(1, this.playerList);
+      var table2 = round.getTable(2, this.playerList);
+
+      ok(table1.player1.getName() === 'D' || table1.player2.getName() === 'D', 'D plays on table 1');
+      ok(table1.player1.getName() === 'B' || table1.player2.getName() === 'B', 'B plays on table 1');
+      ok(table2.player1.getName() === 'E' || table2.player2.getName() === 'E', 'E plays on table 2');
+      ok(table2.player1.getName() === 'A' || table2.player2.getName() === 'A', 'A plays on table 2');
     });
 
   };
