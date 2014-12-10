@@ -10,9 +10,9 @@
             <td><%- table.name %></td>
             <td><%- table.player1name %></td>
             <td class="vp"><input id="<%- table.player1id %>" type="number" value="<%- table.player1vp %>" class="form-control"
-              style="width:50px" <%-table.player2.isBye() || table.player1.isBye() ? "disabled": "" %> /></td>
+              <%-table.player2.isBye() || table.player1.isBye() ? "disabled": "" %> /></td>
             <td class="vp"><input id="<%- table.player2id %>" type="number" value="<%- table.player2vp %>" class="form-control"
-              style="width:50px" <%-table.player2.isBye() || table.player1.isBye() ? "disabled": "" %> /></td>
+              <%-table.player2.isBye() || table.player1.isBye() ? "disabled": "" %> /></td>
             <td><%- table.player2name %></td>
             
           </tr>

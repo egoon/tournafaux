@@ -21,3 +21,7 @@ table.player-settings {
 #roundInfoPage h1 {
     font-size: 200%;
 }
+
+td.vp input {
+    width:60px;
+}
