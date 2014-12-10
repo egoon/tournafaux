@@ -235,7 +235,7 @@ define([
     },
 
     validate: function () {
-      var i;
+      var i, numPlayers, minTables;
       this.errors = [];
       // rounds
       if (isNaN(this.settings.getRounds())) {
@@ -244,8 +244,10 @@ define([
         this.errors.push('You must have more players than rounds');
       }
       // tables
-      if (!isNaN(this.settings.getTables()) && this.settings.getTables() < Math.floor(this.playerList.length / 2)) {
-        this.errors.push('You need at least ' + Math.floor(this.playerList.length / 2) + ' tables for ' + this.playerList.length + ' players');
+      numPlayers = this.playerList.length - (this.playerList.getByeRinger().isBye() ? 1 : 0);
+      minTables = Math.floor(numPlayers / 2);
+      if (!isNaN(this.settings.getTables()) && this.settings.getTables() < minTables) {
+        this.errors.push('You need at least ' + minTables + ' tables for ' + numPlayers + ' players');
       }
 
       this.$('#validation-errors').html('');

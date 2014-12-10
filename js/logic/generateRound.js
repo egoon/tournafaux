@@ -113,6 +113,9 @@ define([
 
 		} else {
 			players = _.shuffle(players);
+			if (byeRinger.isActive() && byeRinger.isNonCompeting()) {
+				players.push(byeRinger);
+			}
 
 			matchedPlayers = matchPlayersFirstRound(players, matchedPlayers);
 		}
