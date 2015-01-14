@@ -244,7 +244,7 @@ define([
         this.errors.push('You must have more players than rounds');
       }
       // tables
-      numPlayers = this.playerList.length - (this.playerList.getByeRinger().isBye() ? 1 : 0);
+      numPlayers = this.playerList.length - (this.settings.isBye() ? 1 : 0);
       minTables = Math.floor(numPlayers / 2);
       if (!isNaN(this.settings.getTables()) && this.settings.getTables() < minTables) {
         this.errors.push('You need at least ' + minTables + ' tables for ' + numPlayers + ' players');

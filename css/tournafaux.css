@@ -23,5 +23,9 @@ table.player-settings {
 }
 
 td.vp input {
-    width:60px;
+    width: 60px;
+}
+
+.settings-number {
+    width: 60px;
 }

@@ -4,13 +4,13 @@
       <div class="form-group">
         <label for="rounds" class="col-sm-4 control-label">Rounds</label>
         <div class="col-sm-4">
-          <input class="form-control" id="rounds" name="rounds" type="number" value="<%- settings.get('rounds') %>" title="Number of rounds."/>
+          <input class="form-control settings-number" id="rounds" name="rounds" type="number" value="<%- settings.get('rounds') %>" title="Number of rounds."/>
         </div>
       </div>
       <div class="form-group">
         <label for="tables" class="col-sm-4 control-label">Tables</label>
         <div class="col-sm-4">
-          <input class="form-control" id="tables" name="tables" type="number" title="Number of tables. Leave empty for players/2" value="<%- settings.get('tables') %>" placeholder=""/>
+          <input class="form-control settings-number" id="tables" name="tables" type="number" title="Number of tables. Leave empty for players/2" value="<%- settings.get('tables') %>" placeholder=""/>
         </div>
       </div>
       <div class="checkbox">

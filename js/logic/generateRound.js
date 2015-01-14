@@ -93,8 +93,8 @@ define([
 
 		var matchedPlayers = [];
 
-		if (number > 1) {
-			// match the worst player without a previous bye to the bye
+		//if (number > 1) {
+			//match the worst player without a previous bye to the bye
 			if (byeRinger.isActive() && byeRinger.isNonCompeting()) {
 				for (i = players.length - 1; i >= 0; --i) {
 					if (!players[i].isPreviousOpponent(byeRinger, settings.getRounds())) {
@@ -109,16 +109,23 @@ define([
 			}
 
 			// match remaining players
+			players = _.shuffle(players);
 			matchedPlayers = matchPlayers(players, matchedPlayers, settings.getRoundLookBack());
 
-		} else {
-			players = _.shuffle(players);
-			if (byeRinger.isActive() && byeRinger.isNonCompeting()) {
-				players.push(byeRinger);
-			}
-
-			matchedPlayers = matchPlayersFirstRound(players, matchedPlayers);
-		}
+		//} else {
+		//	players = _.shuffle(players);
+		//	if (byeRinger.isActive() && byeRinger.isNonCompeting()) {
+		//		var player = players.pop();
+		//		matchedPlayers.push({player2: byeRinger, player1: player});
+		//		if (byeRinger.isBye()) {
+		//			setScoresForBye(byeRinger, player, number);
+		//		}
+    //
+		//	}
+    //
+		//	matchedPlayers = matchPlayersFirstRound(players, matchedPlayers);
+    //
+		//}
 
 
 

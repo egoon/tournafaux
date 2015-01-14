@@ -89,6 +89,9 @@ define([
         this.set('bye', bye);
         this.save();
       },
+      isBye: function() {
+        return this.getBye() === this.AVERAGE_BYE || this.getBye() === this.GG14_BYE;
+      },
       getTournamentType: function() {
         var tournamentType =  this.get('tournamentType');
         if (tournamentType === this.GG14_SWISS) {
