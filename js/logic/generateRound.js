@@ -65,7 +65,7 @@ define([
 	};
 
 	var generate = function(number, playerList, roundList, settings) {
-		var i;
+		var i, j;
 		roundList.fetch();
 		playerList.fetch();
 
@@ -93,41 +93,61 @@ define([
 
 		var matchedPlayers = [];
 
-		//if (number > 1) {
-			//match the worst player without a previous bye to the bye
-			if (byeRinger.isActive() && byeRinger.isNonCompeting()) {
-				for (i = players.length - 1; i >= 0; --i) {
-					if (!players[i].isPreviousOpponent(byeRinger, settings.getRounds())) {
-						matchedPlayers.push({player2: byeRinger, player1: players[i]});
-						if (byeRinger.isBye()) {
-							setScoresForBye(byeRinger, players[i], number);
-						}
-						players = _.without(players, players[i]);
-						break;
-					}
-				}
-			}
+    //match the worst player without a previous bye to the bye
+    if (byeRinger.isActive() && byeRinger.isNonCompeting()) {
+      for (i = players.length - 1; i >= 0; --i) {
+        if (!players[i].isPreviousOpponent(byeRinger, settings.getRounds())) {
+          matchedPlayers.push({player2: byeRinger, player1: players[i]});
+          if (byeRinger.isBye()) {
+            setScoresForBye(byeRinger, players[i], number);
+          }
+          players = _.without(players, players[i]);
+          break;
+        }
+      }
+    }
 
-			// match remaining players
-			//players = _.shuffle(players);
-			matchedPlayers = matchPlayers(players, matchedPlayers, settings.getRoundLookBack());
+    if (number === 1) {
+      // grudge matches
+      for (i = 0; i < players.length; ++i) {
+        var opp = players[i].getFirstOpponent();
+        if (opp) {
+          for (j = i + 1; j < players.length; ++j) {
+            if (players[j].id === opp && players[j].getFirstOpponent() === players[i].id) {
+              matchedPlayers.push({player1: players[i], player2: players[j]});
+              players = _.without(players, players[i], players[j]);
+            }
+          }
+        }
+      }
 
-		//} else {
-		//	players = _.shuffle(players);
-		//	if (byeRinger.isActive() && byeRinger.isNonCompeting()) {
-		//		var player = players.pop();
-		//		matchedPlayers.push({player2: byeRinger, player1: player});
-		//		if (byeRinger.isBye()) {
-		//			setScoresForBye(byeRinger, player, number);
-		//		}
-    //
-		//	}
-    //
-		//	matchedPlayers = matchPlayersFirstRound(players, matchedPlayers);
-    //
-		//}
+      // city and faction matching
+      var possibleMatches = [];
+      for (i = 0; i < players.length; ++i) {
+        possibleMatches.push({player: players[i], opps: players[i].getPossibleFirstRoundOpponents(players)});
+      }
+      while (possibleMatches.length > 0) {
+        possibleMatches = _.sortBy(possibleMatches, function(pm) { return -pm.opps.length;});
+        match = possibleMatches.pop();
+        if (match.opps.length > 0) {
+          var p1 = match.player;
+          var p2 = match.opps[0];
+          matchedPlayers.push({player1: p1, player2: p2});
+          players = _.without(players, p1, p2);
+          // remove p1 and p2 from possibleMatches
+          for (i = 0; i < possibleMatches.length; ++i) {
+            if (possibleMatches[i].player.id === p2.id) {
+              possibleMatches[i].opps = [];
+            } else {
+              possibleMatches[i].opps = _.without(possibleMatches[i].opps, p1, p2);
+            }
+          }
+        }
+      }
+    }
 
-
+    // match remaining players
+    matchedPlayers = matchPlayers(players, matchedPlayers, settings.getRoundLookBack());
 
 		var availableTables = [];
 		var noTables = settings.getTables();

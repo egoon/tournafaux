@@ -97,13 +97,13 @@ define([
     },
 
 
-      getPossibleFirstRoundOpponents: function (players) {
+    getPossibleFirstRoundOpponents: function (players) {
       var that = this;
-      if (this.getFirstOpponent()) {
-        return [_.find(players, function (player) {
-          return player.id === that.getFirstOpponent();
-        })];
-      }
+      //if (this.getFirstOpponent()) {
+      //  return [_.find(players, function (player) {
+      //    return player.id === that.getFirstOpponent();
+      //  })];
+      //}
 
       var possibleOpps = _.filter(players, function (player) {
         if (that.id === player.id) { return false; }
@@ -277,6 +277,7 @@ define([
 
     setCity: function (city) {
       this.set('city', city);
+      return this;
     },
 
     getFaction: function () {
@@ -287,6 +288,7 @@ define([
 
     setFaction: function (faction) {
       this.set('faction', faction);
+      return this;
     },
 
     getFirstOpponent: function () {
@@ -325,6 +327,7 @@ define([
       var players = this.filter(function (player) {
         return player.isActive() && !player.isNonCompeting();
       });
+      players = _.shuffle(players);
       players = _.sortBy(players, function(p) {return -p.getTotalVp();});
       players = _.sortBy(players, function(p) {return -p.getVpDiff();});
       players = _.sortBy(players, function(p) {return -p.getTotalTp();});

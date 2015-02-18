@@ -155,6 +155,68 @@ define([
       }
     });
 
+    test('first round opponent', function () {
+      expect(2);
+      this.settings.setTables(10);
+
+      var players = Utils.createPlayers(this.playerList, 20);
+      players[0].setFirstOpponent(players[7].id);
+      players[7].setFirstOpponent(players[0].id);
+      players[2].setFirstOpponent(players[17].id);
+      players[17].setFirstOpponent(players[2].id);
+
+      var round = GenerateRound.generate(1, this.playerList, this.roundList, this.settings);
+
+      var tables = round.getTables(10, this.playerList);
+      var i, playerNames;
+      for (i = 0; i < 10; i++) {
+        playerNames = [];
+        playerNames.push(tables[i].player1.getName());
+        playerNames.push(tables[i].player2.getName());
+        if (_.contains(playerNames, 'A')) {
+          ok(_.contains(playerNames, 'H'), 'A plays against H. was ' + playerNames);
+        } else if (_.contains(playerNames, 'C')) {
+          ok(_.contains(playerNames, 'R'), 'C plays against R. was ' + playerNames);
+        }
+      }
+    });
+
+    test('city and faction', function () {
+      expect(4);
+      this.settings.setTables(4);
+
+      var players = Utils.createPlayers(this.playerList, 8);
+      players[0].setCity('A').setFaction('C');
+      players[1].setCity('A').setFaction('C');
+      players[2].setCity('A').setFaction('D');
+      players[3].setCity('A').setFaction('D');
+      players[4].setCity('B').setFaction('C');
+      players[5].setCity('B').setFaction('C');
+      players[6].setCity('B').setFaction('D');
+      players[7].setCity('B').setFaction('D');
+
+      var round = GenerateRound.generate(1, this.playerList, this.roundList, this.settings);
+
+      var tables = round.getTables(4, this.playerList);
+      var i, playerNames;
+      for (i = 0; i < 4; i++) {
+        playerNames = [];
+        playerNames.push(tables[i].player1.getName());
+        playerNames.push(tables[i].player2.getName());
+        if (_.contains(playerNames, 'A')) {
+          ok(_.contains(playerNames, 'G') || _.contains(playerNames, 'H') , 'A plays against G or H. was ' + playerNames);
+        } else if (_.contains(playerNames, 'B')) {
+          ok(_.contains(playerNames, 'G') || _.contains(playerNames, 'H') , 'B plays against G or H. was ' + playerNames);
+        } else if (_.contains(playerNames, 'C')) {
+          ok(_.contains(playerNames, 'E') || _.contains(playerNames, 'F') , 'C plays against E or F. was ' + playerNames);
+        } else if (_.contains(playerNames, 'D')) {
+          ok(_.contains(playerNames, 'E') || _.contains(playerNames, 'F') , 'D plays against E or F. was ' + playerNames);
+        } else {
+          fail();
+        }
+      }
+    });
+
   };
   return {run: run};
 });
