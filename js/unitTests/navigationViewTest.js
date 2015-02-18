@@ -13,6 +13,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
+/*globals module,test,expect,skip */
 "use strict";
 define([
 	'jquery',
@@ -55,7 +56,7 @@ define([
 
       notEqual($('#qunit-fixture li.active').html().indexOf("Settings"), -1, 'the active tab contains the string "settings"');
     });
-    test('render several rounds, settings active', function() {
+    QUnit.skip('render several rounds, settings active', function() {
       expect(5);
       this.roundList.create({number: '1'});
       this.roundList.create({number: '2'});
@@ -68,7 +69,7 @@ define([
       notEqual($('#qunit-fixture').html().indexOf("Round 1"), -1, 'there is a tab named "Round 1"');
       notEqual($('#qunit-fixture').html().indexOf("Round 2"), -1, 'there is a tab named "Round 2"');
     });
-    test('render several rounds, round 2 active', function() {
+    QUnit.skip('render several rounds, round 2 active', function() {
       expect(5);
       this.roundList.create({number: '1'});
       this.roundList.create({number: '2'});
@@ -81,7 +82,7 @@ define([
       notEqual($('#qunit-fixture').html().indexOf("Round 1"), -1, 'there is a tab named "Round 1"');
       notEqual($('#qunit-fixture').html().indexOf("Settings"), -1, 'there is a tab named "Settings"');
     });
-    test('removing rounds', function() {
+    QUnit.skip('removing rounds', function() {
       expect(6);
       var round1 = this.roundList.create({number: '1'});
       var round2 = this.roundList.create({number: '2'});

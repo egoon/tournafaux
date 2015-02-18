@@ -13,7 +13,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-/*globals define, module, test, expect, ok, equal, deepequal*/
+/*globals define, module, test, expect, ok, equal, deepequal, fail*/
 define([
   'jquery',
   'underscore',
@@ -120,6 +120,39 @@ define([
       ok(table1.player1.getName() === 'B' || table1.player2.getName() === 'B', 'B plays on table 1');
       ok(table2.player1.getName() === 'E' || table2.player2.getName() === 'E', 'E plays on table 2');
       ok(table2.player1.getName() === 'A' || table2.player2.getName() === 'A', 'A plays on table 2');
+    });
+
+    test('8 players, winners face winners, round 2', function () {
+      expect(4);
+      this.settings.setTables(4);
+
+      var players = Utils.createPlayers(this.playerList, 8);
+      Utils.playGame(1, players[0], players[7], 10, 0, 1);
+      Utils.playGame(1, players[1], players[6], 9, 1, 2);
+      Utils.playGame(1, players[2], players[5], 8, 2, 3);
+      Utils.playGame(1, players[3], players[4], 7, 3, 4);
+
+      var round = GenerateRound.generate(2, this.playerList, this.roundList, this.settings);
+
+      var tables = round.getTables(4, this.playerList);
+      var i, playerNames;
+      for (i = 0; i < 4; i++) {
+        playerNames = [];
+        playerNames.push(tables[i].player1.getName());
+        playerNames.push(tables[i].player2.getName());
+        if (_.contains(playerNames, 'A')) {
+          ok(_.contains(playerNames, 'B'), 'A plays against B');
+        } else if (_.contains(playerNames, 'C')) {
+          ok(_.contains(playerNames, 'D'), 'C plays against D');
+        } else if (_.contains(playerNames, 'E')) {
+          ok(_.contains(playerNames, 'F'), 'E plays against F');
+        } else if (_.contains(playerNames, 'G')) {
+          ok(_.contains(playerNames, 'H'), 'G plays against H');
+        } else {
+          fail();
+        }
+
+      }
     });
 
   };

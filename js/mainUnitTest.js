@@ -16,7 +16,7 @@
 "use strict";
 require.config({
   paths: {
-    QUnit: 'libs/qunit-1.14.0',
+    QUnit: 'libs/qunit-1.17.1',
     jquery: 'libs/jquery-1.11.1',
     underscore: 'libs/underscore-1.6.0',
     backbone: 'libs/backbone-1.1.2',

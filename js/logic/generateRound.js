@@ -109,7 +109,7 @@ define([
 			}
 
 			// match remaining players
-			players = _.shuffle(players);
+			//players = _.shuffle(players);
 			matchedPlayers = matchPlayers(players, matchedPlayers, settings.getRoundLookBack());
 
 		//} else {
