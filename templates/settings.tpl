@@ -16,7 +16,7 @@
       <div class="checkbox">
         <label>
           <input type="checkbox" name="gg14" value="gg14">
-          Gaining Grounds 2014
+          Gaining Grounds 2015
         </label> <a id="helpGG14">(?)</a>
       </div>
       <div class="checkbox">
@@ -38,7 +38,7 @@
       <div class="radio">
         <label>
           <input type="radio" name="byes" value="gg14-bye">
-          GG'14 Bye
+          GG'15 Bye
         </label>
       </div>
       <div class="radio">
@@ -66,7 +66,7 @@
       <div class="radio">
           <label>
               <input type="radio" name="tournamentType" value="gg14-swiss">
-              GG'14 Swiss-like
+              GG'15 Swiss-like
           </label>
       </div>
     </div>
@@ -75,8 +75,19 @@
 
   <hr/>
 
-
-  <div id="round-settings" class="row round-settings"></div>
+  <div id="round-settings" class="row round-settings">
+      <select id="rotation" class="form-control rotation-select" title="Rotation">
+          <option>GG 15 New or Classic rotation</option>
+          <option>New rotation Jan-Mar</option>
+          <option>New rotation Apr-Jun</option>
+          <option>New rotation Jul-Sep</option>
+          <option>New rotation Oct-Dec</option>
+          <option>Classic rotation Jan-Mar</option>
+          <option>Classic rotation Apr-Jun</option>
+          <option>Classic rotation Jul-Sep</option>
+          <option>Classic rotation Oct-Dec</option>
+      </select>
+  </div>
 
   <a id="toggle-round-settings">Show/hide round settings</a> </label> <a id="helpRoundSettings">(?)</a>
 

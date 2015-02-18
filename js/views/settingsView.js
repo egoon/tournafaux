@@ -22,8 +22,9 @@ define([
   'logic/helpTexts',
   'views/playerView',
   'views/roundSettingsView',
-  'text!../../templates/settings.tpl'
-], function ($, _, Backbone, GenerateRound, HelpTexts, PlayerView, RoundSettingsView, settingsTemplate) {
+  'text!../../templates/settings.tpl',
+  'logic/malifaux'
+], function ($, _, Backbone, GenerateRound, HelpTexts, PlayerView, RoundSettingsView, settingsTemplate, Malifaux) {
   "use strict";
   var SettingsView = Backbone.View.extend({
 
@@ -47,7 +48,8 @@ define([
       "click #helpGG14": "showHelpGG14",
       "click #helpChooseFirstOpponent": "showHelpChooseFirstOpponent",
       "click #helpRoundSettings": "showHelpRoundSettings",
-      "click #toggle-round-settings": "toggleRoundsVisibility"
+      "click #toggle-round-settings": "toggleRoundsVisibility",
+      "change #rotation": "changeRotation"
     },
 
     initialize: function (options) {
@@ -259,6 +261,67 @@ define([
     toggleRoundsVisibility: function() {
       this.$('#round-settings').toggle();
       this.showHelpRoundSettings();
+    },
+
+    changeRotation: function(e) {
+      var deployments, strategies;
+      var avDeps = Malifaux.getAvailableDeployments();
+      var avStandard = Malifaux.getAvailableStandardStrategies();
+      var avGG15 = Malifaux.getAvailableGG15Strategies();
+      if (e.target.selectedIndex == 1 || e.target.selectedIndex == 5) {
+        //Standard, Corner, Standard, Flank, Close
+        deployments = [avDeps[0], avDeps[1], avDeps[0], avDeps[2], avDeps[3]];
+        strategies = [avStandard[0], avStandard[1], avStandard[3], avStandard[2], avStandard[4]];
+        if (e.target.selectedIndex < 5) {
+          strategies[0] = avGG15[0];
+          strategies[2] = avGG15[3];
+        }
+      } else if (e.target.selectedIndex == 2 || e.target.selectedIndex == 6) {
+        //Flank, Standard, Close, Corner, Standard
+        deployments = [avDeps[2], avDeps[0], avDeps[3], avDeps[1], avDeps[0]];
+        strategies = [avStandard[2], avStandard[4], avStandard[1], avStandard[3], avStandard[0]];
+        if (e.target.selectedIndex < 5) {
+          strategies[0] = avGG15[2];
+          strategies[1] = avGG15[4];
+          strategies[2] = avGG15[1];
+        }
+      } else if (e.target.selectedIndex == 3 || e.target.selectedIndex == 7) {
+        //Corner, Standard, Flank, Standard, Close
+        deployments = [avDeps[1], avDeps[0], avDeps[2], avDeps[0], avDeps[3]];
+        strategies = [avStandard[3], avStandard[0], avStandard[4], avStandard[1], avStandard[2]];
+        if (e.target.selectedIndex < 5) {
+          strategies[0] = avGG15[3];
+          strategies[2] = avGG15[4];
+        }
+      } else if (e.target.selectedIndex == 4 || e.target.selectedIndex == 8) {
+        //Corner, Standard, Flank, Standard, Close
+        deployments = [avDeps[0], avDeps[2], avDeps[3], avDeps[0], avDeps[1]];
+        strategies = [avStandard[1], avStandard[2], avStandard[0], avStandard[4], avStandard[3]];
+        if (e.target.selectedIndex < 5) {
+          strategies[0] = avGG15[1];
+          strategies[1] = avGG15[2];
+          strategies[2] = avGG15[0];
+        }
+      }
+      var deck = Malifaux.getShuffledDeck();
+      var r, c, round, card;
+      for (r = 0; r < this.roundList.length; ++r) {
+        round = this.roundList.at(r);
+        round.setDeployment(deployments[r % deployments.length]);
+        round.setStrategy(strategies[r % strategies.length]);
+        round.setSchemes([]);
+        round.addAlwaysScheme();
+        for (c = 0; c < 2; ++c) {
+          card = deck.pop();
+          if (card.indexOf("Joker") !== -1) {
+            --c;
+            continue;
+          }
+          card = card.split(' of ');
+          round.addSchemeForCard(parseInt(card[0], 10), card[1]);
+        }
+      }
+
     },
 
     showHelpCityFaction: function () {

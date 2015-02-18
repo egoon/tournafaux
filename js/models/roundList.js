@@ -17,7 +17,8 @@
 define([
   'backbone',
   'localstorage',
-], function(Backbone, localstorage) {
+  'logic/malifaux'
+], function(Backbone, localstorage, Malifaux) {
 	var Round = Backbone.Model.extend({
 
 		getTables: function(noTables, playerList) {
@@ -65,6 +66,19 @@ define([
 			this.save();
 		},
 
+    setDeploymentFromCard: function(card) {
+      var value = parseInt(card.split(' of ')[0], 10);
+      if (value < 8) {
+        this.setDeployment(Malifaux.getAvailableDeployments()[0]);
+      } else if (value < 11) {
+        this.setDeployment(Malifaux.getAvailableDeployments()[1]);
+      } else if (value < 13) {
+        this.setDeployment(Malifaux.getAvailableDeployments()[2]);
+      } else { //Joker
+        this.setDeployment(Malifaux.getAvailableDeployments()[3]);
+      }
+    },
+
 		getStrategy: function() {
 			return this.get('strategy');
 		},
@@ -73,6 +87,34 @@ define([
 			this.set('strategy', strategy);
 			this.save();
 		},
+
+    setStandardStrategy: function(suit) {
+      if (suit === 'Rams') {
+        this.setStrategy(Malifaux.getAvailableStandardStrategies()[0]);
+      } else if (suit === 'Crows') {
+        this.setStrategy(Malifaux.getAvailableStandardStrategies()[1]);
+      } else if (suit === 'Masks') {
+        this.setStrategy(Malifaux.getAvailableStandardStrategies()[2]);
+      } else if (suit === 'Tomes') {
+        this.setStrategy(Malifaux.getAvailableStandardStrategies()[3]);
+      } else { //Joker
+        this.setStrategy(Malifaux.getAvailableStandardStrategies()[4]);
+      }
+    },
+
+    setGG15Strategy: function(suit) {
+      if (suit === 'Rams') {
+        this.setStrategy(Malifaux.getAvailableGG15Strategies()[0]);
+      } else if (suit === 'Crows') {
+        this.setStrategy(Malifaux.getAvailableGG15Strategies()[1]);
+      } else if (suit === 'Masks') {
+        this.setStrategy(Malifaux.getAvailableGG15Strategies()[2]);
+      } else if (suit === 'Tomes') {
+        this.setStrategy(Malifaux.getAvailableGG15Strategies()[3]);
+      } else { //Joker
+        this.setStrategy(Malifaux.getAvailableGG15Strategies()[4]);
+      }
+    },
 
 		getSchemes: function() {
 			var schemes = this.get('schemes');
@@ -98,9 +140,37 @@ define([
 			this.save();
 		},
 
+    addAlwaysScheme: function() {
+      this.addScheme(Malifaux.getAvailableSchemes()[0]);
+    },
+
+    addSchemeForCard: function(value, suit) {
+      var schemes = this.getSchemes();
+      if (schemes.length > 3) {return;}
+      var addSchemeHandleDoubles = function(scheme, that) {
+        if (_.contains(schemes, scheme)) {
+          that.addScheme(Malifaux.getAvailableSchemes()[1]);
+        } else {
+          that.addScheme(scheme);
+        }
+      };
+      addSchemeHandleDoubles(Malifaux.getAvailableSchemes()[5 + value], this);
+      if (suit === 'Masks') {
+        addSchemeHandleDoubles(Malifaux.getAvailableSchemes()[2], this);
+      } else if (suit === 'Crows') {
+        addSchemeHandleDoubles(Malifaux.getAvailableSchemes()[3], this);
+      } else if (suit === 'Tomes') {
+        addSchemeHandleDoubles(Malifaux.getAvailableSchemes()[4], this);
+      } else if (suit === 'Rams') {
+        addSchemeHandleDoubles(Malifaux.getAvailableSchemes()[5], this);
+      }
+    },
+
 		removeScheme: function(scheme) {
 			this.setSchemes(_.filter(this.getSchemes(), function(s) { return s !== scheme; }));
-		}
+		},
+
+
 
 	});
 

@@ -12,7 +12,7 @@
             <select class="form-control scheme-select" title="Schemes">
               <option>[Schemes]</option>
             </select>
-            <a class="btn btn-primary randomize">Randomize</a>
+            <a class="btn btn-primary randomize">Randomize Schemes</a>
           </div>
         </div>
       </div>

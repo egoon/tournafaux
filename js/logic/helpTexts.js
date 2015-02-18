@@ -23,9 +23,9 @@ define([
       "If you fill these fields, players from the same city, "+
       "or playing the same faction, will not face each other in the first game, if possible.",
 
-    gg14: "<h4>Gaining Grounds 2014</h4>" +
+    gg14: "<h4>Gaining Grounds 2015</h4>" +
       "Check this to disable all options that are not compatible with " +
-      "<a href='http://wyrd-games.net/community/files/file/52-gaining-grounds/'>Gaining Grounds 2014</a>",
+      "<a href='http://wyrd-games.net/community/files/file/52-gaining-grounds/'>Gaining Grounds 2015</a>",
 
     chooseFirstOpponent: "<h4>Choose First Opponent</h4>" +
       "Check this if you wish to choose opponents for some or all players.",
@@ -39,7 +39,7 @@ define([
       "Scoring against this bye will be an average of the other games by the player that was matched against the bye. " +
       "The first round (when there is no average), the player will get a temporary 0-0 draw.",
 
-    "gg14-bye": "<h4>Gaining Grounds 2014 Bye</h4>" +
+    "gg14-bye": "<h4>Gaining Grounds 2015 Bye</h4>" +
       "A player that receives the bye will score 3 TP, 10 VP and +5 VP diff.",
 
     ringer: "<h4>Ringer</h4>" +
@@ -62,7 +62,7 @@ define([
       "Each round each player will face an opponent with similar points, that has not been faced before. "+
       "See <a href='http://en.wikipedia.org/wiki/Swiss-system_tournament'>Wikipedia: Swiss-system tournament</a> for more details.",
 
-    "gg14-swiss": "<h5>Gaining Grounds 2014 Swiss-like</h5>" +
+    "gg14-swiss": "<h5>Gaining Grounds 2015 Swiss-like</h5>" +
       "Like the Swiss system, but players may face each other more than once, " +
       "if they have played at least two rounds against other opponents. "+
       "So a player may face the same person in round 1 and round 4.",
