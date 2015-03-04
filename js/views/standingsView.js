@@ -54,7 +54,7 @@ define([
         "Players" + new Array(nameCol - "players".length + 2 + tpCol - "tp".length).join(" ") +
         "TP" + new Array(diffCol - "diff".length + 2).join(" ") +
         "Diff" + new Array(vpCol - "vp".length + 2).join(" ") +
-        "VP" + "%0D%0A";
+        "VP Faction" + "%0D%0A";
 
       var table = "";
 
@@ -63,7 +63,7 @@ define([
         p.getName() + new Array(nameCol - p.getName().length + 2 + tpCol - p.getTotalTp().toString().length).join(" ") +
         p.getTotalTp() + new Array(diffCol - p.getVpDiff().toString().length + 2).join(" ") +
         p.getVpDiff() + new Array(vpCol - p.getTotalVp().toString().length + 2).join(" ") +
-        p.getTotalVp() + "%0D%0A";
+        p.getTotalVp() + " " + p.getFaction() + "%0D%0A";
       });
 
       return header + table;
