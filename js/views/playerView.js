@@ -28,6 +28,7 @@ define([
 			this.player = options.player;
 			this.playerList = options.playerList;
 			this.roundList = options.roundList;
+      this.listenTo(this.player, 'change:number', this.render);
       this.listenTo(this.player, 'change:ringer', this.render);
       this.listenTo(this.player, 'change:nonCompeting', this.render);
       this.listenTo(this.player, 'change:firstOpponent', this.render);
@@ -91,7 +92,7 @@ define([
 			this.roundList.fetch();
 			this.playerList.fetch();
 			var that = this;
-			if (this.roundList.length > 0) {
+			if (this.playerList.at(0).getPreviousOpponents(2).length > 0) {
 				if (confirm("This will destroy all generated rounds!")) {
 					this.playerList.each(function(player) {
 						player.clearGames(that.roundList.length);
@@ -103,12 +104,13 @@ define([
 						this.roundList.at(0).destroy();
 					}
 					this.$el.hide(function() {that.remove();});
-					
+					this.playerList.playerNumbers();
 				}
 			} else {
         this.changeFirstOpponent({currentTarget: {value: undefined}});
 				this.player.destroy();
 				this.$el.hide(function() {that.remove();});
+        this.playerList.playerNumbers();
 			}
 
 			return false;

@@ -86,6 +86,7 @@
           <option>Classic rotation Apr-Jun</option>
           <option>Classic rotation Jul-Sep</option>
           <option>Classic rotation Oct-Dec</option>
+          <option>Henchman hardcore</option>
       </select>
   </div>
 
@@ -95,6 +96,7 @@
   <table class="table table-striped player-settings">
     <tbody>
       <tr>
+        <th style="width:20px">#</th>
         <th>Player name</th>
         <th>City/Club <a id="helpCityFaction">(?)</a></th>
         <th>Faction <a id="helpCityFaction">(?)</a></th>
@@ -105,6 +107,7 @@
     <tbody id="player-table">
 
       <tr id="new-player-row">
+        <td></td>
         <td><input id="new-player" class="form-control" name="player" type="text" placeholder="New Player"/>
         </td><td></td><td></td><td></td>
       </tr>

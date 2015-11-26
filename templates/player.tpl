@@ -1,3 +1,4 @@
+<td><%- player.getNumber() %></td>
 <td><input type="text" class="form-control name" name="name" id="name" 
 value="<%- player.getName() %>"/></td>
 <td><input type="text" class="form-control city" name="city" id="city" 

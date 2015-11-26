@@ -127,7 +127,7 @@ define([
       if (e.keyCode !== 13 && e.keyCode !== 9) { return; }
       if (!this.newPlayerInput.val()) { return; }
 
-      var player = this.playerList.create({name: this.newPlayerInput.val(), city: '', faction: ''});
+      var player = this.playerList.create({number: this.playerList.length, name: this.newPlayerInput.val(), city: '', faction: ''});
       player.save();
       this.newPlayerInput.val('');
       this.addPlayerView(player);
@@ -302,6 +302,9 @@ define([
           strategies[1] = avGG15[2];
           strategies[2] = avGG15[0];
         }
+      } else if (e.target.selectedIndex == 9) { //henchman hardcore
+        deployments = [avDeps[3]]; // close dep
+        strategies = [avStandard[0]]; // turf war
       }
       var deck = Malifaux.getShuffledDeck();
       var r, c, round, card;
@@ -309,6 +312,10 @@ define([
         round = this.roundList.at(r);
         round.setDeployment(deployments[r % deployments.length]);
         round.setStrategy(strategies[r % strategies.length]);
+        if (e.target.selectedIndex == 9) { //henchman hardcore
+          round.setSchemes([Malifaux.getAvailableSchemes()[3]]); // assassinate
+          continue;
+        }
         round.setSchemes([]);
         round.addAlwaysScheme();
         for (c = 0; c < 2; ++c) {

@@ -256,17 +256,29 @@ define([
       this.set('active', active.toString());
     },
 
+    getNumber: function() {
+      if (this.isBye() || this.isRinger()) { return 0; }
+      return this.get('number');
+    },
+
+    setNumber: function(number) {
+      this.set('number', number);
+      this.save();
+      return this;
+    },
+
     getName: function () {
       var name = this.get('name');
       if (this.isBye()) { return 'Bye'; }
       if (this.isRinger() && !name) { return 'Ringer'; }
       if (this.isRinger()) { return name + ' (Ringer)'; }
-      if (!this.get('name')) { return '[No Name]'; }
-      return this.get('name');
+      if (!name) { return '[No Name]'; }
+      return name;
     },
 
     setName: function (name) {
       this.set('name', name);
+      return this;
     },
 
     getCity: function () {
@@ -298,6 +310,7 @@ define([
     setFirstOpponent: function (firstOpponent) {
       this.set('firstOpponent', firstOpponent);
       this.save();
+      return this;
     }
 
   });
@@ -342,6 +355,13 @@ define([
         return this.create({name: 'Ringer', nonCompeting: 'true', bye: 'true', active: 'false'});
       }
       return ringer;
+    },
+
+    playerNumbers: function() {
+      var number = 0;
+      this.each(function(player) {
+        player.setNumber(number++);
+      });
     }
 
   });
