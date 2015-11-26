@@ -27,41 +27,72 @@ define([
     opp.setTpForRound(number, BYE_SCORE);
 	};
 
-	var matchPlayers = function(players, matchedPlayers, roundLookBack) {
-		if (players.length === 0) {
-			return matchedPlayers;
-		}
-		var i, player, matched;
-		player = players[0];
-		players = _.without(players, player);
-		for (i = 0; i < players.length; ++i) {
-			if (!player.isPreviousOpponent(players[i], roundLookBack)) {
-				matched = matchPlayers(
-					_.without(players, players[i]),
-					matchedPlayers.concat([{player1: player, player2: players[i]}]),
-					roundLookBack);
-				if (matched) { return matched; }
+	var matchPlayers2 = function(players, isLegalMatch) {
+		if (players.length == 0) { return []; }
+		var player = players[0];
+		players = players.slice(1);
+		var possibleMatches = players.filter(function(p) { return isLegalMatch(player, p); });
+		console.log(player.getName() + ": " + _.map(possibleMatches, function(pm) {return pm.getName()}).join());
+		while (possibleMatches.length > 0) {
+			var possibleMatch = possibleMatches[0];
+			possibleMatches = possibleMatches.slice(1);
+			var match = matchPlayers2(_.without(players, possibleMatch), isLegalMatch);
+			if (match) {
+				return [{player1: player, player2: possibleMatch}].concat(match);
+				
 			}
 		}
 		return false;
 	};
 
+	var matchPlayers = function(players, matchedPlayers, roundLookBack) {
+		console.log("matchPlayers");
+		var match = matchPlayers2(players, function(p1, p2) { return !p1.isPreviousOpponent(p2, roundLookBack)});
+		if (!match) {
+			console.log("match failed");
+			return matchPlayers(players, matchPlayers, roundLookBack - 1);
+		}
+		return matchedPlayers.concat(match);
+		// if (players.length === 0) {
+		// 	return matchedPlayers;
+		// }
+		// var i, player, matched;
+		// player = players[0];
+		// players = _.without(players, player);
+		// for (i = 0; i < players.length; ++i) {
+		// 	if (!player.isPreviousOpponent(players[i], roundLookBack)) {
+		// 		matched = matchPlayers(
+		// 			_.without(players, players[i]),
+		// 			matchedPlayers.concat([{player1: player, player2: players[i]}]),
+		// 			roundLookBack);
+		// 		if (matched) { return matched; }
+		// 	}
+		// }
+		// return false;
+	};
+
 	var matchPlayersFirstRound = function(players, matchedPlayers) {
-		if (players.length === 0) {
-			return matchedPlayers;
+		console.log("matchPlayersFirstRound");
+		var match = matchPlayers2(players, function(p1, p2) { return p1.isPossibleFirstOpponent(p2)});
+		if (!match) {
+			match = matchPlayers2(players, function(p1, p2) { return true; });
 		}
-		var i, player, matched;
-		player = players[0];
-		players = _.without(players, player);
-		for (i = 0; i < players.length; ++i) {
-			if (player.isPossibleFirstOpponent(players[i])) {
-				matched = matchPlayersFirstRound(
-					_.without(players, players[i]),
-					matchedPlayers.concat([{player1: player, player2: players[i]}]));
-				if (matched) { return matched; }
-			}
-		}
-		return false;
+		return matchedPlayers.concat(match);
+		// if (players.length === 0) {
+		// 	return matchedPlayers;
+		// }
+		// var i, player, matched;
+		// player = players[0];
+		// players = _.without(players, player);
+		// for (i = 0; i < players.length; ++i) {
+		// 	if (player.isPossibleFirstOpponent(players[i])) {
+		// 		matched = matchPlayersFirstRound(
+		// 			_.without(players, players[i]),
+		// 			matchedPlayers.concat([{player1: player, player2: players[i]}]));
+		// 		if (matched) { return matched; }
+		// 	}
+		// }
+		// return false;
 	};
 
 	var generate = function(number, playerList, roundList, settings) {
@@ -109,45 +140,47 @@ define([
 
     if (number === 1) {
       // grudge matches
-      for (i = 0; i < players.length; ++i) {
-        var opp = players[i].getFirstOpponent();
-        if (opp) {
-          for (j = i + 1; j < players.length; ++j) {
-            if (players[j].id === opp && players[j].getFirstOpponent() === players[i].id) {
-              matchedPlayers.push({player1: players[i], player2: players[j]});
-              players = _.without(players, players[i], players[j]);
-            }
-          }
-        }
-      }
+      matchedPlayers = matchPlayersFirstRound(players, matchedPlayers);
+      // for (i = 0; i < players.length; ++i) {
+      //   var opp = players[i].getFirstOpponent();
+      //   if (opp) {
+      //     for (j = i + 1; j < players.length; ++j) {
+      //       if (players[j].id === opp && players[j].getFirstOpponent() === players[i].id) {
+      //         matchedPlayers.push({player1: players[i], player2: players[j]});
+      //         players = _.without(players, players[i], players[j]);
+      //       }
+      //     }
+      //   }
+      // }
 
-      // city and faction matching
-      var possibleMatches = [];
-      for (i = 0; i < players.length; ++i) {
-        possibleMatches.push({player: players[i], opps: players[i].getPossibleFirstRoundOpponents(players)});
-      }
-      while (possibleMatches.length > 0) {
-        possibleMatches = _.sortBy(possibleMatches, function(pm) { return -pm.opps.length;});
-        match = possibleMatches.pop();
-        if (match.opps.length > 0) {
-          var p1 = match.player;
-          var p2 = match.opps[0];
-          matchedPlayers.push({player1: p1, player2: p2});
-          players = _.without(players, p1, p2);
-          // remove p1 and p2 from possibleMatches
-          for (i = 0; i < possibleMatches.length; ++i) {
-            if (possibleMatches[i].player.id === p2.id) {
-              possibleMatches[i].opps = [];
-            } else {
-              possibleMatches[i].opps = _.without(possibleMatches[i].opps, p1, p2);
-            }
-          }
-        }
-      }
-    }
+      // // city and faction matching
+      // var possibleMatches = [];
+      // for (i = 0; i < players.length; ++i) {
+      //   possibleMatches.push({player: players[i], opps: players[i].getPossibleFirstRoundOpponents(players)});
+      // }
+      // while (possibleMatches.length > 0) {
+      //   possibleMatches = _.sortBy(possibleMatches, function(pm) { return -pm.opps.length;});
+      //   match = possibleMatches.pop();
+      //   if (match.opps.length > 0) {
+      //     var p1 = match.player;
+      //     var p2 = match.opps[0];
+      //     matchedPlayers.push({player1: p1, player2: p2});
+      //     players = _.without(players, p1, p2);
+      //     // remove p1 and p2 from possibleMatches
+      //     for (i = 0; i < possibleMatches.length; ++i) {
+      //       if (possibleMatches[i].player.id === p2.id) {
+      //         possibleMatches[i].opps = [];
+      //       } else {
+      //         possibleMatches[i].opps = _.without(possibleMatches[i].opps, p1, p2);
+      //       }
+      //     }
+      //   }
+      // }
+    } else {
 
-    // match remaining players
-    matchedPlayers = matchPlayers(players, matchedPlayers, settings.getRoundLookBack());
+    	// match remaining players
+    	matchedPlayers = matchPlayers(players, matchedPlayers, settings.getRoundLookBack());
+	}
 
 		var availableTables = [];
 		var noTables = settings.getTables();

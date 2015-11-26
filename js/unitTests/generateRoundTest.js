@@ -201,6 +201,13 @@ define([
 
       var tables = round.getTables(5, this.playerList);
       var i, playerNames;
+
+      console.log(players[2].isPossibleFirstOpponent(players[9]));
+      console.log(players[2].isPossibleFirstOpponent(players[8]));
+      console.log(players[3].isPossibleFirstOpponent(players[9]));
+      console.log(players[3].isPossibleFirstOpponent(players[8]));
+      console.log(players[2].isPossibleFirstOpponent(players[3]));
+
       for (i = 0; i < 5; i++) {
 
         ok(Math.abs(tables[i].player1.getName().charCodeAt(0) - tables[i].player2.getName().charCodeAt(0)) === 1,

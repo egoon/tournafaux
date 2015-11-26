@@ -87,6 +87,12 @@ define([
         }
         return false;
       }
+      if (player.getFirstOpponent()) {
+        if (player.getFirstOpponent() === this.id) {
+          return true;
+        }
+        return false;
+      }
       if (this.getFaction() !== '' && this.getFaction() === player.getFaction()) {
         return false;
       }
