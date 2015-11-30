@@ -13,47 +13,50 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-/*global define*/
-define([
+ /*global define*/
+ define([
   'underscore',
   'backbone',
   'text!../../templates/player.tpl'
-], function(_, Backbone, playerTemplate) {
-  "use strict";
+  ], function(_, Backbone, playerTemplate) {
+    "use strict";
 
-	var PlayerView = Backbone.View.extend({
-		tagName: "tr",
+    var PlayerView = Backbone.View.extend({
+      tagName: "tr",
 
-		initialize: function(options) {
-			this.player = options.player;
-			this.playerList = options.playerList;
-			this.roundList = options.roundList;
+    initialize: function(options) {
+      this.player = options.player;
+      this.playerList = options.playerList;
+      this.roundList = options.roundList;
       this.listenTo(this.player, 'change:number', this.render);
       this.listenTo(this.player, 'change:ringer', this.render);
       this.listenTo(this.player, 'change:nonCompeting', this.render);
       this.listenTo(this.player, 'change:firstOpponent', this.render);
       this.listenTo(this.playerList, 'add', this.render);
       this.listenTo(this.playerList, 'remove', this.render);
-		},
+    },
 
-		events: {
-			"click button.removePlayer": "removePlayer",
+    events: {
+      "click button.removePlayer": "removePlayer",
       "change input": "updateProperty",
       "change select.chooseFirstOpponent": "changeFirstOpponent"
-		},
+    },
 
-		render: function() {
+    render: function() {
       var that = this;
       var opponents = _.filter(this.playerList.getAllPlayers(), function(player) {return player.id !== that.player.id && !player.isBye(); });
-			var template =_.template(playerTemplate, {player: this.player, opponents: opponents});
-      
-			this.$el.html(template);
-			this.$el.attr('id', this.player.id);
+      var template =_.template(playerTemplate, {player: this.player, opponents: opponents});
+    
+      this.$el.html(template);
+      this.$el.attr('id', this.player.id);
       this.validate();
       if (this.player.getFirstOpponent()) {
         this.$('select.chooseFirstOpponent').val(this.player.getFirstOpponent());
       }
-		},
+      if (this.roundList.length > 0 && this.roundList.at(0).get('showInNav')) {
+        this.$('button.removePlayer').attr('disabled', 'disabled');
+      }
+    },
 
     updateProperty: function(e) {
       this.player.set(e.currentTarget.name, e.currentTarget.value);
@@ -74,7 +77,7 @@ define([
       // set first opponent
       if (this.playerList.get(e.currentTarget.value)) {
         this.player.setFirstOpponent(e.currentTarget.value);
-      
+
         var newOpponent = this.playerList.get(this.player.getFirstOpponent());
         if (newOpponent && newOpponent.getFirstOpponent()) {
           // change opponent's opponent
@@ -88,33 +91,34 @@ define([
       }
     },
 
-		removePlayer: function() {
-			this.roundList.fetch();
-			this.playerList.fetch();
-			var that = this;
-			if (this.playerList.at(0).getPreviousOpponents(2).length > 0) {
-				if (confirm("This will destroy all generated rounds!")) {
-					this.playerList.each(function(player) {
-						player.clearGames(that.roundList.length);
-						player.save();
-					});
+    removePlayer: function() {
+      this.roundList.fetch();
+      this.playerList.fetch();
+      var that = this;
+      if (this.roundList.length > 0 && this.roundList.at(0).get('showInNav')) {
+        if (confirm("This will destroy all generated rounds!")) {
+          this.playerList.each(function(player) {
+            player.clearGames(that.roundList.length);
+            player.save();
+          });
           this.changeFirstOpponent({currentTarget: {value: undefined}});
-					this.player.destroy();
-					while(this.roundList.at(0)) {
-						this.roundList.at(0).destroy();
-					}
-					this.$el.hide(function() {that.remove();});
-					this.playerList.playerNumbers();
-				}
-			} else {
+          this.player.destroy();
+          this.roundList.each(function(round) {
+            round.clear();
+            round.save();
+          });
+          this.$el.hide(function() {that.remove();});
+          this.playerList.playerNumbers();
+        }
+      } else {
         this.changeFirstOpponent({currentTarget: {value: undefined}});
-				this.player.destroy();
-				this.$el.hide(function() {that.remove();});
+        this.player.destroy();
+        this.$el.hide(function() {that.remove();});
         this.playerList.playerNumbers();
-			}
+      }
 
-			return false;
-		},
+      return false;
+    },
 
     validate: function() {
       if (this.player.isBye()) {
@@ -133,7 +137,7 @@ define([
         this.$('#removePlayer').hide();
       }
     }
-	});
-  
-  	return PlayerView;
+  });
+
+  return PlayerView;
 });

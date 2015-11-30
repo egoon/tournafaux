@@ -32,7 +32,7 @@ define([
       this.settings.fetch();
 			this.active = options.active;
       this.router = options.router;
-
+      // this.listenTo(this.roundList, 'change', 'render'); //TODO nicer mechanic for redraw
 		},
 
     events: {

@@ -21,6 +21,17 @@ define([
 ], function(Backbone, localstorage, Malifaux) {
 	var Round = Backbone.Model.extend({
 
+		clear: function() {
+			var i = 1;
+			while(this.get('table' + i + 'player1')) {
+				this.set('table' + i + 'player1', undefined);
+				this.set('table' + i + 'player2', undefined);
+				i++;
+			}
+			this.unset('table-player1');
+			this.unset('table-player2');
+		},
+
 		getTables: function(noTables, playerList) {
 			var tables = [];
 			for (var i = 1; i <= noTables; ++i) {
@@ -44,6 +55,11 @@ define([
 				table.player2 = playerList.get(table.player2id);
 			}
 			return table;
+		},
+
+		setPlayersForTable: function(table, player1, player2) {
+			this.set('table' + table + 'player1', player1.id);
+			this.set('table' + table + 'player2', player2.id);
 		},
 
 		setPlayer1ForTable: function(table, player) {
