@@ -157,6 +157,7 @@ define([
 			match.player2.setOpponentForRound(number, match.player1.id);
 			match.player1.save();
 			match.player2.save();
+			round.set('showInNav', 'true');
 			round.setPlayersForTable(selectedTable, match.player1, match.player2);
 			// round.set('table'+selectedTable+'player1', match.player1.id);
 			// round.set('table'+selectedTable+'player2', match.player2.id);
