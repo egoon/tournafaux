@@ -28,17 +28,20 @@
       this.player = options.player;
       this.playerList = options.playerList;
       this.roundList = options.roundList;
+      this.settings = options.settings;
       this.listenTo(this.player, 'change:number', this.render);
       this.listenTo(this.player, 'change:ringer', this.render);
       this.listenTo(this.player, 'change:nonCompeting', this.render);
       this.listenTo(this.player, 'change:firstOpponent', this.render);
       this.listenTo(this.playerList, 'add', this.render);
       this.listenTo(this.playerList, 'remove', this.render);
+      this.listenTo(this.settings, 'change:countryDataList', this.changeCityAutocomplete);
     },
 
     events: {
       "click button.removePlayer": "removePlayer",
       "change input": "updateProperty",
+      "change input[name='city']": "updateCountryDataList",
       "change select.chooseFirstOpponent": "changeFirstOpponent"
     },
 
@@ -56,6 +59,9 @@
       if (this.roundList.length > 0 && this.roundList.at(0).get('showInNav')) {
         this.$('button.removePlayer').attr('disabled', 'disabled');
       }
+      if (this.settings.get('countryDataList')) {
+        this.changeCityAutocomplete();
+      }
     },
 
     updateProperty: function(e) {
@@ -65,6 +71,19 @@
         e.currentTarget.value = this.player.getName();
       }
       return false;
+    },
+
+    updateCountryDataList: function(e) {
+      var cityName = e.currentTarget.value;
+      var countryDataLists = $('.countryDataList option[value="' + cityName + '"]');
+      if (countryDataLists.length === 1) {
+        this.settings.set('countryDataList', countryDataLists.parent().attr('id'));
+        this.settings.save();
+      }
+    },
+
+    changeCityAutocomplete: function() {
+      this.$('input.city').attr('list', this.settings.get('countryDataList'));
     },
 
     changeFirstOpponent: function(e) {

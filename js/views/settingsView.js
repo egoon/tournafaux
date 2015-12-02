@@ -108,7 +108,8 @@ define([
       var playerView = new PlayerView({
         player: player,
         playerList: this.playerList,
-        roundList: this.roundList
+        roundList: this.roundList,
+        settings: this.settings,
       });
       playerView.render();
       this.$("#new-player-row").before(playerView.el);

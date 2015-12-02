@@ -42,6 +42,20 @@ define([
             if (!this.get('version')) {
                 this.set('version', '1');
             }
+            // if (!this.get('country')) {
+            //   if (navigator.geolocation) {
+            //     navigator.geolocation.getCurrentPosition(function(position) {
+            //         $.getJSON('http://ws.geonames.org/countryCode', {
+            //             lat: position.coords.latitude,
+            //             lng: position.coords.longitude,
+            //             type: 'JSON'
+            //         }, function(result) {
+            //             alert(result.countryName);
+            //             this.set('country', result.countryName);
+            //         });
+            //     });
+            //   }
+            // }
         },
 
       getRounds: function() {

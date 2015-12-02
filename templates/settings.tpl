@@ -92,7 +92,6 @@
 
   <a id="toggle-round-settings">Show/hide round settings</a> </label> <a id="helpRoundSettings">(?)</a>
 
-
   <table class="table table-striped player-settings">
     <tbody>
       <tr>
@@ -118,3 +117,57 @@
 
 
 </form>
+
+<datalist id="factions">
+    <option value="Arcanists"/>
+    <option value="Crossroads Seven"/>
+    <option value="Gremlins"/>
+    <option value="Guild"/>
+    <option value="Neverborn"/>
+    <option value="Outcasts"/>
+    <option value="Resurrectionists"/>
+    <option value="Single Master"/>
+    <option value="Ten Thunders"/>
+  </datalist>
+
+  <datalist id="citiesSweden" class="countryDataList">
+    <option value="Göteborg"/>
+    <option value="Linköping"/>
+    <option value="Luleå"/>
+    <option value="Lund"/>
+    <option value="Malmö"/>
+    <option value="Norrköping"/>
+    <option value="Sala"/>
+    <option value="Skellefteå"/>
+    <option value="Stockholm"/>
+    <option value="Umeå"/>
+    <option value="Uppsala"/>
+    <option value="Visby"/>
+  </datalist>
+
+  <datalist id="citiesUnitedKingdom" class="countryDataList">
+    <option value="Belfast"/>
+    <option value="Bradford"/>
+    <option value="Bristol"/>
+    <option value="Cardiff"/>
+    <option value="Coventry"/>
+    <option value="Dudley"/>
+    <option value="East Riding"/>
+    <option value="Edinburgh"/>
+    <option value="Fife"/>
+    <option value="Glasgow"/>
+    <option value="Kirklees"/>
+    <option value="Leeds"/>
+    <option value="Leicester"/>
+    <option value="Liverpool"/>
+    <option value="London"/>
+    <option value="Manchester"/>
+    <option value="Newcastle"/>
+    <option value="North Lanarkshire"/>
+    <option value="Sheffield"/>
+    <option value="South Lanarkshire"/>
+    <option value="Wakefield"/>
+    <option value="Wigan"/>
+    <option value="Wirral"/>
+    <option value="York"/>
+  </datalist>
