@@ -273,6 +273,28 @@ define([
       return this;
     },
 
+    getPaid: function() {
+      if (this.isBye() || this.isRinger()) { return true; }
+      return this.get('paid');
+    },
+
+    setPaid: function(paid) {
+      this.set('paid', paid);
+      this.save();
+      return this;
+    },
+
+    getRegistered: function() {
+      if (this.isBye() || this.isRinger()) { return true; }
+      return this.get('registered');
+    },
+
+    setRegistered: function(registered) {
+      this.set('registered', registered);
+      this.save();
+      return this;
+    },
+
     getName: function () {
       var name = this.get('name');
       if (this.isBye()) { return 'Bye'; }

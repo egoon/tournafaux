@@ -141,8 +141,9 @@ define([
       this.settings.setRounds(this.$("#rounds").val());
       while (this.settings.getRounds() > this.roundList.length) {
         var number = this.roundList.length + 1;
-        console.log(number);
+        // console.log(number);
         this.roundList.create({number: number.toString()});
+        this.addRoundSettingsView(this.roundList.at(number));
       }
       var len = this.roundList.length;
       while (this.settings.getRounds() < this.roundList.length) {

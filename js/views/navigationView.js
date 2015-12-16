@@ -17,8 +17,9 @@
 define([
   'underscore',
   'backbone',
+  'models/settings',
   'text!../../templates/navigation.tpl'
-], function(_, Backbone, navigationTemplate) {
+], function(_, Backbone, Settings, navigationTemplate) {
   "use strict";
   var NavigationView = Backbone.View.extend({
 		tagName: 'div',
@@ -61,7 +62,10 @@ define([
         while (this.playerList.length > 0)
           this.playerList.at(0).destroy();
         this.settings.roundInfoWindow && this.settings.roundInfoWindow.close();
+        var country = this.settings.get('countryDataList');
         this.settings.destroy();
+        this.settings = new Settings();
+        this.settings.set('countryDataList', country);
         if (this.active === 'settings')
           window.location.reload();
         else {
