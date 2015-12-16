@@ -38,7 +38,7 @@ define([
     },
 
     render: function() {
-      var standingsView = new StandingsView({playerList: this.playerList}).render();
+      var standingsView = new StandingsView({playerList: this.playerList, showFactions:true}).render();
 
       var restultTableString = standingsView.textTable();
 

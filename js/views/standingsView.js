@@ -27,6 +27,7 @@ define([
     initialize: function(options) {
       this.playerList = options.playerList;
       this.listenTo(this.playerList, 'change', this.render);
+      this.showFactions = options.showFactions;
     },
 
     events: {
@@ -36,7 +37,7 @@ define([
     render: function() {
       var players = this.playerList.getCompetingPlayers();
 
-      var template = _.template(standingsTemplate, {players: players});
+      var template = _.template(standingsTemplate, {players: players, showFactions: this.showFactions});
       this.$el.html(template);
       return this;
     },

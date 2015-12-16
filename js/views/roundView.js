@@ -87,7 +87,7 @@ define([
           this.$('#end-tournament').hide();
         }
 
-        this.$("#standings").html(new StandingsView({playerList: this.playerList}).render().el);
+        this.$("#standings").html(new StandingsView({playerList: this.playerList, showFactions:false}).render().el);
       } else {
         this.$el.html(_.template("<h4>Round does not exist</h4>Sorry!"));
       }

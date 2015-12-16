@@ -1,6 +1,10 @@
 <table class="table table-striped">
   <tbody>
-    <tr><th>#</th><th>Player</th><th>TP</th><th>VP Diff</th><th>VP</th></tr>
+    <tr><th>#</th><th>Player</th><th>TP</th><th>VP Diff</th><th>VP</th>
+    <% if (showFactions) { %>
+      <th>Faction</th>
+    <% } %>
+    </tr>
   </tbody>
   <tbody>
     <% var i = 1;
@@ -11,6 +15,9 @@
         <td><%- player.getTotalTp() %></td>
         <td><%- player.getVpDiff() %></td>
         <td><%- player.getTotalVp() %></td>
+        <% if (showFactions) { %>
+          <td><%- player.getFaction() %></td>
+        <% } %>
       </tr>
     <% ++i; }); %>
   <tbody>

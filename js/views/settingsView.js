@@ -143,7 +143,7 @@ define([
         var number = this.roundList.length + 1;
         // console.log(number);
         this.roundList.create({number: number.toString()});
-        this.addRoundSettingsView(this.roundList.at(number));
+        // this.addRoundSettingsView(this.roundList.at(number));
       }
       var len = this.roundList.length;
       while (this.settings.getRounds() < this.roundList.length) {
