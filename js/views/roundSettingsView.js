@@ -32,6 +32,7 @@ define([
       "change select.strategy-select": "onStrategySelect",
       "click a.remove-scheme": "removeScheme",
       "click a.randomize": "randomizeSchemes",
+      "click a.randomize-gg16": "randomizeGG16Schemes"
     },
 
     initialize: function(options) {
@@ -71,6 +72,10 @@ define([
       var schemes =  this.round.getSchemes();
       _.each(
         _.reject(Malifaux.getAvailableSchemes(), function(s) { return _.contains(schemes, s); }),
+        function(scheme) { that.$('select.scheme-select').append('<option>' + scheme + '</option>');}
+      );
+      _.each(
+        _.reject(Malifaux.getAvailableSchemes(true), function(s) { return _.contains(schemes, s); }),
         function(scheme) { that.$('select.scheme-select').append('<option>' + scheme + '</option>');}
       );
       _.each(schemes, function(s) { that.$('div.schemes').append('<div><a class="btn btn-danger remove-scheme" value="' + s + '">X</a> ' + s + '</div>');});
@@ -115,6 +120,25 @@ define([
           value = parseInt(card.split(' of ')[0], 10);
           suit = card.split(' of ')[1];
           this.round.addSchemeForCard(value, suit);
+        }
+      }
+      this.render();
+    },
+
+    randomizeGG16Schemes: function() {
+      var deck = Malifaux.getShuffledDeck(), card, suit, value;
+
+      // schemes
+      this.round.setSchemes([]);
+      this.round.addAlwaysScheme(true);
+      var validCards = 0
+      while (validCards < 2) {
+        card = deck.pop();
+        if (card.indexOf("Joker") === -1) {
+          validCards++;
+          value = parseInt(card.split(' of ')[0], 10);
+          suit = card.split(' of ')[1];
+          this.round.addSchemeForCard(value, suit, true);
         }
       }
       this.render();

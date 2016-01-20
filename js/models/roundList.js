@@ -156,29 +156,29 @@ define([
 			this.save();
 		},
 
-    addAlwaysScheme: function() {
-      this.addScheme(Malifaux.getAvailableSchemes()[0]);
+    addAlwaysScheme: function(gg16) {
+      this.addScheme(Malifaux.getAvailableSchemes(gg16)[0]);
     },
 
-    addSchemeForCard: function(value, suit) {
+    addSchemeForCard: function(value, suit, gg16) {
       var schemes = this.getSchemes();
       if (schemes.length > 3) {return;}
       var addSchemeHandleDoubles = function(scheme, that) {
         if (_.contains(schemes, scheme)) {
-          that.addScheme(Malifaux.getAvailableSchemes()[1]);
+          that.addScheme(Malifaux.getAvailableSchemes(gg16)[1]);
         } else {
           that.addScheme(scheme);
         }
       };
-      addSchemeHandleDoubles(Malifaux.getAvailableSchemes()[5 + value], this);
+      addSchemeHandleDoubles(Malifaux.getAvailableSchemes(gg16)[5 + value], this);
       if (suit === 'Masks') {
-        addSchemeHandleDoubles(Malifaux.getAvailableSchemes()[2], this);
+        addSchemeHandleDoubles(Malifaux.getAvailableSchemes(gg16)[2], this);
       } else if (suit === 'Crows') {
-        addSchemeHandleDoubles(Malifaux.getAvailableSchemes()[3], this);
+        addSchemeHandleDoubles(Malifaux.getAvailableSchemes(gg16)[3], this);
       } else if (suit === 'Tomes') {
-        addSchemeHandleDoubles(Malifaux.getAvailableSchemes()[4], this);
+        addSchemeHandleDoubles(Malifaux.getAvailableSchemes(gg16)[4], this);
       } else if (suit === 'Rams') {
-        addSchemeHandleDoubles(Malifaux.getAvailableSchemes()[5], this);
+        addSchemeHandleDoubles(Malifaux.getAvailableSchemes(gg16)[5], this);
       }
     },
 

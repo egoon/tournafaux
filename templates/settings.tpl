@@ -77,11 +77,15 @@
 
   <div id="round-settings" class="row round-settings">
       <select id="rotation" class="form-control rotation-select" title="Rotation">
-          <option>GG 15 New or Classic rotation</option>
-          <option>New rotation Jan-Mar</option>
-          <option>New rotation Apr-Jun</option>
-          <option>New rotation Jul-Sep</option>
-          <option>New rotation Oct-Dec</option>
+          <option>Select rotation</option>
+          <option>2016 rotation Jan-Mar</option>
+          <option>2016 rotation Apr-Jun</option>
+          <option>2016 rotation Jul-Sep</option>
+          <option>2016 rotation Oct-Dec</option>
+          <option>2015 rotation Jan-Mar</option>
+          <option>2015 rotation Apr-Jun</option>
+          <option>2015 rotation Jul-Sep</option>
+          <option>2015 rotation Oct-Dec</option>
           <option>Classic rotation Jan-Mar</option>
           <option>Classic rotation Apr-Jun</option>
           <option>Classic rotation Jul-Sep</option>

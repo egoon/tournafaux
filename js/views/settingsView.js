@@ -270,41 +270,58 @@ define([
       var avDeps = Malifaux.getAvailableDeployments();
       var avStandard = Malifaux.getAvailableStandardStrategies();
       var avGG15 = Malifaux.getAvailableGG15Strategies();
-      if (e.target.selectedIndex == 1 || e.target.selectedIndex == 5) {
+
+      if (e.target.selectedIndex == 1) {
         //Standard, Corner, Standard, Flank, Close
         deployments = [avDeps[0], avDeps[1], avDeps[0], avDeps[2], avDeps[3]];
+        strategies = [avGG15[2], avStandard[0], avGG15[3], avStandard[3], avStandard[4]];
+      } else if (e.target.selectedIndex == 2) {
+        //Flank, Standard, Close, Corner, Standard
+        deployments = [avDeps[2], avDeps[0], avDeps[3], avDeps[1], avDeps[0]];
+        strategies = [avStandard[2], avGG15[0], avGG15[4], avStandard[1], avGG15[1]];
+      } else if (e.target.selectedIndex == 3) {
+        //Corner, Standard, Flank, Standard, Close
+        deployments = [avDeps[1], avDeps[0], avDeps[2], avDeps[0], avDeps[3]];
+        strategies = [avGG15[1], avStandard[0], avGG15[3], avStandard[1], avGG15[0]];
+      } else if (e.target.selectedIndex == 4) {
+        //Corner, Standard, Flank, Standard, Close
+        deployments = [avDeps[0], avDeps[2], avDeps[0], avDeps[0], avDeps[1]];
+        strategies = [avGG15[4], avGG15[2], avStandard[4], avStandard[2], avStandard[3]];
+      } else if (e.target.selectedIndex == 5 || e.target.selectedIndex == 9) {
+        //Standard, Flank, Standard, Standard, Corner
+        deployments = [avDeps[0], avDeps[2], avDeps[0], avDeps[0], avDeps[1]];
         strategies = [avStandard[0], avStandard[1], avStandard[3], avStandard[2], avStandard[4]];
-        if (e.target.selectedIndex < 5) {
+        if (e.target.selectedIndex < 9) {
           strategies[0] = avGG15[0];
           strategies[2] = avGG15[3];
         }
-      } else if (e.target.selectedIndex == 2 || e.target.selectedIndex == 6) {
+      } else if (e.target.selectedIndex == 6 || e.target.selectedIndex == 10) {
         //Flank, Standard, Close, Corner, Standard
         deployments = [avDeps[2], avDeps[0], avDeps[3], avDeps[1], avDeps[0]];
         strategies = [avStandard[2], avStandard[4], avStandard[1], avStandard[3], avStandard[0]];
-        if (e.target.selectedIndex < 5) {
+        if (e.target.selectedIndex < 9) {
           strategies[0] = avGG15[2];
           strategies[1] = avGG15[4];
           strategies[2] = avGG15[1];
         }
-      } else if (e.target.selectedIndex == 3 || e.target.selectedIndex == 7) {
+      } else if (e.target.selectedIndex == 7 || e.target.selectedIndex == 11) {
         //Corner, Standard, Flank, Standard, Close
         deployments = [avDeps[1], avDeps[0], avDeps[2], avDeps[0], avDeps[3]];
         strategies = [avStandard[3], avStandard[0], avStandard[4], avStandard[1], avStandard[2]];
-        if (e.target.selectedIndex < 5) {
+        if (e.target.selectedIndex < 9) {
           strategies[0] = avGG15[3];
           strategies[2] = avGG15[4];
         }
-      } else if (e.target.selectedIndex == 4 || e.target.selectedIndex == 8) {
+      } else if (e.target.selectedIndex == 8 || e.target.selectedIndex == 12) {
         //Corner, Standard, Flank, Standard, Close
         deployments = [avDeps[0], avDeps[2], avDeps[3], avDeps[0], avDeps[1]];
         strategies = [avStandard[1], avStandard[2], avStandard[0], avStandard[4], avStandard[3]];
-        if (e.target.selectedIndex < 5) {
+        if (e.target.selectedIndex < 9) {
           strategies[0] = avGG15[1];
           strategies[1] = avGG15[2];
           strategies[2] = avGG15[0];
         }
-      } else if (e.target.selectedIndex == 9) { //henchman hardcore
+      } else if (e.target.selectedIndex == 13) { //henchman hardcore
         deployments = [avDeps[3]]; // close dep
         strategies = [avStandard[0]]; // turf war
       }
@@ -318,8 +335,9 @@ define([
           round.setSchemes([Malifaux.getAvailableSchemes()[3]]); // assassinate
           continue;
         }
+        var gg16 = (e.target.selectedIndex < 5);
         round.setSchemes([]);
-        round.addAlwaysScheme();
+        round.addAlwaysScheme(gg16);
         for (c = 0; c < 2; ++c) {
           card = deck.pop();
           if (card.indexOf("Joker") !== -1) {
@@ -327,7 +345,7 @@ define([
             continue;
           }
           card = card.split(' of ');
-          round.addSchemeForCard(parseInt(card[0], 10), card[1]);
+          round.addSchemeForCard(parseInt(card[0], 10), card[1], gg16);
         }
       }
 

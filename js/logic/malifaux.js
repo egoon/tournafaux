@@ -20,13 +20,21 @@ define([
   "use strict";
 
 	var malifaux = {
-    getAvailableSchemes: function() {
+    getAvailableSchemes: function(gg16) {
       var schemes = [];
-      schemes.push("A Line in the Sand (Always)","Distract (Doubles)",
-        "Breakthrough (Mask)","Assassinate (Crow)","Protect Territory (Tome)","Bodyguard (Ram)",
-        "Cursed Object (1)","Outflank (2)","Plant Evidence (3)","Entourage (4)","Vendetta (5)",
-        "Plant Explosives (6)","Make them Suffer (7)","Deliver a Message (8)","Take Prisoner (9)",
-        "Spring the Trap (10)","Murder Protégé (11)","Frame for Murder (12)","Power Ritual (13)");
+      if (!gg16) {
+        schemes.push("A Line in the Sand (Always)","Distract (Doubles)",
+          "Breakthrough (Mask)","Assassinate (Crow)","Protect Territory (Tome)","Bodyguard (Ram)",
+          "Cursed Object (1)","Outflank (2)","Plant Evidence (3)","Entourage (4)","Vendetta (5)",
+          "Plant Explosives (6)","Make them Suffer (7)","Deliver a Message (8)","Take Prisoner (9)",
+          "Spring the Trap (10)","Murder Protégé (11)","Frame for Murder (12)","Power Ritual (13)");
+      } else {
+        schemes.push("Convict Labor (Always)","Take Prisoner (Doubles)",
+          "Exhaust Their Forces (Mask)","Hunting Party (Crow)","Leave Your Mark (Tome)","Show Of Force (Ram)",
+          "Covert Breakthrough (1)","Covert Entourage (2)","Neutralize The Commander (3)","Distract (4)","Frame For Murder (5)",
+          "Plant Explosives (6)","Set Up (7)","Inspect The Ruins (8)","Catch And \"Release\" (9)",
+          "Public Demonstration (10)","Inspection (11)","A Quick Murder (12)","Occupy Their Turf (13)");
+      }
       return schemes;
     },
     getAvailableStandardStrategies: function() {
@@ -41,7 +49,7 @@ define([
     },
     getAvailableDeployments: function() {
       var deployments = [];
-      deployments.push("Standard (1-7)", "Corner (8-10)", "Flank (11-13)", "Close (Jokers)");
+      deployments.push("Standard (1-7)", "Corner (8-10)", "Flank (11-13)", "Close (Jokers)", "Blind (-)");
       return deployments;
     },
     getShuffledDeck: function() {
