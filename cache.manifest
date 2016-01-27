@@ -1,9 +1,20 @@
 CACHE MANIFEST
-# Wed Dec  2 10:37:04 CET 2015
+# Wed Jan 27 16:03:54 CET 2016
 http://www.google-analytics.com/analytics_debug.js
+./cities/cities_sed
+./cities/swecities
+./cities/ukcities
 ./css/bootstrap-3.1.1-min.css
 ./css/tournafaux.css
 ./img/btn_donate_SM.gif
+./img/M2eLogo.png
+./img/Malifaux-Seal-Arcanists.png
+./img/Malifaux-Seal-Gremlin.png
+./img/Malifaux-Seal-Guild.png
+./img/Malifaux-Seal-Neverborn.png
+./img/Malifaux-Seal-Outcast.png
+./img/Malifaux-Seal-Resurrectionists.png
+./img/Malifaux-Seal-TenThunders.png
 ./index.html
 ./index.php
 ./js/app.js
@@ -36,6 +47,7 @@ http://www.google-analytics.com/analytics_debug.js
 ./templates/navigation.tpl
 ./templates/player.tpl
 ./templates/playerStatistics.tpl
+./templates/reportCard.tpl
 ./templates/results.tpl
 ./templates/round.tpl
 ./templates/roundInfo.tpl
