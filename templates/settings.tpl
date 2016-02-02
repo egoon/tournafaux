@@ -16,7 +16,7 @@
       <div class="checkbox">
         <label>
           <input type="checkbox" name="gg14" value="gg14">
-          Gaining Grounds 2015
+          Gaining Grounds 2016
         </label> <a id="helpGG14">(?)</a>
       </div>
       <div class="checkbox">
@@ -38,7 +38,7 @@
       <div class="radio">
         <label>
           <input type="radio" name="byes" value="gg14-bye">
-          GG'15 Bye
+          GG'16 Bye
         </label>
       </div>
       <div class="radio">
@@ -66,7 +66,7 @@
       <div class="radio">
           <label>
               <input type="radio" name="tournamentType" value="gg14-swiss">
-              GG'15 Swiss-like
+              GG'16 Swiss-like
           </label>
       </div>
     </div>
