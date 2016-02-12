@@ -31,8 +31,8 @@ define([
       } else {
         schemes.push("Convict Labor (Always)","Take Prisoner (Doubles)",
           "Exhaust Their Forces (Mask)","Hunting Party (Crow)","Leave Your Mark (Tome)","Show Of Force (Ram)",
-          "Covert Breakthrough (1)","Covert Entourage (2)","Neutralize The Commander (3)","Distract (4)","Frame For Murder (5)",
-          "Plant Explosives (6)","Set Up (7)","Inspect The Ruins (8)","Catch And \"Release\" (9)",
+          "Covert Breakthrough (1)","Undercover Entourage (2)","Neutralize The Leader (3)","Catch And Release (4)","Frame For Murder (5)",
+          "Detonate The Charges (6)","Set Up (7)","Search The Ruins (8)", "Mark For Death (9)",
           "Public Demonstration (10)","Inspection (11)","A Quick Murder (12)","Occupy Their Turf (13)");
       }
       return schemes;
