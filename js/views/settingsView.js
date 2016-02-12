@@ -274,7 +274,7 @@ define([
       if (e.target.selectedIndex == 1) {
         //Standard, Corner, Standard, Flank, Close
         deployments = [avDeps[0], avDeps[1], avDeps[0], avDeps[2], avDeps[3]];
-        strategies = [avGG15[2], avStandard[0], avGG15[3], avStandard[3], avStandard[4]];
+        strategies = [avGG15[2], avStandard[3], avGG15[3], avStandard[0], avStandard[4]];
       } else if (e.target.selectedIndex == 2) {
         //Flank, Standard, Close, Corner, Standard
         deployments = [avDeps[2], avDeps[0], avDeps[3], avDeps[1], avDeps[0]];
