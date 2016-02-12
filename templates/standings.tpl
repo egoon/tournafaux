@@ -1,6 +1,6 @@
 <table class="table table-striped">
   <tbody>
-    <tr><th>#</th><th>Player</th><th>TP</th><th>VP Diff</th><th>VP</th>
+    <tr><th>#</th><th>Player</th><th>TP</th><th>Diff</th><th>VP</th>
     <% if (showFactions) { %>
       <th>Faction</th>
     <% } %>
