@@ -136,7 +136,7 @@
 
   <datalist id="citiesSweden" class="countryDataList">
     <option value="Stockholm"/>
-    <option value="Gothenburg"/>
+    <option value="Göteborg"/>
     <option value="Malmö"/>
     <option value="Uppsala"/>
     <option value="Västerås"/>
@@ -175,6 +175,8 @@
     <option value="Motala"/>
     <option value="Vallentuna"/>
     <option value="Örnsköldsvik"/>
+    <option value="Visby"/>
+    <option value="Sala"/>
   </datalist>
 
   <datalist id="citiesUnitedKingdom" class="countryDataList">
