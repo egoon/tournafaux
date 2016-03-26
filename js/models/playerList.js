@@ -197,7 +197,9 @@ define([
         throw "opponent should be an id";
       return this.set('opponent' + round, opponent);
     },
-    //getTableForRound: function(round) { return this.get('table'+round);},
+    getTableForRound: function(round) {
+      return this.get('table'+round);
+    },
     setTableForRound: function (round, table) {
       return this.set('table' + round, table.toString());
     },

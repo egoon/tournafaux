@@ -18,13 +18,14 @@ define([
   	'underscore'
 ], function(_) {
 	"use strict";
-	var BYE_SCORE = "-";
 
 	var setScoresForBye = function(bye, opp, number) {
-	bye.setVpForRound(number, 0);
-	opp.setVpForRound(number, BYE_SCORE);
-	opp.setVpDiffForRound(number, BYE_SCORE);
-	opp.setTpForRound(number, BYE_SCORE);
+		bye.setVpForRound(number, 5);
+		bye.setVpDiffForRound(number, -5);
+		bye.setTpForRound(number, 0);
+		opp.setVpForRound(number, 10);
+		opp.setVpDiffForRound(number, 5);
+		opp.setTpForRound(number, 3);
 	};
 
 	var matchPlayers2 = function(players, isLegalMatch) {
@@ -49,7 +50,7 @@ define([
 		var match = matchPlayers2(players, function(p1, p2) { return !p1.isPreviousOpponent(p2, roundLookBack)});
 		if (!match) {
 			console.log("match failed");
-			return matchPlayers(players, matchPlayers, roundLookBack - 1);
+			return matchPlayers(players, matchedPlayers, roundLookBack - 1);
 		}
 		return matchedPlayers.concat(match);
 
@@ -168,5 +169,5 @@ define([
 		return round;
 	};
 
-	return {generate: generate};
+	return {generate: generate, setScoresForBye: setScoresForBye};
 });

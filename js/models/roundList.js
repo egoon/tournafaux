@@ -62,6 +62,11 @@ define([
 			this.set('table' + table + 'player2', player2.id);
 		},
 
+		clearTable: function(tableNumber) {
+			this.unset('table' + tableNumber + 'player1');
+			this.unset('table' + tableNumber + 'player2');
+		},
+
 		setPlayer1ForTable: function(table, player) {
 			this.set('table' + table + 'player1', player.id);
 		},

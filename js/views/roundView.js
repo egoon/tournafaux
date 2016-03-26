@@ -52,12 +52,15 @@ define([
       "click #generate-next-round": "generateRound",
       "click #end-tournament": "showResultsPage",
       "click #disqualify-button": "disqualifyPlayer",
+      "click #disqualify-now-button": "disqualifyPlayerNow",
       "change td.vp input": "changeVP",
       "click #helpDisqualify": "showHelpDisqualify"
     },
 
     render: function () {
       if (this.round) {
+        this.playerList.fetch();
+        this.roundList.fetch();
         var noTables = this.settings.getTables();
 
         var tables = this.round.getTables(noTables, this.playerList);
@@ -69,11 +72,14 @@ define([
           table.player2name = table.player2.getName();
           table.player1id = table.player1.id;
           table.player2id = table.player2.id;
-          if (table.player1.isBye() || table.player2.isBye()) {
-            table.player1vp = '';
-            table.player2vp = '';
+          if (table.player1.isBye()) {
+            table.player1vp = '5';
           } else {
             table.player1vp = table.player1.getVpForRound(number) || "";
+          }
+          if (table.player2.isBye()) {
+            table.player2vp = '5';
+          } else {
             table.player2vp = table.player2.getVpForRound(number) || "";
           }
         });
@@ -191,12 +197,63 @@ define([
     disqualifyPlayer: function () {
       var player = this.playerList.get(this.$('#disqualify-select').val());
       if (player.isRinger()) {
-        alert("Removing ringer not supported. Yet.");
+        alert("Removing ringer not supported");
       } else {
         if (confirm("Are you sure you want to remove " + player.getName() + " from the tournament?")) {
           player.setActive(false);
           player.save();
         }
+      }
+    },
+
+    disqualifyPlayerNow: function () {
+      var player = this.playerList.get(this.$('#disqualify-select').val());
+      if (player.isRinger()) {
+        alert("Removing ringer not supported");
+      } else {
+        if (confirm("Are you sure you want to remove " + player.getName() + " from the tournament? They will be removed immediately, and the matchings will probably change")) {
+          player.setActive(false);
+          var roundNumber = this.round.getNumber();
+          var opp = this.playerList.get(player.getOpponentForRound(roundNumber));
+          var table = player.getTableForRound(roundNumber);
+          if (opp.isBye() || opp.isRinger()) {
+            this.round.clearTable(table);
+            opp.setNonCompeting(true);
+          } else {
+              var byeRinger = this.playerList.getByeRinger();
+              var byeRingerTable = _.find(this.round.getTables(this.settings.getTables()), function(t) { return t.player1id === byeRinger.id || t.player2id === byeRinger.id });
+              var newOpp;
+              if (byeRingerTable) {
+                  if (byeRingerTable.player1id === byeRinger.id) {
+                      newOpp = this.playerList.get(byeRingerTable.player2id);
+                  } else {
+                      newOpp = this.playerList.get(byeRingerTable.player1id);
+                  }
+                  this.round.clearTable(byeRingerTable.name);
+              } else {
+                  newOpp = byeRinger;
+              }
+              //TODO switch player feature?
+
+              opp.clearGame(roundNumber);
+              newOpp.clearGame(roundNumber);
+              opp.setOpponentForRound(roundNumber, newOpp.id);
+              newOpp.setOpponentForRound(roundNumber, opp.id);
+              opp.setTableForRound(roundNumber, table);
+              newOpp.setTableForRound(roundNumber, table);
+              this.round.setPlayersForTable(table, opp, newOpp);
+              if (newOpp.isBye()) {
+                  GenerateRound.setScoresForBye(newOpp, opp, roundNumber);
+              }
+              opp.save();
+              newOpp.save();
+              this.round.save();
+          }
+          console.log(opp);
+          console.log(table);
+          player.save();
+        }
+          this.render();
       }
     },
 

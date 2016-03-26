@@ -68,7 +68,8 @@ define([
       "So a player may face the same person in round 1 and round 4.",
 
     disqualify: "<h4>Forfeits and Disqualifications</h4>" + 
-      "A player that is disqualified or forfeits will be removed from the standings table, and will not take part in future rounds. " +
+      "A player that is disqualified or forfeits will be removed from the standings table, and will not take part in future rounds. <br/>" +
+      "If the player is 'removed now', they are removed from the current round, and the matching will change. <br/>" +
       "This will cause a bye or ringer to join or leave the tournament depending on the remaining amount of players.",
 
     roundSettings: "<h4>Round Settings</h4>" +

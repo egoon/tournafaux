@@ -28,16 +28,20 @@
     </div>
     <hr/>
     <div class="row">
-      <div class="col-md-5">
-        <select id="disqualify-select" class="form-control">
+      <div class="col-md-12">
+        <select id="disqualify-select" class="form-control" style="margin-bottom: 10px">
           <option>Disqualify/Forfeit</option>
           <% _.each(players, function(player) { %>
             <option value="<%- player.id %>"><%- player.getName() %></option>
           <% }); %>
         </select>
       </div>
-      <div class="col-md-4">
-        <button id="disqualify-button" class="btn btn-danger">Remove</button> <a id="helpDisqualify">(?)</a>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <button id="disqualify-button" class="btn btn-danger">Remove</button>
+        <button id="disqualify-now-button" class="btn btn-danger">Remove Now</button>
+        <a id="helpDisqualify">(?)</a>
       </div>
     </div>
   </div>

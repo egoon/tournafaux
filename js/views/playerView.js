@@ -56,9 +56,9 @@
       if (this.player.getFirstOpponent()) {
         this.$('select.chooseFirstOpponent').val(this.player.getFirstOpponent());
       }
-      if (this.roundList.length > 0 && this.roundList.at(0).get('showInNav')) {
-        this.$('button.removePlayer').attr('disabled', 'disabled');
-      }
+      // if (this.roundList.length > 0 && this.roundList.at(0).get('showInNav')) {
+      //   this.$('button.removePlayer').attr('disabled', 'disabled');
+      // }
       if (this.settings.get('countryDataList')) {
         this.changeCityAutocomplete();
       }
