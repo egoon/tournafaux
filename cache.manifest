@@ -1,11 +1,12 @@
 CACHE MANIFEST
-# Sat Mar 26 15:34:55 CET 2016
+# Mon Mar 28 13:34:12 CEST 2016
 ./cities/cities_sed
 ./cities/swecities
 ./cities/ukcities
 ./css/bootstrap-3.1.1-min.css
 ./css/tournafaux.css
 ./img/btn_donate_SM.gif
+./img/favicon.png
 ./index.html
 ./index.php
 ./js/app.js
