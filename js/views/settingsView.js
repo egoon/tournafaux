@@ -79,9 +79,9 @@ define([
 
       this.$('input[name="byes"]').filter('[value="' + this.settings.getBye() + '"]').prop('checked', true);
       this.$('input[name="tournamentType"]').filter('[value="' + this.settings.getTournamentType() + '"]').prop('checked', true);
+      this.$('input[name="byes"][value="average-bye"]').prop('disabled', true);
       if (this.settings.isGG14()) {
         this.$('input[name=gg14]').prop('checked', true);
-        this.$('input[name="byes"][value="average-bye"]').prop('disabled', true);
         this.$('input[name="tournamentType"][value="swiss"]').prop('disabled', true);
       }
       var i = 0;

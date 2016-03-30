@@ -34,7 +34,7 @@ define([
                 this.set("tables", "");
             }
             if (!this.get('bye')) {
-                this.set('bye', this.AVERAGE_BYE);
+                this.set('bye', this.GG14_BYE);
             }
             if (!this.get('tournamentType')) {
                 this.set('tournamentType', this.SWISS);
