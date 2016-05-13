@@ -2,19 +2,24 @@
   <div class="col-md-7">
     <table id="round-scoring" class="table table-striped">
       <tbody>
-        <tr><th>Table</th><th>Player 1</th><th>VP</th><th>VP</th><th>Player 2</th></tr>
+        <tr class="table-row">
+          <th>Table</th>
+          <th><span class="player-name">Player 1</span><span class="player-vp">VP</span></th>
+          <th><span class="player-name">Player 2</span><span class="player-vp">VP</span></th>
+        </tr>
       </tbody>
-      <tbody>
+      <tbody id="round-table-body">
         <% _.each(tables, function(table) { %>
-          <tr>
-            <td><%- table.name %></td>
-            <td><%- table.player1name %></td>
-            <td class="vp"><input id="<%- table.player1id %>" type="number" value="<%- table.player1vp %>" class="form-control"
-              <%-table.player2.isBye() || table.player1.isBye() ? "disabled": "" %> /></td>
-            <td class="vp"><input id="<%- table.player2id %>" type="number" value="<%- table.player2vp %>" class="form-control"
-              <%-table.player2.isBye() || table.player1.isBye() ? "disabled": "" %> /></td>
-            <td><%- table.player2name %></td>
-            
+          <tr class="table-row">
+            <td class="un-dragable gu-unselectable"><%- table.name %></td>
+
+            <td><span class="player-name"><%- table.player1name %></span>
+            <span class="player-vp"><input id="<%- table.player1id %>" type="number" value="<%- table.player1vp %>" class="form-control"
+              <%-table.player2.isBye() || table.player1.isBye() ? "disabled": "" %> /></span></td>
+            <td><span class="player-name"><%- table.player2name %></span>
+            <span class="player-vp"><input id="<%- table.player2id %>" type="number" value="<%- table.player2vp %>" class="form-control"
+              <%-table.player1.isBye() || table.player2.isBye() ? "disabled": "" %> /></span></td>
+
           </tr>
         <% }); %>
       <tbody>

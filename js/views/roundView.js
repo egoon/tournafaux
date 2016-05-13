@@ -21,8 +21,9 @@ define([
   'logic/generateRound',
   'logic/helpTexts',
   'views/standingsView',
-  'text!../../templates/round.tpl'
-], function ($, _, Backbone, GenerateRound, HelpTexts, StandingsView, roundTemplate) {
+  'text!../../templates/round.tpl',
+  'dragula',
+], function ($, _, Backbone, GenerateRound, HelpTexts, StandingsView, roundTemplate, Dragula) {
   "use strict";
   var RoundView = Backbone.View.extend({
 
@@ -53,11 +54,12 @@ define([
       "click #end-tournament": "showResultsPage",
       "click #disqualify-button": "disqualifyPlayer",
       "click #disqualify-now-button": "disqualifyPlayerNow",
-      "change td.vp input": "changeVP",
+      "change td .player-vp input": "changeVP",
       "click #helpDisqualify": "showHelpDisqualify"
     },
 
     render: function () {
+      var self = this;
       if (this.round) {
         this.playerList.fetch();
         this.roundList.fetch();
@@ -94,11 +96,58 @@ define([
         }
 
         this.$("#standings").html(new StandingsView({playerList: this.playerList, showFactions:false}).render().el);
+        var evictedPlayer;
+        var drake = Dragula(this.$('#round-table-body .table-row').toArray(),
+            {
+              invalid: function(a,b) {
+                return b && b.getAttribute('class') && b.getAttribute('class').indexOf('un-dragable') >= 0;
+              },
+              accepts: function(mover, origin, destination, rightNeighbor) {
+                if (!rightNeighbor)
+                    return false;
+                if (rightNeighbor && rightNeighbor.getAttribute('class') && rightNeighbor.getAttribute('class').indexOf('un-dragable') >= 0)
+                    return false;
+                if (origin === destination) {
+                  if (evictedPlayer) $(evictedPlayer).show();
+                  evictedPlayer = undefined;
+                } else if (rightNeighbor && rightNeighbor !== evictedPlayer && mover !== rightNeighbor) {
+                  if (evictedPlayer) $(evictedPlayer).show();
+                  evictedPlayer = rightNeighbor;
+                  $(evictedPlayer).hide();
+                }
+                return true;
+              }
+            });
+
+
+        // prevent dragging table numbers
+        //this.$('td.un-dragable').on('mousedown', function() { return false; });
+        //drake.on('drag', function(e) {console.log(e)});
+        drake.on('drop', function(mover, destination, origin) {
+          if (evictedPlayer) {
+            $(evictedPlayer).show();
+            destination.removeChild(evictedPlayer);
+            origin.appendChild(evictedPlayer);
+            self.switchPlayers($(mover).find('input').attr('id'), $(evictedPlayer).find('input').attr('id'));
+            $(origin).find('input').val('');
+            $(origin).find('input').change();
+            $(destination).find('input').val('');
+            $(destination).find('input').change();
+          }
+          evictedPlayer = undefined;
+        });
+        //this.$('td').on('mouseup', function(e) {console.log(e)});
+        //this.$('td').on('mousedown', function(e) {console.log(e)});
+
       } else {
         this.$el.html(_.template("<h4>Round does not exist</h4>Sorry!"));
       }
 
       return this;
+    },
+
+    switchPlayers: function(player1id, player2id) {
+      GenerateRound.switchPlayers(this.playerList.get(player1id), this.playerList.get(player2id), this.round);
     },
 
     changeVP: function (event) {
@@ -107,8 +156,8 @@ define([
       if (parseInt(event.currentTarget.value, 10) >= 0) {
         player.setVpForRound(number, event.currentTarget.value);
       } else {
-        event.currentTarget.value = '0';
-        player.setVpForRound(number, '0');
+        event.currentTarget.value = '';
+        player.setVpForRound(number, '');
       }
       player.save();
       this.calculateTpAndVpDiff(this.round, player);

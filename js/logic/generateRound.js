@@ -169,5 +169,29 @@ define([
 		return round;
 	};
 
-	return {generate: generate, setScoresForBye: setScoresForBye};
+	var switchPlayers = function (player1, player2, round) {
+		var table1 = round.getTable(player1.getTableForRound(round.getNumber()));
+		var table2 = round.getTable(player2.getTableForRound(round.getNumber()));
+		if (table1.player1id === player1.id) {
+			round.setPlayer1ForTable(table1.name, player2);
+			player2.setOpponentForRound(round.getNumber(), table1.player2id);
+		} else {
+			round.setPlayer2ForTable(table1.name, player2);
+			player2.setOpponentForRound(round.getNumber(), table1.player1id);
+		}
+		player2.setTableForRound(round.getNumber(), table1.name);
+		if (table2.player1id === player2.id) {
+			round.setPlayer1ForTable(table2.name, player1);
+			player1.setOpponentForRound(round.getNumber(), table2.player2id);
+		} else {
+			round.setPlayer2ForTable(table2.name, player1);
+			player1.setOpponentForRound(round.getNumber(), table2.player1id);
+		}
+		player1.setTableForRound(round.getNumber(), table2.name);
+		player1.save();
+		player2.save();
+		round.save();
+	};
+
+	return {generate: generate, setScoresForBye: setScoresForBye, switchPlayers: switchPlayers};
 });

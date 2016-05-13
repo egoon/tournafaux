@@ -1,6 +1,7 @@
 CACHE MANIFEST
-# Wed Mar 30 20:43:04 CEST 2016
+# Fri May 13 10:28:48 CEST 2016
 ./css/bootstrap-3.1.1-min.css
+./css/dragula-3.6.8.css
 ./css/tournafaux.css
 ./img/btn_donate_SM.gif
 ./img/favicon.png
@@ -9,6 +10,7 @@ CACHE MANIFEST
 ./js/app.js
 ./js/libs/backbone-1.1.2.js
 ./js/libs/backbone.localStorage-1.1.7.js
+./js/libs/dragula-3.6.8.js
 ./js/libs/jquery-1.11.1.js
 ./js/libs/require-2.1.14.js
 ./js/libs/underscore-1.6.0.js

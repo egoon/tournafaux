@@ -22,10 +22,37 @@ table.player-settings {
     font-size: 200%;
 }
 
-td.vp input {
+td span.player-vp input {
     width: 60px;
 }
 
 .settings-number {
     width: 60px;
+}
+
+table#round-scoring tr :nth-child(2) span.player-name {
+    float:left;
+}
+table#round-scoring tr :nth-child(2) span.player-vp {
+    float:right;
+}
+table#round-scoring tr :nth-child(3) span.player-name {
+    float:right;
+}
+table#round-scoring tr :nth-child(3) span.player-vp {
+    float:left;
+}
+table#round-scoring tr :nth-child(4) span.player-name {
+    float:right;
+}
+table#round-scoring tr :nth-child(4) span.player-vp {
+    float:left;
+}
+
+table#round-scoring tr :nth-child(4).gu-transit {
+    display: none;
+}
+
+td.gu-mirror input {
+    display:none;
 }
