@@ -202,6 +202,7 @@ define([
             }
             this.set('historicSwitch' + i + 'player1id', player1id);
             this.set('historicSwitch' + i + 'player2id', player2id);
+            this.save();
         },
 
         popHistoricSwitch: function () {
@@ -210,9 +211,12 @@ define([
                 i++;
             }
             i--;
-
-            return {player1id: this.get('historicSwitch' + i + 'player1id'),
-                player2id: this.get('historicSwitch' + i + 'player2id')};
+            var ret = {player1id: this.get('historicSwitch' + i + 'player1id'),
+                player2id: this.get('historicSwitch' + i + 'player2id'), history: i - 1};
+            this.unset('historicSwitch' + i + 'player1id');
+            this.unset('historicSwitch' + i + 'player2id');
+            this.save();
+            return ret;
         }
     });
 

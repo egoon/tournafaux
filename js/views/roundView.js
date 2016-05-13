@@ -138,7 +138,7 @@ define([
                         $(origin).find('input').change();
                         $(destination).find('input').val('');
                         $(destination).find('input').change();
-                        //self.$el.find('#undo-button').show();
+                        self.$el.find('#undo-button').show();
                     }
                     evictedPlayer = undefined;
                 });
@@ -156,7 +156,12 @@ define([
 
         undoSwitchPlayers: function() {
             var switched = this.round.popHistoricSwitch();
-
+            GenerateRound.switchPlayers(this.playerList.get(switched.player1id), this.playerList.get(switched.player2id), this.round);
+            // TODO quick workaround. Make this better
+            this.render();
+            console.log(switched);
+            if (switched.history > 0)
+                this.$el.find('#undo-button').show();
         },
 
         changeVP: function (event) {
