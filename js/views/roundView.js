@@ -287,11 +287,12 @@ define([
                 if (confirm("Are you sure you want to remove " + player.getName() + " from the tournament? They will be removed immediately, and the matchings will probably change")) {
                     player.setActive(false);
                     var roundNumber = this.round.getNumber();
-                    var opp = this.playerList.get(player.getOpponentIdForRound(roundNumber));
+                    var opp = player.getOpponentForRound(roundNumber);
                     var table = player.getTableForRound(roundNumber);
                     if (opp.isBye() || opp.isRinger()) {
                         this.round.clearTable(table);
                         opp.setNonCompeting(true);
+                        opp.setActive(!opp.isActive());
                     } else {
                         var byeRinger = this.playerList.getByeRinger();
                         var byeRingerTable = _.find(this.round.getTables(this.settings.getTables()), function (t) {
@@ -299,15 +300,12 @@ define([
                         });
                         var newOpp;
                         if (byeRingerTable) {
-                            if (byeRingerTable.player1id === byeRinger.id) {
-                                newOpp = this.playerList.get(byeRingerTable.player2id);
-                            } else {
-                                newOpp = this.playerList.get(byeRingerTable.player1id);
-                            }
+                            newOpp = byeRinger.getOpponentForRound(roundNumber);
                             this.round.clearTable(byeRingerTable.name);
                         } else {
                             newOpp = byeRinger;
                         }
+                        byeRinger.setActive(!byeRinger.isActive());
                         //TODO switch player feature?
 
                         opp.clearGame(roundNumber);
@@ -320,13 +318,14 @@ define([
                         if (newOpp.isBye()) {
                             GenerateRound.setScoresForBye(newOpp, opp, roundNumber);
                         }
-                        opp.save();
                         newOpp.save();
-                        this.round.save();
+                        byeRinger.save();
                     }
                     console.log(opp);
                     console.log(table);
+                    opp.save();
                     player.save();
+                    this.round.save();
                 }
                 this.render();
             }
