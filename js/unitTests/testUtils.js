@@ -30,8 +30,8 @@ define([
         player1.setVpTpAndDiffForRound(round, scoreP1, 1, scoreP1 - scoreP2);
         player2.setVpTpAndDiffForRound(round, scoreP2, 1, scoreP2 - scoreP1);
       }
-      player1.setOpponentForRound(round, player2.id);
-      player2.setOpponentForRound(round, player1.id);
+      player1.setOpponentIdForRound(round, player2.id);
+      player2.setOpponentIdForRound(round, player1.id);
       if (table) {
         player1.setTableForRound(round, table);
         player2.setTableForRound(round, table);

@@ -20,12 +20,8 @@ define([
 	"use strict";
 
 	var setScoresForBye = function(bye, opp, number) {
-		bye.setVpForRound(number, 5);
-		bye.setVpDiffForRound(number, -5);
-		bye.setTpForRound(number, 0);
-		opp.setVpForRound(number, 10);
-		opp.setVpDiffForRound(number, 5);
-		opp.setTpForRound(number, 3);
+        bye.setVpTpAndDiffForRound(number, 5, 0, -5);
+        opp.setVpTpAndDiffForRound(number, 10, 3, 5);
 	};
 
 	var matchPlayers2 = function(players, isLegalMatch) {
@@ -154,8 +150,8 @@ define([
 //			console.log(selectedTable);
 			match.player1.set('table'+number, selectedTable);
 			match.player2.set('table'+number, selectedTable);
-			match.player1.setOpponentForRound(number, match.player2.id);
-			match.player2.setOpponentForRound(number, match.player1.id);
+			match.player1.setOpponentIdForRound(number, match.player2.id);
+			match.player2.setOpponentIdForRound(number, match.player1.id);
 			match.player1.save();
 			match.player2.save();
 			round.set('showInNav', 'true');
@@ -170,28 +166,33 @@ define([
 	};
 
 	var switchPlayers = function (player1, player2, round) {
-		var table1 = round.getTable(player1.getTableForRound(round.getNumber()));
-		var table2 = round.getTable(player2.getTableForRound(round.getNumber()));
-		if (table1.player1id === player1.id) {
-			round.setPlayer1ForTable(table1.name, player2);
-			player2.setOpponentForRound(round.getNumber(), table1.player2id);
-		} else {
-			round.setPlayer2ForTable(table1.name, player2);
-			player2.setOpponentForRound(round.getNumber(), table1.player1id);
-		}
-		player2.setTableForRound(round.getNumber(), table1.name);
-		if (table2.player1id === player2.id) {
-			round.setPlayer1ForTable(table2.name, player1);
-			player1.setOpponentForRound(round.getNumber(), table2.player2id);
-		} else {
-			round.setPlayer2ForTable(table2.name, player1);
-			player1.setOpponentForRound(round.getNumber(), table2.player1id);
-		}
-		player1.setTableForRound(round.getNumber(), table2.name);
-		player1.save();
-		player2.save();
-		round.save();
+        var table1 = round.getTable(player1.getTableForRound(round.getNumber())),
+            table2 = round.getTable(player2.getTableForRound(round.getNumber()));
+        switchPlayerAtTable(player1, player2, table1, round);
+        switchPlayerAtTable(player2, player1, table2, round);
 	};
+
+    var switchPlayerAtTable = function(oldPlayer, newPlayer, table, round) {
+        var roundNumber = round.getNumber();
+        if (table.player1id === oldPlayer.id) {
+            round.setPlayer1ForTable(table.name, newPlayer);
+            newPlayer.setOpponentIdForRound(roundNumber, table.player2id);
+        } else {
+            round.setPlayer2ForTable(table.name, newPlayer);
+            newPlayer.setOpponentIdForRound(roundNumber, table.player1id);
+        }
+        newPlayer.setTableForRound(roundNumber, table.name);
+        var opponent = newPlayer.getOpponentForRound(roundNumber);
+        if (opponent.isBye())
+            setScoresForBye(opponent, newPlayer, roundNumber);
+        else {
+            newPlayer.setVpTpAndDiffForRound(roundNumber, 0, 0, 0);
+            opponent.setVpTpAndDiffForRound(roundNumber, 0, 0, 0);
+        }
+        opponent.save();
+        round.save();
+        newPlayer.save();
+    };
 
 	return {generate: generate, setScoresForBye: setScoresForBye, switchPlayers: switchPlayers};
 });

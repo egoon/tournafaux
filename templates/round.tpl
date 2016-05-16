@@ -11,16 +11,20 @@
             <tbody id="round-table-body">
             <% _.each(tables, function(table) { %>
             <tr class="table-row">
-                <td class="un-dragable gu-unselectable"><%- table.name %></td>
+                <td class="gu-unselectable"><%- table.name %></td>
 
-                <td><span class="player-name"><%- table.player1name %></span>
-            <span class="player-vp"><input id="<%- table.player1id %>" type="number" value="<%- table.player1vp %>"
-                                           class="form-control"
-              <%- table.player2.isBye() || table.player1.isBye() ? "disabled": "" %> /></span></td>
-                <td><span class="player-name"><%- table.player2name %></span>
-            <span class="player-vp"><input id="<%- table.player2id %>" type="number" value="<%- table.player2vp %>"
-                                           class="form-control"
-              <%- table.player1.isBye() || table.player2.isBye() ? "disabled": "" %> /></span></td>
+                <td>
+                    <span class="player-name"><%- table.player1name %></span>
+                    <span class="player-vp">
+                        <input id="<%- table.player1id %>" type="number" value="<%- table.player1vp %>" class="form-control"/>
+                    </span>
+                </td>
+                <td class='<%- table.player2.isBye() ? "gu-unselectable" : "" %>' >
+                    <span class="player-name"><%- table.player2name %></span>
+                    <span class="player-vp">
+                        <input id="<%- table.player2id %>" type="number" value="<%- table.player2vp %>" class="form-control"/>
+                    </span>
+                </td>
             </tr>
             <% }); %>
             <tbody>

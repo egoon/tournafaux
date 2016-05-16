@@ -109,12 +109,12 @@ define([
                 var drake = Dragula(this.$('#round-table-body .table-row').toArray(),
                     {
                         invalid: function (a, b) {
-                            return b && b.getAttribute('class') && b.getAttribute('class').indexOf('un-dragable') >= 0;
+                            return b && b.getAttribute('class') && b.getAttribute('class').indexOf('gu-unselectable') >= 0;
                         },
                         accepts: function (mover, origin, destination, rightNeighbor) {
                             if (!rightNeighbor)
                                 return false;
-                            if (rightNeighbor && rightNeighbor.getAttribute('class') && rightNeighbor.getAttribute('class').indexOf('un-dragable') >= 0)
+                            if (rightNeighbor && rightNeighbor.getAttribute('class') && rightNeighbor.getAttribute('class').indexOf('gu-unselectable') >= 0)
                                 return false;
                             if (origin === destination) {
                                 if (evictedPlayer) $(evictedPlayer).show();
@@ -134,11 +134,7 @@ define([
                         destination.removeChild(evictedPlayer);
                         origin.appendChild(evictedPlayer);
                         self.switchPlayers($(mover).find('input').attr('id'), $(evictedPlayer).find('input').attr('id'));
-                        $(origin).find('input').val('');
-                        $(origin).find('input').change();
-                        $(destination).find('input').val('');
-                        $(destination).find('input').change();
-                        self.$el.find('#undo-button').show();
+                        //self.$el.find('#undo-button').show();
                     }
                     evictedPlayer = undefined;
                 });
@@ -151,6 +147,7 @@ define([
 
         switchPlayers: function (player1id, player2id) {
             GenerateRound.switchPlayers(this.playerList.get(player1id), this.playerList.get(player2id), this.round);
+            this.render();
             this.round.pushHistoricSwitch(player1id, player2id);
         },
 
@@ -276,7 +273,7 @@ define([
                 if (confirm("Are you sure you want to remove " + player.getName() + " from the tournament? They will be removed immediately, and the matchings will probably change")) {
                     player.setActive(false);
                     var roundNumber = this.round.getNumber();
-                    var opp = this.playerList.get(player.getOpponentForRound(roundNumber));
+                    var opp = this.playerList.get(player.getOpponentIdForRound(roundNumber));
                     var table = player.getTableForRound(roundNumber);
                     if (opp.isBye() || opp.isRinger()) {
                         this.round.clearTable(table);
@@ -301,8 +298,8 @@ define([
 
                         opp.clearGame(roundNumber);
                         newOpp.clearGame(roundNumber);
-                        opp.setOpponentForRound(roundNumber, newOpp.id);
-                        newOpp.setOpponentForRound(roundNumber, opp.id);
+                        opp.setOpponentIdForRound(roundNumber, newOpp.id);
+                        newOpp.setOpponentIdForRound(roundNumber, opp.id);
                         opp.setTableForRound(roundNumber, table);
                         newOpp.setTableForRound(roundNumber, table);
                         this.round.setPlayersForTable(table, opp, newOpp);

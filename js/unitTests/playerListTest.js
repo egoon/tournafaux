@@ -49,8 +49,8 @@ define([
             ok(!this.player.getVpForRound(1), "vp1 should be unset");
             equal(this.player.getVpForRound(2), '4', 'vp2 should be unchanged');
 
-            this.player.setOpponentForRound(1, 'x');
-            this.player.setOpponentForRound(2, 'y');
+            this.player.setOpponentIdForRound(1, 'x');
+            this.player.setOpponentIdForRound(2, 'y');
             this.player.setTableForRound(1, '2');
             this.player.clearGames(3);
 

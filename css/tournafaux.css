@@ -60,3 +60,6 @@ td.gu-mirror input {
 span.player-name {
     cursor: move;
 }
+td.gu-unselectable span.player-name {
+    cursor: auto;
+}

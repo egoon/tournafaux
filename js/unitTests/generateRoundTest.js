@@ -60,8 +60,8 @@ define([
       while (tables.length > 0) {
         var table = tables.pop();
         playerIds.push(table.player1id, table.player2id);
-        equal(this.playerList.get(table.player1id).getOpponentForRound(1), table.player2id, 'correct opponent');
-        equal(this.playerList.get(table.player2id).getOpponentForRound(1), table.player1id, 'correct opponent');
+        equal(this.playerList.get(table.player1id).getOpponentIdForRound(1), table.player2id, 'correct opponent');
+        equal(this.playerList.get(table.player2id).getOpponentIdForRound(1), table.player1id, 'correct opponent');
       }
       while (playerIds.length > 0) {
         var pId = playerIds.pop();

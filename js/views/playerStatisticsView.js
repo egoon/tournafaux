@@ -35,8 +35,8 @@ define([
     render: function() {
       var rounds = [];
       var i, opp, score, diff, oppScore;
-      for (i = 1; this.player.getOpponentForRound(i); ++i) {
-        opp = this.playerList.get(this.player.getOpponentForRound(i));
+      for (i = 1; this.player.getOpponentIdForRound(i); ++i) {
+        opp = this.playerList.get(this.player.getOpponentIdForRound(i));
         score = this.player.getVpForRound(i);
         diff = this.player.getVpDiffForRound(i);
         oppScore = score - diff;
