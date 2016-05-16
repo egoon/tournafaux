@@ -94,6 +94,7 @@ define([
                 this.$el.html(template);
 
                 this.$el.find('#undo-button').hide();
+                this.$el.find('tr.drop-to-remove').hide();
 
                 if (this.settings.getRounds() <= parseInt(number, 10)) {
                     this.$('#generate-next-round').hide();
@@ -114,6 +115,11 @@ define([
                         accepts: function (mover, origin, destination, rightNeighbor) {
                             if (!rightNeighbor)
                                 return false;
+                            if (rightNeighbor && rightNeighbor.getAttribute('class') && rightNeighbor.getAttribute('class').indexOf('drop-to-remove') >= 0) {
+                                if (evictedPlayer) $(evictedPlayer).show();
+                                evictedPlayer = undefined;
+                                return true;
+                            }
                             if (rightNeighbor && rightNeighbor.getAttribute('class') && rightNeighbor.getAttribute('class').indexOf('gu-unselectable') >= 0)
                                 return false;
                             if (origin === destination) {
@@ -127,9 +133,13 @@ define([
                             return true;
                         }
                     });
-
-                drake.on('drop', function (mover, destination, origin) {
-                    if (evictedPlayer) {
+                drake.on('drag', function() {
+                    self.$el.find('tr.drop-to-remove').show();
+                }).on('drop', function (mover, destination, origin, rightNeighbor) {
+                    self.$el.find('tr.drop-to-remove').hide();
+                    if (rightNeighbor && rightNeighbor.getAttribute('class') && rightNeighbor.getAttribute('class').indexOf('drop-to-remove') >= 0) {
+                        self.removePlayerNow(self.playerList.get($(mover).find('input').attr('id')));
+                    } else if (evictedPlayer) {
                         $(evictedPlayer).show();
                         destination.removeChild(evictedPlayer);
                         origin.appendChild(evictedPlayer);
@@ -266,7 +276,11 @@ define([
         },
 
         disqualifyPlayerNow: function () {
-            var player = this.playerList.get(this.$('#disqualify-select').val());
+            this.removePlayerNow(this.playerList.get(this.$('#disqualify-select').val()));
+
+        },
+
+        removePlayerNow: function(player) {
             if (player.isRinger()) {
                 alert("Removing ringer not supported");
             } else {

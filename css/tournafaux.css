@@ -63,3 +63,7 @@ span.player-name {
 td.gu-unselectable span.player-name {
     cursor: auto;
 }
+td.drop-to-remove {
+    text-align: center;
+    color: darkred;
+}

@@ -27,6 +27,7 @@
                 </td>
             </tr>
             <% }); %>
+            <tr class="table-row drop-to-remove"><td class="gu-unselectable"></td><td class="gu-unselectable drop-to-remove" colspan="2">Drop here to remove</td></tr>
             <tbody>
         </table>
         <ul id="validation-errors" class="text-danger" style="display:none"></ul>
