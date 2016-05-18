@@ -31,17 +31,10 @@ define([
         "Check this if you wish to choose opponents for some or all players.",
 
         bye: "<h4>Bye</h4>" +
-        "If you have an uneven amount of players, a Bye will be automatically generated. " +
+        "<p>If you have an uneven amount of players, a Bye will be automatically generated. " +
         "In the first round a random player will be matched against the bye. In the next rounds the player with the " +
-        "lowest score, that has not already received a bye, will get the bye.",
-
-        "average-bye": "<h4>Average Bye</h4>" +
-        "Average bye has been disabled for now, because of reasons... " +
-        "Scoring against this bye will be an average of the other games by the player that was matched against the bye. " +
-        "The first round (when there is no average), the player will get a temporary 0-0 draw.",
-
-        "gg14-bye": "<h4>Gaining Grounds 2016 Bye</h4>" +
-        "A player that receives the bye will score 3 TP, 10 VP and +5 VP diff.",
+        "lowest score, that has not already received a bye, will get the bye.</p>" +
+        "<p>A player that recieves a bye will get 3TP, 10 VP and +5 Diff, but these values can be changed manually.</p>",
 
         ringer: "<h4>Ringer</h4>" +
         "A Ringer is a good friend or other person who agrees to step in and play, should the number " +

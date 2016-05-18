@@ -13,32 +13,32 @@
           <input class="form-control settings-number" id="tables" name="tables" type="number" title="Number of tables. Leave empty for players/2" value="<%- settings.get('tables') %>" placeholder=""/>
         </div>
       </div>
-      <div class="checkbox">
-        <label>
-          <input type="checkbox" name="gg14" value="gg14">
-          Gaining Grounds 2016
-        </label> <a id="helpGG14">(?)</a>
-      </div>
-      <div class="checkbox">
-        <label>
-          <input type="checkbox" name="chooseFirstOpponent" value="chooseFirstOpponent">
-          Choose First Opponent 
-        </label> <a id="helpChooseFirstOpponent">(?)</a>
-      </div>
+      <!--<div class="checkbox">-->
+        <!--<label>-->
+          <!--<input type="checkbox" name="gg14" value="gg14">-->
+          <!--Gaining Grounds 2016-->
+        <!--</label> <a id="helpGG14">(?)</a>-->
+      <!--</div>-->
+      <!--<div class="checkbox">-->
+        <!--<label>-->
+          <!--<input type="checkbox" name="chooseFirstOpponent" value="chooseFirstOpponent">-->
+          <!--Choose First Opponent -->
+        <!--</label> <a id="helpChooseFirstOpponent">(?)</a>-->
+      <!--</div>-->
     </div>
 
     <div class="col-md-4">
       <label>Bye <a id="helpBye">(?)</a> / Ringer <a id="helpRinger">(?)</a></label>
-      <div class="radio">
-        <label>
-          <input type="radio" name="byes" value="average-bye" checked>
-          Average Bye
-        </label>
-      </div>
+      <!--<div class="radio">-->
+        <!--<label>-->
+          <!--<input type="radio" name="byes" value="average-bye" checked>-->
+          <!--Average Bye-->
+        <!--</label>-->
+      <!--</div>-->
       <div class="radio">
         <label>
           <input type="radio" name="byes" value="gg14-bye">
-          GG'16 Bye
+          Bye
         </label>
       </div>
       <div class="radio">
@@ -103,7 +103,7 @@
         <th>Player name</th>
         <th>City/Club <a id="helpCityFaction">(?)</a></th>
         <th>Faction <a id="helpCityFaction">(?)</a></th>
-        <th class="chooseFirstOpponent">Opponent</th>
+        <!--<th class="chooseFirstOpponent">Opponent</th>-->
         <th>Remove</th>
       </tr>
     </tbody>

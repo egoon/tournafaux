@@ -306,7 +306,6 @@ define([
                             newOpp = byeRinger;
                         }
                         byeRinger.setActive(!byeRinger.isActive());
-                        //TODO switch player feature?
 
                         opp.clearGame(roundNumber);
                         newOpp.clearGame(roundNumber);

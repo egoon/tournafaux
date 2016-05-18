@@ -35,8 +35,8 @@ define([
       "click #generate-first-round": "generateRound",
       "change #rounds": "changeRounds",
       "change #tables": "changeTables",
-      "click input[name=gg14]": "toggleGG14",
-      "click input[name=chooseFirstOpponent]": "toggleChooseFirstOpponent",
+      //"click input[name=gg14]": "toggleGG14",
+      //"click input[name=chooseFirstOpponent]": "toggleChooseFirstOpponent",
       "click input[name=byes]": "changeBye",
       "click input[name=tournamentType]": "changeTournamentType",
       "click #helpCityFaction": "showHelpCityFaction",
@@ -45,8 +45,8 @@ define([
       "click #helpBye": "showHelpBye",
       "click #helpRinger": "showHelpRinger",
       "click #helpTournamentType": "showHelpTournamentType",
-      "click #helpGG14": "showHelpGG14",
-      "click #helpChooseFirstOpponent": "showHelpChooseFirstOpponent",
+      //"click #helpGG14": "showHelpGG14",
+      //"click #helpChooseFirstOpponent": "showHelpChooseFirstOpponent",
       "click #helpRoundSettings": "showHelpRoundSettings",
       "click #toggle-round-settings": "toggleRoundsVisibility",
       "change #rotation": "changeRotation"
@@ -79,11 +79,11 @@ define([
 
       this.$('input[name="byes"]').filter('[value="' + this.settings.getBye() + '"]').prop('checked', true);
       this.$('input[name="tournamentType"]').filter('[value="' + this.settings.getTournamentType() + '"]').prop('checked', true);
-      this.$('input[name="byes"][value="average-bye"]').prop('disabled', true);
-      if (this.settings.isGG14()) {
-        this.$('input[name=gg14]').prop('checked', true);
-        this.$('input[name="tournamentType"][value="swiss"]').prop('disabled', true);
-      }
+      //this.$('input[name="byes"][value="average-bye"]').prop('disabled', true);
+      //if (this.settings.isGG14()) {
+      //  this.$('input[name=gg14]').prop('checked', true);
+      //  this.$('input[name="tournamentType"][value="swiss"]').prop('disabled', true);
+      //}
       var i = 0;
       while (this.playerList.at(i)) {
         this.addPlayerView(this.playerList.at(i));
@@ -95,9 +95,9 @@ define([
         this.addRoundSettingsView(round);
       }, this);
 
-      if (this.settings.isChooseFirstOpponent()) {
-        this.$('input[name=chooseFirstOpponent]').prop('checked', true);
-      }
+      //if (this.settings.isChooseFirstOpponent()) {
+      //  this.$('input[name=chooseFirstOpponent]').prop('checked', true);
+      //}
       this.validate();
 
       this.$('#round-settings').hide();
@@ -164,35 +164,35 @@ define([
       this.settings.setTables(this.$("#tables").val());
     },
 
-    toggleGG14: function () {
-      var isGG14 = this.$('input[name=gg14]').prop('checked');
-      this.settings.setGG14(isGG14);
-      if (isGG14 && this.settings.getBye() === this.settings.AVERAGE_BYE) {
-        this.settings.setBye(this.settings.GG14_BYE);
-        this.$('input[name="byes"][value="gg14-bye"]').prop('checked', true);
-      }
-      if (isGG14 && this.settings.getTournamentType() === this.settings.SWISS) {
-        this.settings.setTournamentType(this.settings.GG14_SWISS);
-        this.$('input[name="tournamentType"][value="gg14-swiss"]').prop('checked', true);
-      }
-      this.$('input[name="byes"][value="average-bye"]').prop('disabled', isGG14);
-      this.$('input[name="tournamentType"][value="swiss"]').prop('disabled', isGG14);
-      this.showHelpGG14();
-    },
+    //toggleGG14: function () {
+    //  var isGG14 = this.$('input[name=gg14]').prop('checked');
+    //  this.settings.setGG14(isGG14);
+    //  if (isGG14 && this.settings.getBye() === this.settings.AVERAGE_BYE) {
+    //    this.settings.setBye(this.settings.GG14_BYE);
+    //    this.$('input[name="byes"][value="gg14-bye"]').prop('checked', true);
+    //  }
+    //  if (isGG14 && this.settings.getTournamentType() === this.settings.SWISS) {
+    //    this.settings.setTournamentType(this.settings.GG14_SWISS);
+    //    this.$('input[name="tournamentType"][value="gg14-swiss"]').prop('checked', true);
+    //  }
+    //  this.$('input[name="byes"][value="average-bye"]').prop('disabled', isGG14);
+    //  this.$('input[name="tournamentType"][value="swiss"]').prop('disabled', isGG14);
+    //  this.showHelpGG14();
+    //},
 
-    toggleChooseFirstOpponent: function () {
-      var isChooseFirstOpponent = this.$('input[name=chooseFirstOpponent]').prop('checked');
-      this.settings.setChooseFirstOpponent(isChooseFirstOpponent);
-      if (isChooseFirstOpponent) {
-        this.$('.chooseFirstOpponent').show();
-      } else {
-        this.playerList.each(function (player) {
-          player.setFirstOpponent(undefined);
-        });
-        this.$('.chooseFirstOpponent').hide();
-      }
-      this.showHelpChooseFirstOpponent();
-    },
+    //toggleChooseFirstOpponent: function () {
+    //  var isChooseFirstOpponent = this.$('input[name=chooseFirstOpponent]').prop('checked');
+    //  this.settings.setChooseFirstOpponent(isChooseFirstOpponent);
+    //  if (isChooseFirstOpponent) {
+    //    this.$('.chooseFirstOpponent').show();
+    //  } else {
+    //    this.playerList.each(function (player) {
+    //      player.setFirstOpponent(undefined);
+    //    });
+    //    this.$('.chooseFirstOpponent').hide();
+    //  }
+    //  this.showHelpChooseFirstOpponent();
+    //},
 
     changeBye: function () {
       this.settings.setBye(this.$('input[name="byes"]:checked').val());
@@ -355,7 +355,7 @@ define([
       HelpTexts.showHelpText("cityFaction");
     },
     showHelpBye: function () {
-      HelpTexts.showHelpText("bye,average-bye,gg14-bye");
+      HelpTexts.showHelpText("bye");
     },
     showHelpRinger: function () {
       HelpTexts.showHelpText("ringer,competing-ringer,non-competing-ringer");

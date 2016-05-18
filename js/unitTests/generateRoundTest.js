@@ -155,67 +155,67 @@ define([
       }
     });
 
-    test('first round opponent', function () {
-      expect(2);
-      this.settings.setTables(10);
+    //test('first round opponent', function () {
+    //  expect(2);
+    //  this.settings.setTables(10);
+    //
+    //  var players = Utils.createPlayers(this.playerList, 20);
+    //  players[0].setFirstOpponent(players[7].id);
+    //  players[7].setFirstOpponent(players[0].id);
+    //  players[2].setFirstOpponent(players[17].id);
+    //  players[17].setFirstOpponent(players[2].id);
+    //
+    //  var round = GenerateRound.generate(1, this.playerList, this.roundList, this.settings);
+    //
+    //  var tables = round.getTables(10, this.playerList);
+    //  var i, playerNames;
+    //  for (i = 0; i < 10; i++) {
+    //    playerNames = [];
+    //    playerNames.push(tables[i].player1.getName());
+    //    playerNames.push(tables[i].player2.getName());
+    //    if (_.contains(playerNames, 'A')) {
+    //      ok(_.contains(playerNames, 'H'), 'A plays against H. was ' + playerNames);
+    //    } else if (_.contains(playerNames, 'C')) {
+    //      ok(_.contains(playerNames, 'R'), 'C plays against R. was ' + playerNames);
+    //    }
+    //  }
+    //});
 
-      var players = Utils.createPlayers(this.playerList, 20);
-      players[0].setFirstOpponent(players[7].id);
-      players[7].setFirstOpponent(players[0].id);
-      players[2].setFirstOpponent(players[17].id);
-      players[17].setFirstOpponent(players[2].id);
-
-      var round = GenerateRound.generate(1, this.playerList, this.roundList, this.settings);
-
-      var tables = round.getTables(10, this.playerList);
-      var i, playerNames;
-      for (i = 0; i < 10; i++) {
-        playerNames = [];
-        playerNames.push(tables[i].player1.getName());
-        playerNames.push(tables[i].player2.getName());
-        if (_.contains(playerNames, 'A')) {
-          ok(_.contains(playerNames, 'H'), 'A plays against H. was ' + playerNames);
-        } else if (_.contains(playerNames, 'C')) {
-          ok(_.contains(playerNames, 'R'), 'C plays against R. was ' + playerNames);
-        }
-      }
-    });
-
-    test('all first round opponents', function () {
-      expect(5);
-      this.settings.setTables(5);
-
-      var players = Utils.createPlayers(this.playerList, 10);
-      players[0].setFirstOpponent(players[1].id);
-      players[1].setFirstOpponent(players[0].id);
-      players[2].setFirstOpponent(players[3].id);
-      players[3].setFirstOpponent(players[2].id);
-      players[4].setFirstOpponent(players[5].id);
-      players[5].setFirstOpponent(players[4].id);
-      players[6].setFirstOpponent(players[7].id);
-      players[7].setFirstOpponent(players[6].id);
-      players[8].setFirstOpponent(players[9].id);
-      players[9].setFirstOpponent(players[8].id);
-
-      var round = GenerateRound.generate(1, this.playerList, this.roundList, this.settings);
-
-      var tables = round.getTables(5, this.playerList);
-      var i, playerNames;
-
-      console.log(players[2].isPossibleFirstOpponent(players[9]));
-      console.log(players[2].isPossibleFirstOpponent(players[8]));
-      console.log(players[3].isPossibleFirstOpponent(players[9]));
-      console.log(players[3].isPossibleFirstOpponent(players[8]));
-      console.log(players[2].isPossibleFirstOpponent(players[3]));
-
-      for (i = 0; i < 5; i++) {
-
-        ok(Math.abs(tables[i].player1.getName().charCodeAt(0) - tables[i].player2.getName().charCodeAt(0)) === 1,
-          tables[i].player1.getName() + " plays " + tables[i].player2.getName());
-
-
-      }
-    });
+    //test('all first round opponents', function () {
+    //  expect(5);
+    //  this.settings.setTables(5);
+    //
+    //  var players = Utils.createPlayers(this.playerList, 10);
+    //  players[0].setFirstOpponent(players[1].id);
+    //  players[1].setFirstOpponent(players[0].id);
+    //  players[2].setFirstOpponent(players[3].id);
+    //  players[3].setFirstOpponent(players[2].id);
+    //  players[4].setFirstOpponent(players[5].id);
+    //  players[5].setFirstOpponent(players[4].id);
+    //  players[6].setFirstOpponent(players[7].id);
+    //  players[7].setFirstOpponent(players[6].id);
+    //  players[8].setFirstOpponent(players[9].id);
+    //  players[9].setFirstOpponent(players[8].id);
+    //
+    //  var round = GenerateRound.generate(1, this.playerList, this.roundList, this.settings);
+    //
+    //  var tables = round.getTables(5, this.playerList);
+    //  var i, playerNames;
+    //
+    //  console.log(players[2].isPossibleFirstOpponent(players[9]));
+    //  console.log(players[2].isPossibleFirstOpponent(players[8]));
+    //  console.log(players[3].isPossibleFirstOpponent(players[9]));
+    //  console.log(players[3].isPossibleFirstOpponent(players[8]));
+    //  console.log(players[2].isPossibleFirstOpponent(players[3]));
+    //
+    //  for (i = 0; i < 5; i++) {
+    //
+    //    ok(Math.abs(tables[i].player1.getName().charCodeAt(0) - tables[i].player2.getName().charCodeAt(0)) === 1,
+    //      tables[i].player1.getName() + " plays " + tables[i].player2.getName());
+    //
+    //
+    //  }
+    //});
 
     test('city and faction', function () {
       expect(4);

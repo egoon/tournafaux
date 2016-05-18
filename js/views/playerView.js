@@ -41,8 +41,8 @@
     events: {
       "click button.removePlayer": "removePlayer",
       "change input": "updateProperty",
-      "change input[name='city']": "updateCountryDataList",
-      "change select.chooseFirstOpponent": "changeFirstOpponent"
+      "change input[name='city']": "updateCountryDataList"
+      //"change select.chooseFirstOpponent": "changeFirstOpponent"
     },
 
     render: function() {
@@ -53,9 +53,9 @@
       this.$el.html(template);
       this.$el.attr('id', this.player.id);
       this.validate();
-      if (this.player.getFirstOpponent()) {
-        this.$('select.chooseFirstOpponent').val(this.player.getFirstOpponent());
-      }
+      //if (this.player.getFirstOpponent()) {
+      //  this.$('select.chooseFirstOpponent').val(this.player.getFirstOpponent());
+      //}
       // if (this.roundList.length > 0 && this.roundList.at(0).get('showInNav')) {
       //   this.$('button.removePlayer').attr('disabled', 'disabled');
       // }
@@ -86,29 +86,29 @@
       this.$('input.city').attr('list', this.settings.get('countryDataList'));
     },
 
-    changeFirstOpponent: function(e) {
-      // clear previously selected opponent
-      var oldOpponent = this.playerList.get(this.player.getFirstOpponent());
-      if (oldOpponent) {        
-        oldOpponent.setFirstOpponent(undefined);
-      }
-
-      // set first opponent
-      if (this.playerList.get(e.currentTarget.value)) {
-        this.player.setFirstOpponent(e.currentTarget.value);
-
-        var newOpponent = this.playerList.get(this.player.getFirstOpponent());
-        if (newOpponent && newOpponent.getFirstOpponent()) {
-          // change opponent's opponent
-          oldOpponent = this.playerList.get(newOpponent.getFirstOpponent());
-          oldOpponent.setFirstOpponent(undefined);
-        }
-
-        newOpponent.setFirstOpponent(this.player.id);
-      } else {
-        this.player.setFirstOpponent(undefined);
-      }
-    },
+    //changeFirstOpponent: function(e) {
+    //  // clear previously selected opponent
+    //  var oldOpponent = this.playerList.get(this.player.getFirstOpponent());
+    //  if (oldOpponent) {
+    //    oldOpponent.setFirstOpponent(undefined);
+    //  }
+    //
+    //  // set first opponent
+    //  if (this.playerList.get(e.currentTarget.value)) {
+    //    this.player.setFirstOpponent(e.currentTarget.value);
+    //
+    //    var newOpponent = this.playerList.get(this.player.getFirstOpponent());
+    //    if (newOpponent && newOpponent.getFirstOpponent()) {
+    //      // change opponent's opponent
+    //      oldOpponent = this.playerList.get(newOpponent.getFirstOpponent());
+    //      oldOpponent.setFirstOpponent(undefined);
+    //    }
+    //
+    //    newOpponent.setFirstOpponent(this.player.id);
+    //  } else {
+    //    this.player.setFirstOpponent(undefined);
+    //  }
+    //},
 
     removePlayer: function() {
       this.roundList.fetch();
@@ -120,7 +120,7 @@
             player.clearGames(that.roundList.length);
             player.save();
           });
-          this.changeFirstOpponent({currentTarget: {value: undefined}});
+          //this.changeFirstOpponent({currentTarget: {value: undefined}});
           this.player.destroy();
           this.roundList.each(function(round) {
             round.clear();
@@ -130,7 +130,7 @@
           this.playerList.playerNumbers();
         }
       } else {
-        this.changeFirstOpponent({currentTarget: {value: undefined}});
+        //this.changeFirstOpponent({currentTarget: {value: undefined}});
         this.player.destroy();
         this.$el.hide(function() {that.remove();});
         this.playerList.playerNumbers();

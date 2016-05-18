@@ -83,18 +83,18 @@ define([
         },
 
         isPossibleFirstOpponent: function (player) {
-            if (this.getFirstOpponent()) {
-                if (this.getFirstOpponent() === player.id) {
-                    return true;
-                }
-                return false;
-            }
-            if (player.getFirstOpponent()) {
-                if (player.getFirstOpponent() === this.id) {
-                    return true;
-                }
-                return false;
-            }
+            //if (this.getFirstOpponent()) {
+            //    if (this.getFirstOpponent() === player.id) {
+            //        return true;
+            //    }
+            //    return false;
+            //}
+            //if (player.getFirstOpponent()) {
+            //    if (player.getFirstOpponent() === this.id) {
+            //        return true;
+            //    }
+            //    return false;
+            //}
             if (this.getFaction() !== '' && this.getFaction() === player.getFaction()) {
                 return false;
             }
@@ -368,15 +368,15 @@ define([
             return this;
         },
 
-        getFirstOpponent: function () {
-            return this.get('firstOpponent');
-        },
-
-        setFirstOpponent: function (firstOpponent) {
-            this.set('firstOpponent', firstOpponent);
-            this.save();
-            return this;
-        }
+        //getFirstOpponent: function () {
+        //    return this.get('firstOpponent');
+        //},
+        //
+        //setFirstOpponent: function (firstOpponent) {
+        //    this.set('firstOpponent', firstOpponent);
+        //    this.save();
+        //    return this;
+        //}
 
     });
 
