@@ -56,7 +56,7 @@ define([
 		// console.log("matchPlayersFirstRound");
 		var match = matchPlayers2(players, function(p1, p2) { return p1.isPossibleFirstOpponent(p2)});
 		if (!match) {
-			match = matchPlayers2(players, function(p1, p2) { return true; });
+			match = matchPlayers2(players, function() { return true; });
 		}
 		return matchedPlayers.concat(match);
 	};
@@ -183,6 +183,7 @@ define([
         }
         newPlayer.setTableForRound(roundNumber, table.name);
         var opponent = newPlayer.getOpponentForRound(roundNumber);
+		opponent.setOpponentIdForRound(roundNumber, newPlayer.id);
         if (opponent.isBye())
             setScoresForBye(opponent, newPlayer, roundNumber);
         else {
