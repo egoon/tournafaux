@@ -67,3 +67,10 @@ td.drop-to-remove {
     text-align: center;
     color: darkred;
 }
+
+.timer-setup input.hour {
+    width: 45px;
+}
+.timer-setup input.minute {
+    width: 55px;
+}

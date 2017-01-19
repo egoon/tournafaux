@@ -1,4 +1,11 @@
 <div class="row">
+    <div class="col-md-12 timer">
+        <span class="timer-setup"><input type="number" class="form-control hour" value="1"/>:<input type="number" class=" minute form-inline" value="00"/></span>
+        <span class="timer hidden">2.00</span>
+    </div>
+</div>
+
+<div class="row">
     <div class="col-md-7">
         <table id="round-scoring" class="table table-striped">
             <tbody>
